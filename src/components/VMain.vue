@@ -1,5 +1,11 @@
 <template>
-  <div/>
+  <v-container fluid>
+    <v-layout justify-center>
+      <v-btn color="primary" outlined @click="$router.push('/game')"
+        >ゲームスタート！！</v-btn
+      >
+    </v-layout>
+  </v-container>
 </template>
 
 <script lang="ts">
