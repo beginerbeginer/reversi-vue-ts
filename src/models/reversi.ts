@@ -3,16 +3,13 @@ export class Board {
   public turn: CellState = CellState.Black;
 
   constructor() {
-    // 8個作る
     this.rows = [...Array(8).keys()].map((i) => new Row(i));
-    // オセロの最初の４つの石
     this.rows[3].cells[3].state = CellState.White;
     this.rows[4].cells[4].state = CellState.White;
     this.rows[4].cells[3].state = CellState.Black;
     this.rows[3].cells[4].state = CellState.Black;
   }
 
-  // 盤面の押した箇所を黒にする
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public put(x: number, y: number) {
     if (!this.rows[y].cells[x].isNone) {
@@ -30,12 +27,10 @@ export class Board {
 
 // 上から下までの行
 export class Row {
-  // Rowは８つのcellを持つ
   public cells: Cell[];
   public num: number;
 
   constructor(rowNumber: number) {
-    // 自分が何行目かの情報を表す
     this.num = rowNumber;
     this.cells = [...Array(8).keys()].map((i) => new Cell(i, rowNumber));
   }
