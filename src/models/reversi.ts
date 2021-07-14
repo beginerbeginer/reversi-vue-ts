@@ -14,6 +14,9 @@ export class Board {
   // 盤面の押した箇所を黒にする
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public put(x: number, y: number) {
+    if (!this.rows[y].cells[x].isNone) {
+      return;
+    }
     this.rows[y].cells[x].state = CellState.Black;
   }
 }
@@ -48,6 +51,10 @@ export class Cell {
 
   public get isWhite(): boolean {
     return this.state === CellState.White;
+  }
+
+  public get isNone(): boolean {
+    return this.state === CellState.None;
   }
 }
 
