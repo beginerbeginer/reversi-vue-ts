@@ -1,5 +1,6 @@
 export class Board {
   public rows: Row[];
+  public turn: CellState = CellState.Black;
 
   constructor() {
     // 8個作る
@@ -17,7 +18,13 @@ export class Board {
     if (!this.rows[y].cells[x].isNone) {
       return;
     }
-    this.rows[y].cells[x].state = CellState.Black;
+    this.rows[y].cells[x].state = this.turn;
+
+    if (this.turn === CellState.Black) {
+      this.turn = CellState.White;
+    } else {
+      this.turn = CellState.Black;
+    }
   }
 }
 
