@@ -11,17 +11,21 @@ export class Board {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public put(x: number, y: number) {
-    if (!this.rows[y].cells[x].isNone) {
+  public put(p: Point) {
+    if (!this.rows[p.y].cells[p.x].isNone) {
       return;
     }
-    this.rows[y].cells[x].state = this.turn;
+    this.rows[p.y].cells[p.x].state = this.turn;
 
     if (this.turn === CellState.Black) {
       this.turn = CellState.White;
     } else {
       this.turn = CellState.Black;
     }
+  }
+
+  public search(p: Point): Point[] {
+    return [];
   }
 }
 
@@ -57,6 +61,17 @@ export class Cell {
 
   public get isNone(): boolean {
     return this.state === CellState.None;
+  }
+}
+
+//座標クラス（石の位置情報）
+export class Point {
+  public x: number;
+  public y: number;
+
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
   }
 }
 

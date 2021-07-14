@@ -17,7 +17,7 @@
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
 import VCell from "@/components/reversi/VCell.vue";
-import { Row } from "@/models/reversi";
+import { Row, Point } from "@/models/reversi";
 
 @Component({
   components: {
@@ -33,14 +33,14 @@ export default class VRow extends Vue {
    */
   @Emit("put")
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public put(x: number, y: number) {
-    console.log(x, y);
+  public put(p: Point) {
+    console.log(p);
     console.log("↑VRowのput終了");
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public onPutEvent(x: number, y: number) {
-    this.put(x, y);
+  public onPutEvent(p: Point) {
+    this.put(p);
   }
 }
 </script>

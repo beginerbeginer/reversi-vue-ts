@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { Cell } from "@/models/reversi";
+import { Cell, Point } from "@/models/reversi";
 
 @Component
 export default class VCell extends Vue {
@@ -24,14 +24,14 @@ export default class VCell extends Vue {
    */
   @Emit("put")
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public put(x: number, y: number) {
-    console.log(x, y);
+  public put(p: Point) {
+    console.log(p);
     console.log("↑VCellのput終了");
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public onClick() {
-    this.put(this.cell.x, this.cell.y);
+    this.put(new Point(this.cell.x, this.cell.y));
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
