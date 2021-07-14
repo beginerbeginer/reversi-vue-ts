@@ -12,10 +12,10 @@ export class Board {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public put(p: Point) {
-    if (!this.rows[p.y].cells[p.x].isNone) {
+    if (!this.ref(p).isNone) {
       return;
     }
-    this.rows[p.y].cells[p.x].state = this.turn;
+    this.ref(p).state = this.turn;
 
     if (this.turn === CellState.Black) {
       this.turn = CellState.White;
@@ -24,8 +24,9 @@ export class Board {
     }
   }
 
-  public search(p: Point): Point[] {
-    return [];
+  // 石の座標を参照する
+  public ref(p: Point): Cell {
+    return this.rows[p.y].cells[p.x];
   }
 }
 
