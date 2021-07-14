@@ -1,25 +1,40 @@
 export class Board {
   public rows: Row[];
+  public turn: CellState = CellState.Black;
 
   constructor() {
-    // 8個作る
     this.rows = [...Array(8).keys()].map((i) => new Row(i));
-    // オセロの最初の４つの石
     this.rows[3].cells[3].state = CellState.White;
     this.rows[4].cells[4].state = CellState.White;
     this.rows[4].cells[3].state = CellState.Black;
     this.rows[3].cells[4].state = CellState.Black;
   }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  public put(p: Point) {
+    if (!this.rows[p.y].cells[p.x].isNone) {
+      return;
+    }
+    this.rows[p.y].cells[p.x].state = this.turn;
+
+    if (this.turn === CellState.Black) {
+      this.turn = CellState.White;
+    } else {
+      this.turn = CellState.Black;
+    }
+  }
+
+  public search(p: Point): Point[] {
+    return [];
+  }
 }
 
 // 上から下までの行
 export class Row {
-  // Rowは８つのcellを持つ
   public cells: Cell[];
   public num: number;
 
   constructor(rowNumber: number) {
-    // 自分が何行目かの情報を表す
     this.num = rowNumber;
     this.cells = [...Array(8).keys()].map((i) => new Cell(i, rowNumber));
   }
@@ -27,14 +42,8 @@ export class Row {
 
 // 左から右の列
 export class Cell {
-  /**
-   * @param x 縦
-   * @param y 横
-   */
   public x: number;
   public y: number;
-
-  // cellはそれぞれ初期値をもつ
   public state: CellState = CellState.None;
 
   constructor(x: number, y: number) {
@@ -48,6 +57,21 @@ export class Cell {
 
   public get isWhite(): boolean {
     return this.state === CellState.White;
+  }
+
+  public get isNone(): boolean {
+    return this.state === CellState.None;
+  }
+}
+
+//座標クラス（石の位置情報）
+export class Point {
+  public x: number;
+  public y: number;
+
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
   }
 }
 
