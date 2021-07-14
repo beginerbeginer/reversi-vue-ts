@@ -10,6 +10,12 @@ export class Board {
     this.rows[4].cells[3].state = CellState.Black;
     this.rows[3].cells[4].state = CellState.Black;
   }
+
+  // 盤面の押した箇所を黒にする
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  public put(x: number, y: number) {
+    this.rows[y].cells[x].state = CellState.Black;
+  }
 }
 
 // 上から下までの行
@@ -27,14 +33,8 @@ export class Row {
 
 // 左から右の列
 export class Cell {
-  /**
-   * @param x 縦
-   * @param y 横
-   */
   public x: number;
   public y: number;
-
-  // cellはそれぞれ初期値をもつ
   public state: CellState = CellState.None;
 
   constructor(x: number, y: number) {
