@@ -12,10 +12,10 @@ const routes: Array<RouteConfig> = [
     component: VMain,
   },
   {
-    path: '/game',
-    name: 'VGame',
+    path: "/game",
+    name: "VGame",
     component: VGame,
-  }
+  },
 ];
 
 const router = new VueRouter({

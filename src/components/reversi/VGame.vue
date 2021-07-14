@@ -1,9 +1,8 @@
 <template>
   <v-container>
     <v-layout justify-center>
-      <VBoard/>
+      <VBoard />
     </v-layout>
-
   </v-container>
 </template>
 

@@ -1,13 +1,13 @@
 <template>
   <div>
-    <VRow/>
-    <VRow/>
-    <VRow/>
-    <VRow/>
-    <VRow/>
-    <VRow/>
-    <VRow/>
-    <VRow/>
+    <VRow />
+    <VRow />
+    <VRow />
+    <VRow />
+    <VRow />
+    <VRow />
+    <VRow />
+    <VRow />
   </div>
 </template>
 

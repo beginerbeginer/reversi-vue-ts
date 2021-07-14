@@ -1,13 +1,13 @@
 <template>
   <v-layout>
-    <VCell/>
-    <VCell/>
-    <VCell/>
-    <VCell/>
-    <VCell/>
-    <VCell/>
-    <VCell/>
-    <VCell/>
+    <VCell />
+    <VCell />
+    <VCell />
+    <VCell />
+    <VCell />
+    <VCell />
+    <VCell />
+    <VCell />
   </v-layout>
 </template>
 

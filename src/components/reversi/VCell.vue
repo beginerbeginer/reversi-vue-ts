@@ -37,12 +37,11 @@ export default class VCell extends Vue {}
   /* background-color: white; */
 }
 
-.white-stone{
+.white-stone {
   background-color: white;
 }
 
-.black-stone{
+.black-stone {
   background-color: black;
 }
 </style>
-
