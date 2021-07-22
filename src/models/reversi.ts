@@ -18,9 +18,16 @@ export class Board {
 
     // ひっくり返せる石がない場合
     const reversedList = this.search(p);
+
+    console.log(reversedList);
+    console.log("↑reversedList終了");
+
     if (reversedList.length === 0) {
       return;
     }
+
+    // 石をひっくり返す（配列内の要素の石の色を置いた石の色に変更する）
+    reversedList.forEach((p) => (this.ref(p).state = this.turn));
 
     // 最初は黒石を置く
     this.ref(p).state = this.turn;
