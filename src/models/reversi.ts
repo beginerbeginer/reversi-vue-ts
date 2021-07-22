@@ -90,6 +90,22 @@ export class Board {
     result = result.concat(_search(p, (p) => new Point(p.x - 1, p.y - 1), []));
     return result;
   }
+
+  public get blacks(): number {
+    let count = 0;
+    this.rows.forEach(row => {
+      count += row.blacks;
+    });
+    return count;
+  }
+
+  public get whites(): number {
+    let count = 0;
+    this.rows.forEach((row) => {
+      count += row.whites;
+    });
+    return count;
+  }
 }
 
 // 上から下までの行
@@ -100,6 +116,22 @@ export class Row {
   constructor(rowNumber: number) {
     this.num = rowNumber;
     this.cells = [...Array(8).keys()].map((i) => new Cell(i, rowNumber));
+  }
+
+  public get blacks(): number {
+    let count = 0;
+    this.cells.forEach((cell) => {
+      if (cell.isBlack) count++;
+    });
+    return count;
+  }
+
+  public get whites(): number {
+    let count = 0;
+    this.cells.forEach((cell) => {
+      if (cell.isWhite) count++;
+    });
+    return count;
   }
 }
 

@@ -7,6 +7,12 @@
     <v-layout justify-center>
       <h1>{{ current }}</h1>
     </v-layout>
+    <v-layout justify-center>
+      <h1>白の手番：{{ board.whites }}</h1>
+    </v-layout>
+    <v-layout justify-center>
+      <h1>黒の手番：{{ board.blacks }}</h1>
+    </v-layout>
   </v-container>
 </template>
 
