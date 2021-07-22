@@ -32,10 +32,10 @@ export class Board {
     // 最初は黒石を置く
     this.ref(p).state = this.turn;
 
-    if (this.turn === CellState.Black) {
-      this.turn = CellState.White;
-    } else {
-      this.turn = CellState.Black;
+    this.next();
+
+    if (this.shouldPass()) {
+      this.next();
     }
   }
 
@@ -44,8 +44,18 @@ export class Board {
     return this.rows[p.y].cells[p.x];
   }
 
+  public next(): void {
+    if (this.turn === CellState.Black) {
+      this.turn = CellState.White;
+    } else {
+      this.turn = CellState.Black;
+    }
+  }
+
   // 隣の石がひっくり返せるか探索
   public search(p: Point): Point[] {
+    if (!this.ref(p).isNone) return [];
+
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     /**
@@ -90,6 +100,35 @@ export class Board {
     result = result.concat(_search(p, (p) => new Point(p.x - 1, p.y - 1), []));
     return result;
   }
+
+  public get blacks(): number {
+    let count = 0;
+    this.rows.forEach(row => {
+      count += row.blacks;
+    });
+    return count;
+  }
+
+  public get whites(): number {
+    let count = 0;
+    this.rows.forEach((row) => {
+      count += row.whites;
+    });
+    return count;
+  }
+
+  // パスのロジック：全マスを検索、ひっくり返せるマスがなければ飛ばす
+  public shouldPass(): boolean {
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        const reversedList = this.search(new Point(i, j));
+        if (reversedList.length > 0) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 }
 
 // 上から下までの行
@@ -100,6 +139,22 @@ export class Row {
   constructor(rowNumber: number) {
     this.num = rowNumber;
     this.cells = [...Array(8).keys()].map((i) => new Cell(i, rowNumber));
+  }
+
+  public get blacks(): number {
+    let count = 0;
+    this.cells.forEach((cell) => {
+      if (cell.isBlack) count++;
+    });
+    return count;
+  }
+
+  public get whites(): number {
+    let count = 0;
+    this.cells.forEach((cell) => {
+      if (cell.isWhite) count++;
+    });
+    return count;
   }
 }
 
