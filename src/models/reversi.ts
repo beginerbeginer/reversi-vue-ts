@@ -32,10 +32,10 @@ export class Board {
     // 最初は黒石を置く
     this.ref(p).state = this.turn;
 
-    if (this.turn === CellState.Black) {
-      this.turn = CellState.White;
-    } else {
-      this.turn = CellState.Black;
+    this.next();
+
+    if (this.shouldPass()) {
+      this.next();
     }
   }
 
@@ -44,8 +44,18 @@ export class Board {
     return this.rows[p.y].cells[p.x];
   }
 
+  public next(): void {
+    if (this.turn === CellState.Black) {
+      this.turn = CellState.White;
+    } else {
+      this.turn = CellState.Black;
+    }
+  }
+
   // 隣の石がひっくり返せるか探索
   public search(p: Point): Point[] {
+    if (!this.ref(p).isNone) return [];
+
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     /**
@@ -105,6 +115,19 @@ export class Board {
       count += row.whites;
     });
     return count;
+  }
+
+  // パスのロジック：全マスを検索、ひっくり返せるマスがなければ飛ばす
+  public shouldPass(): boolean {
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        const reversedList = this.search(new Point(i, j));
+        if (reversedList.length > 0) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }
 
