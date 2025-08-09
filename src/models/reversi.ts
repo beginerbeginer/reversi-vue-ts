@@ -11,6 +11,8 @@ export class Board {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  // How: searchで裏返せる石を探し反転後に手番を交代する
+  // Why not: パフォーマンスよりも可読性を優先する
   public put(p: Point) {
     if (!this.ref(p).isNone) {
       return;
