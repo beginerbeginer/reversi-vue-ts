@@ -63,7 +63,11 @@ export class Board {
      * @param next:次の座標を受け取る関数
      * @param lst :リスト
      */
-    const _search = (_p: Point, next: (pre: Point) => Point, lst: Point[]): Point[] => {
+    const _search = (
+      _p: Point,
+      next: (pre: Point) => Point,
+      lst: Point[]
+    ): Point[] => {
       const _next = next(_p);
 
       // ボードの外を探索した場合、or、隣のマスに石がない場合
@@ -103,7 +107,7 @@ export class Board {
 
   public get blacks(): number {
     let count = 0;
-    this.rows.forEach(row => {
+    this.rows.forEach((row) => {
       count += row.blacks;
     });
     return count;
