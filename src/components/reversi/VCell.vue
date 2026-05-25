@@ -5,42 +5,21 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Vue, Component, Prop, Emit } from "vue-property-decorator";
-import { Cell, Point } from "@/models/reversi";
+<script setup lang="ts">
+import { computed } from "vue";
+import { type Cell } from "@/models/reversi";
+import { useGameStore } from "@/stores/game";
 
-@Component
-export default class VCell extends Vue {
-  @Prop({ required: true })
+const props = defineProps<{ cell: Cell }>();
+const store = useGameStore();
 
-  //「!」はundefinedを許容する型
-  public cell!: Cell;
+const stoneClass = computed(() => ({
+  "white-stone": props.cell.isWhite,
+  "black-stone": props.cell.isBlack,
+}));
 
-  // public created() {
-  // }
-
-  /* Vuejsの基本はprops up , event down
-   * @Emitを使うことで親コンポーネント（VRow）にputイベントを渡すことができる
-   */
-  @Emit("put")
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public put(p: Point) {
-    console.log(p);
-    console.log("↑VCellのput終了");
-  }
-
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public onClick() {
-    this.put(new Point(this.cell.x, this.cell.y));
-  }
-
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public get stoneClass() {
-    return {
-      "white-stone": this.cell.isWhite,
-      "black-stone": this.cell.isBlack,
-    };
-  }
+function onClick() {
+  store.put(props.cell.x, props.cell.y);
 }
 </script>
 
@@ -60,13 +39,9 @@ export default class VCell extends Vue {
   position: absolute;
   top: 2px;
   left: 2px;
-  /* 石のサイズ */
   height: 60px;
   width: 60px;
-  /* 石の形 */
   border-radius: 50%;
-  /* 石の色 */
-  /* background-color: white; */
 }
 
 .white-stone {

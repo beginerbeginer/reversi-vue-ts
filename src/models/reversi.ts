@@ -19,9 +19,6 @@ export class Board {
     // ひっくり返せる石がない場合
     const reversedList = this.search(p);
 
-    console.log(reversedList);
-    console.log("↑reversedList終了");
-
     if (reversedList.length === 0) {
       return;
     }
@@ -63,26 +60,18 @@ export class Board {
      * @param next:次の座標を受け取る関数
      * @param lst :リスト
      */
-    const _search = (_p: Point, next: (pre: Point) => Point, lst: Point[]): Point[] => {
+    const _search = (
+      _p: Point,
+      next: (pre: Point) => Point,
+      lst: Point[],
+    ): Point[] => {
       const _next = next(_p);
 
-      // ボードの外を探索した場合、or、隣のマスに石がない場合
       if (!_next.inBoard || self.ref(_next).isNone) {
-        console.log("ボードの外を探索した場合、or、隣のマスに石がない");
         return [];
       }
-      // 隣のマスが自分の色と違う場合
       if (self.ref(_next).state !== self.turn) {
-        console.log("隣のマスが自分の色と違う");
-        console.log(lst.push(_next));
-        console.log("↑lst.push(_next)終了");
         lst.push(_next);
-        console.log("↑_next終了");
-        console.log(next);
-        console.log("↑next終了");
-        console.log(lst);
-        console.log("↑lst終了");
-        // 周囲のマスを再検索する検索順は「82647319」
         return _search(_next, next, lst);
       }
       return lst;
@@ -103,7 +92,7 @@ export class Board {
 
   public get blacks(): number {
     let count = 0;
-    this.rows.forEach(row => {
+    this.rows.forEach((row) => {
       count += row.blacks;
     });
     return count;
