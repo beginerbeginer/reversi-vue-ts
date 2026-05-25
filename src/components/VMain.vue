@@ -1,16 +1,14 @@
 <template>
   <v-container fluid>
-    <v-layout justify-center>
-      <v-btn color="primary" outlined @click="$router.push('/game')"
-        >ゲームスタート！！</v-btn
-      >
-    </v-layout>
+    <div class="d-flex justify-center">
+      <v-btn color="primary" variant="outlined" @click="router.push('/game')">
+        ゲームスタート！！
+      </v-btn>
+    </div>
   </v-container>
 </template>
 
-<script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-
-@Component
-export default class VMain extends Vue {}
+<script setup lang="ts">
+import { useRouter } from "vue-router";
+const router = useRouter();
 </script>
