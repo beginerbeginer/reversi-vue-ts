@@ -13,7 +13,8 @@
     "prepare": "npx simple-git-hooks || true"
   },
   "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
+    "pre-commit": "npx lint-staged",
+    "commit-msg": "npx --no -- commitlint --edit $1"
   },
   "lint-staged": {
     "*.{vue,ts}": [
@@ -43,6 +44,8 @@
     "lint-staged": "^17.0.5",
     "prettier": "^3.2.5",
     "sass": "^1.77.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "simple-git-hooks": "^2.13.1",
     "typescript": "^5.4.5",
     "vite": "^8.0.14",
