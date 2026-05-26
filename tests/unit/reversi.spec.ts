@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Board, CellState } from "@/models/reversi";
+import { Board, CellState, Point } from "@/models/reversi";
 
 describe("Board", () => {
   it("初期状態で黒が2個ある", () => {
@@ -19,13 +19,13 @@ describe("Board", () => {
 
   it("有効な場所に石を置くと手番が切り替わる", () => {
     const board = new Board();
-    board.put({ x: 3, y: 2 });
+    board.put(new Point(3, 2));
     expect(board.turn).toBe(CellState.White);
   });
 
   it("有効な場所に石を置くと石数が増える", () => {
     const board = new Board();
-    board.put({ x: 3, y: 2 });
+    board.put(new Point(3, 2));
     expect(board.blacks).toBeGreaterThan(2);
   });
 });
