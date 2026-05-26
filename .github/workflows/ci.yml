@@ -8,6 +8,8 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -16,9 +18,113 @@ jobs:
           cache: npm
       # postinstall スクリプトを無効化してサプライチェーン攻撃を緩和
       - run: npm ci --ignore-scripts
+
       # high 以上の既知脆弱性があれば CI を失敗させる
-      - run: npm audit --audit-level=high
-      - run: npm run type-check
-      - run: npm run lint
-      - run: npm run test:unit
-      - run: npm run build
+      - id: audit
+        run: npm audit --audit-level=high
+        continue-on-error: true
+
+      - id: type-check
+        run: npm run type-check
+        continue-on-error: true
+
+      - id: lint
+        run: npm run lint
+        continue-on-error: true
+
+      - id: test
+        run: npm run test:unit -- --reporter=json --outputFile=test-results.json
+        continue-on-error: true
+
+      - id: coverage
+        run: npm run test:coverage
+        continue-on-error: true
+
+      - id: build
+        run: npm run build
+        continue-on-error: true
+
+      - name: Post CI result to PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            function status(outcome) {
+              return outcome === 'success' ? '✅' : outcome === 'failure' ? '❌' : '⏭️';
+            }
+
+            const steps = {
+              audit:      '${{ steps.audit.outcome }}',
+              typeCheck:  '${{ steps.type-check.outcome }}',
+              lint:       '${{ steps.lint.outcome }}',
+              test:       '${{ steps.test.outcome }}',
+              coverage:   '${{ steps.coverage.outcome }}',
+              build:      '${{ steps.build.outcome }}',
+            };
+
+            // テスト結果の集計
+            let testSummary = 'N/A';
+            try {
+              const raw = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
+              const { numPassedTests, numFailedTests, numTotalTests } = raw;
+              testSummary = `${numPassedTests}/${numTotalTests} passed${numFailedTests > 0 ? ` (${numFailedTests} failed)` : ''}`;
+            } catch (_) {}
+
+            // カバレッジの集計
+            let coverageSummary = 'N/A';
+            try {
+              const cov = JSON.parse(fs.readFileSync('coverage/coverage-summary.json', 'utf8'));
+              const t = cov.total;
+              coverageSummary = `Lines ${t.lines.pct}% | Stmts ${t.statements.pct}% | Branch ${t.branches.pct}% | Funcs ${t.functions.pct}%`;
+            } catch (_) {}
+
+            const overall = Object.values(steps).every(o => o === 'success') ? '✅ All passed' : '❌ Some checks failed';
+
+            const body = `<!-- ci-report -->
+            ## CI 結果 ${overall}
+
+            | チェック | 結果 |
+            |---------|------|
+            | npm audit | ${status(steps.audit)} |
+            | Type check | ${status(steps.typeCheck)} |
+            | Lint | ${status(steps.lint)} |
+            | Tests | ${status(steps.test)} ${testSummary} |
+            | Coverage | ${status(steps.coverage)} ${coverageSummary} |
+            | Build | ${status(steps.build)} |
+            `;
+
+            // 既存コメントを更新、なければ新規作成
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body.includes('<!-- ci-report -->'));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      # 個別ステップの失敗を最後にまとめて CI 全体を失敗させる
+      - name: Fail if any check failed
+        if: |
+          steps.audit.outcome == 'failure' ||
+          steps.type-check.outcome == 'failure' ||
+          steps.lint.outcome == 'failure' ||
+          steps.test.outcome == 'failure' ||
+          steps.coverage.outcome == 'failure' ||
+          steps.build.outcome == 'failure'
+        run: exit 1
