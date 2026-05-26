@@ -1,0 +1,24 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      # postinstall スクリプトを無効化してサプライチェーン攻撃を緩和
+      - run: npm ci --ignore-scripts
+      # high 以上の既知脆弱性があれば CI を失敗させる
+      - run: npm audit --audit-level=high
+      - run: npm run type-check
+      - run: npm run lint
+      - run: npm run test:unit
+      - run: npm run build

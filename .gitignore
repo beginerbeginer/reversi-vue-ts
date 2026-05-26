@@ -1,6 +1,12 @@
 .DS_Store
 node_modules
 /dist
+/coverage
+
+# vitest coverage が生成する中間ファイル
+*.js.map
+src/**/*.js
+tests/**/*.js
 
 
 # local env files
