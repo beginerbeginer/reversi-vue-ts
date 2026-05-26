@@ -25,6 +25,17 @@ export const useGameStore = defineStore("game", () => {
     return null;
   });
 
+  function reset() {
+    const fresh = new Board();
+    board.turn = fresh.turn;
+    board.rows.forEach((row, i) => {
+      row.cells.forEach((cell, j) => {
+        cell.state = fresh.rows[i].cells[j].state;
+      });
+    });
+    lastPassed.value = null;
+  }
+
   function put(x: number, y: number) {
     const p = new Point(x, y);
     const turnBefore = board.turn;
@@ -42,5 +53,5 @@ export const useGameStore = defineStore("game", () => {
     }
   }
 
-  return { board, current, put, lastPassed, isGameOver, winner };
+  return { board, current, put, reset, lastPassed, isGameOver, winner };
 });

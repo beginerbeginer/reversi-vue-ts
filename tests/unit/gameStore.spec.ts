@@ -68,6 +68,45 @@ describe("useGameStore", () => {
     });
   });
 
+  describe("reset", () => {
+    it("reset を呼ぶと石が初期配置に戻る", () => {
+      const store = useGameStore();
+      store.put(3, 2);
+      store.reset();
+      expect(store.board.blacks).toBe(2);
+      expect(store.board.whites).toBe(2);
+    });
+
+    it("reset を呼ぶと黒の手番に戻る", () => {
+      const store = useGameStore();
+      store.put(3, 2);
+      store.reset();
+      expect(store.current).toBe("黒の手番");
+    });
+
+    it("reset を呼ぶと lastPassed が null になる", () => {
+      const store = useGameStore();
+      store.board.rows.forEach((row) =>
+        row.cells.forEach((cell) => (cell.state = CellState.Black)),
+      );
+      store.board.rows[0].cells[0].state = CellState.None;
+      store.board.rows[0].cells[1].state = CellState.White;
+      store.board.turn = CellState.Black;
+      store.put(0, 0);
+      store.reset();
+      expect(store.lastPassed).toBeNull();
+    });
+
+    it("reset を呼ぶとゲームオーバーが解除される", () => {
+      const store = useGameStore();
+      store.board.rows.forEach((row) =>
+        row.cells.forEach((cell) => (cell.state = CellState.Black)),
+      );
+      store.reset();
+      expect(store.isGameOver).toBe(false);
+    });
+  });
+
   describe("lastPassed", () => {
     it("初期状態では null", () => {
       const store = useGameStore();
