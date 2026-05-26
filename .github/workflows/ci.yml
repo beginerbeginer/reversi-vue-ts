@@ -6,19 +6,96 @@ on:
     branches: [main]
 
 jobs:
-  ci:
+  # audit / type-check / lint を直列で実行（軽量グループ、〜20秒）
+  lint-check:
+    uses: ./.github/workflows/lint-check.yml
+
+  # test:coverage + build を直列で実行（重量グループ、〜60秒）
+  test-build:
+    uses: ./.github/workflows/test-build.yml
+
+  # 両グループ完了後に PR コメントへ表テーブルを投稿
+  report:
+    needs: [lint-check, test-build]
+    if: always() && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
-          node-version: 22
-          cache: npm
-      # postinstall スクリプトを無効化してサプライチェーン攻撃を緩和
-      - run: npm ci --ignore-scripts
-      # high 以上の既知脆弱性があれば CI を失敗させる
-      - run: npm audit --audit-level=high
-      - run: npm run type-check
-      - run: npm run lint
-      - run: npm run test:unit
-      - run: npm run build
+          name: test-artifacts
+          path: .
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            function icon(result) {
+              return result === 'success' ? '✅' : result === 'failure' ? '❌' : '⏭️';
+            }
+
+            const results = {
+              lintCheck: '${{ needs.lint-check.result }}',
+              testBuild: '${{ needs.test-build.result }}',
+            };
+
+            let testDetail = '';
+            try {
+              const raw = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
+              const { numPassedTests, numFailedTests, numTotalTests } = raw;
+              testDetail = `${numPassedTests}/${numTotalTests} passed`;
+              if (numFailedTests > 0) testDetail += `, **${numFailedTests} failed**`;
+            } catch (_) {}
+
+            let coverageDetail = '';
+            try {
+              const cov = JSON.parse(fs.readFileSync('coverage/coverage-summary.json', 'utf8'));
+              const t = cov.total;
+              coverageDetail = `Lines ${t.lines.pct}% | Stmts ${t.statements.pct}% | Branch ${t.branches.pct}% | Funcs ${t.functions.pct}%`;
+            } catch (_) {}
+
+            const allPassed = Object.values(results).every(r => r === 'success');
+            const headline = allPassed ? '✅ All checks passed' : '❌ Some checks failed';
+
+            const body = [
+              '<!-- ci-report -->',
+              `## CI: ${headline}`,
+              '',
+              '| グループ | 結果 | 内容 |',
+              '|---------|:----:|------|',
+              `| Lint Check | ${icon(results.lintCheck)} | audit / type-check / lint |`,
+              `| Test & Build | ${icon(results.testBuild)} | ${testDetail} / build |`,
+              `| Coverage | — | ${coverageDetail || 'N/A'} |`,
+            ].join('\n');
+
+            // fork PR では GITHUB_TOKEN が read-only のためコメント投稿をスキップ
+            if (context.payload.pull_request.head.repo.fork) {
+              core.info('Skipping PR comment: token is read-only on fork PRs');
+              return;
+            }
+
+            // per_page=100 でデフォルト 30 件制限によるマーカー未検出を回避
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+            const existing = comments.find(c => c.body.includes('<!-- ci-report -->'));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
