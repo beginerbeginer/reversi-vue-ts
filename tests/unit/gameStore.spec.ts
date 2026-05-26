@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { useGameStore } from "@/stores/game";
+import { CellState } from "@/models/reversi";
 
 describe("useGameStore", () => {
   beforeEach(() => {
@@ -21,5 +22,34 @@ describe("useGameStore", () => {
     const store = useGameStore();
     store.put(3, 2);
     expect(store.current).toBe("白の手番");
+  });
+
+  describe("lastPassed", () => {
+    it("初期状態では null", () => {
+      const store = useGameStore();
+      expect(store.lastPassed).toBeNull();
+    });
+
+    it("パスが発生しない通常の手では null のまま", () => {
+      const store = useGameStore();
+      store.put(3, 2);
+      expect(store.lastPassed).toBeNull();
+    });
+
+    it("オートパスが発生したとき、パスされた側の色が入る", () => {
+      const store = useGameStore();
+      // 黒が (0,0) に置いたら白がパスになる盤面を作る
+      // 全マス黒で埋めて (0,0) だけ空け、(1,0) を白にする
+      store.board.rows.forEach((row) =>
+        row.cells.forEach((cell) => (cell.state = CellState.Black)),
+      );
+      store.board.rows[0].cells[0].state = CellState.None;
+      store.board.rows[0].cells[1].state = CellState.White;
+      store.board.turn = CellState.Black;
+
+      store.put(0, 0); // 黒が (0,0) に置く → (1,0) が反転 → 白は置く場所がなくパス
+
+      expect(store.lastPassed).toBe(CellState.White);
+    });
   });
 });
