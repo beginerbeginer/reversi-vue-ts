@@ -134,10 +134,18 @@ jobs:
               `| Coverage | — | ${coverageDetail || 'N/A'} |`,
             ].join('\n');
 
+            // fork PR では GITHUB_TOKEN が read-only のためコメント投稿をスキップ
+            if (context.payload.pull_request.head.repo.fork) {
+              core.info('Skipping PR comment: token is read-only on fork PRs');
+              return;
+            }
+
+            // per_page=100 でデフォルト 30 件制限によるマーカー未検出を回避
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
+              per_page: 100,
             });
             const existing = comments.find(c => c.body.includes('<!-- ci-report -->'));
             if (existing) {
