@@ -1,5 +1,4 @@
 name: CI
-
 on:
   push:
     branches: [main]
@@ -7,70 +6,21 @@ on:
     branches: [main]
 
 jobs:
-  # npm audit は package-lock.json だけ読むので node_modules 不要
+  # 各チェックを責務ごとのワークフローとして並行実行
   audit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: npm
-      # high 以上の既知脆弱性があれば CI を失敗させる
-      - run: npm audit --audit-level=high
+    uses: ./.github/workflows/audit.yml
 
   type-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: npm
-      # postinstall スクリプトを無効化してサプライチェーン攻撃を緩和
-      - run: npm ci --ignore-scripts
-      - run: npm run type-check
+    uses: ./.github/workflows/type-check.yml
 
   lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci --ignore-scripts
-      - run: npm run lint
+    uses: ./.github/workflows/lint.yml
 
   test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci --ignore-scripts
-      # テスト結果（JSON）とカバレッジ（json-summary）を一度に出力
-      - run: npm run test:coverage -- --reporter=json --outputFile=test-results.json
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-artifacts
-          path: |
-            test-results.json
-            coverage/coverage-summary.json
+    uses: ./.github/workflows/test.yml
 
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci --ignore-scripts
-      - run: npm run build
+    uses: ./.github/workflows/build.yml
 
   # 全ジョブ完了後に PR コメントへ表テーブルを投稿
   report:
