@@ -10,6 +10,21 @@ export const useGameStore = defineStore("game", () => {
     board.turn === CellState.Black ? "黒の手番" : "白の手番",
   );
 
+  // 両者ともパスになる = どちらの手番でも置ける場所がない
+  const isGameOver = computed(() => {
+    const currentTurnCanPass = board.shouldPass();
+    board.next();
+    const otherTurnCanPass = board.shouldPass();
+    board.next();
+    return currentTurnCanPass && otherTurnCanPass;
+  });
+
+  const winner = computed((): CellState | null => {
+    if (board.blacks > board.whites) return CellState.Black;
+    if (board.whites > board.blacks) return CellState.White;
+    return null;
+  });
+
   function put(x: number, y: number) {
     const p = new Point(x, y);
     const turnBefore = board.turn;
@@ -27,5 +42,5 @@ export const useGameStore = defineStore("game", () => {
     }
   }
 
-  return { board, current, put, lastPassed };
+  return { board, current, put, lastPassed, isGameOver, winner };
 });
