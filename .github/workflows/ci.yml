@@ -1,4 +1,5 @@
 name: CI
+
 on:
   push:
     branches: [main]
@@ -6,10 +7,20 @@ on:
     branches: [main]
 
 jobs:
-  ci:
+  # npm audit は package-lock.json だけ読むので node_modules 不要
+  audit:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      # high 以上の既知脆弱性があれば CI を失敗させる
+      - run: npm audit --audit-level=high
+
+  type-check:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -18,84 +29,111 @@ jobs:
           cache: npm
       # postinstall スクリプトを無効化してサプライチェーン攻撃を緩和
       - run: npm ci --ignore-scripts
+      - run: npm run type-check
 
-      # high 以上の既知脆弱性があれば CI を失敗させる
-      - id: audit
-        run: npm audit --audit-level=high
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      # テスト結果（JSON）とカバレッジ（json-summary）を一度に出力
+      - run: npm run test:coverage -- --reporter=json --outputFile=test-results.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-artifacts
+          path: |
+            test-results.json
+            coverage/coverage-summary.json
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+
+  # 全ジョブ完了後に PR コメントへ表テーブルを投稿
+  report:
+    needs: [audit, type-check, lint, test, build]
+    if: always() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/download-artifact@v4
         continue-on-error: true
-
-      - id: type-check
-        run: npm run type-check
-        continue-on-error: true
-
-      - id: lint
-        run: npm run lint
-        continue-on-error: true
-
-      - id: test
-        run: npm run test:unit -- --reporter=json --outputFile=test-results.json
-        continue-on-error: true
-
-      - id: coverage
-        run: npm run test:coverage
-        continue-on-error: true
-
-      - id: build
-        run: npm run build
-        continue-on-error: true
-
-      - name: Post CI result to PR
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        with:
+          name: test-artifacts
+          path: .
+      - uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
 
-            function status(outcome) {
-              return outcome === 'success' ? '✅' : outcome === 'failure' ? '❌' : '⏭️';
+            function icon(result) {
+              return result === 'success' ? '✅' : result === 'failure' ? '❌' : '⏭️';
             }
 
-            const steps = {
-              audit:      '${{ steps.audit.outcome }}',
-              typeCheck:  '${{ steps.type-check.outcome }}',
-              lint:       '${{ steps.lint.outcome }}',
-              test:       '${{ steps.test.outcome }}',
-              coverage:   '${{ steps.coverage.outcome }}',
-              build:      '${{ steps.build.outcome }}',
+            const results = {
+              audit:     '${{ needs.audit.result }}',
+              typeCheck: '${{ needs.type-check.result }}',
+              lint:      '${{ needs.lint.result }}',
+              test:      '${{ needs.test.result }}',
+              build:     '${{ needs.build.result }}',
             };
 
-            // テスト結果の集計
-            let testSummary = 'N/A';
+            let testDetail = '';
             try {
               const raw = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
               const { numPassedTests, numFailedTests, numTotalTests } = raw;
-              testSummary = `${numPassedTests}/${numTotalTests} passed${numFailedTests > 0 ? ` (${numFailedTests} failed)` : ''}`;
+              testDetail = `${numPassedTests}/${numTotalTests} passed`;
+              if (numFailedTests > 0) testDetail += `, **${numFailedTests} failed**`;
             } catch (_) {}
 
-            // カバレッジの集計
-            let coverageSummary = 'N/A';
+            let coverageDetail = '';
             try {
               const cov = JSON.parse(fs.readFileSync('coverage/coverage-summary.json', 'utf8'));
               const t = cov.total;
-              coverageSummary = `Lines ${t.lines.pct}% | Stmts ${t.statements.pct}% | Branch ${t.branches.pct}% | Funcs ${t.functions.pct}%`;
+              coverageDetail = `Lines ${t.lines.pct}% | Stmts ${t.statements.pct}% | Branch ${t.branches.pct}% | Funcs ${t.functions.pct}%`;
             } catch (_) {}
 
-            const overall = Object.values(steps).every(o => o === 'success') ? '✅ All passed' : '❌ Some checks failed';
+            const allPassed = Object.values(results).every(r => r === 'success');
+            const headline = allPassed ? '✅ All checks passed' : '❌ Some checks failed';
 
-            const body = `<!-- ci-report -->
-            ## CI 結果 ${overall}
+            const body = [
+              '<!-- ci-report -->',
+              `## CI: ${headline}`,
+              '',
+              '| ジョブ | 結果 | 詳細 |',
+              '|--------|:----:|------|',
+              `| npm audit | ${icon(results.audit)} | セキュリティ脆弱性チェック |`,
+              `| Type check | ${icon(results.typeCheck)} | TypeScript 型整合性 |`,
+              `| Lint | ${icon(results.lint)} | コードスタイル |`,
+              `| Tests | ${icon(results.test)} | ${testDetail} |`,
+              `| Build | ${icon(results.build)} | プロダクションビルド |`,
+              `| Coverage | — | ${coverageDetail || 'N/A'} |`,
+            ].join('\n');
 
-            | チェック | 結果 |
-            |---------|------|
-            | npm audit | ${status(steps.audit)} |
-            | Type check | ${status(steps.typeCheck)} |
-            | Lint | ${status(steps.lint)} |
-            | Tests | ${status(steps.test)} ${testSummary} |
-            | Coverage | ${status(steps.coverage)} ${coverageSummary} |
-            | Build | ${status(steps.build)} |
-            `;
-
-            // 既存コメントを更新、なければ新規作成
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -117,14 +155,3 @@ jobs:
                 body,
               });
             }
-
-      # 個別ステップの失敗を最後にまとめて CI 全体を失敗させる
-      - name: Fail if any check failed
-        if: |
-          steps.audit.outcome == 'failure' ||
-          steps.type-check.outcome == 'failure' ||
-          steps.lint.outcome == 'failure' ||
-          steps.test.outcome == 'failure' ||
-          steps.coverage.outcome == 'failure' ||
-          steps.build.outcome == 'failure'
-        run: exit 1
