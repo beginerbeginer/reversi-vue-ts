@@ -1,9 +1,9 @@
-name: Test
+name: Test & Build
 on:
   workflow_call: {}
 
 jobs:
-  test:
+  test-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -21,3 +21,4 @@ jobs:
           path: |
             test-results.json
             coverage/coverage-summary.json
+      - run: npm run build

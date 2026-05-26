@@ -6,25 +6,17 @@ on:
     branches: [main]
 
 jobs:
-  # 各チェックを責務ごとのワークフローとして並行実行
-  audit:
-    uses: ./.github/workflows/audit.yml
+  # audit / type-check / lint を直列で実行（軽量グループ、〜20秒）
+  lint-check:
+    uses: ./.github/workflows/lint-check.yml
 
-  type-check:
-    uses: ./.github/workflows/type-check.yml
+  # test:coverage + build を直列で実行（重量グループ、〜60秒）
+  test-build:
+    uses: ./.github/workflows/test-build.yml
 
-  lint:
-    uses: ./.github/workflows/lint.yml
-
-  test:
-    uses: ./.github/workflows/test.yml
-
-  build:
-    uses: ./.github/workflows/build.yml
-
-  # 全ジョブ完了後に PR コメントへ表テーブルを投稿
+  # 両グループ完了後に PR コメントへ表テーブルを投稿
   report:
-    needs: [audit, type-check, lint, test, build]
+    needs: [lint-check, test-build]
     if: always() && github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
@@ -45,11 +37,8 @@ jobs:
             }
 
             const results = {
-              audit:     '${{ needs.audit.result }}',
-              typeCheck: '${{ needs.type-check.result }}',
-              lint:      '${{ needs.lint.result }}',
-              test:      '${{ needs.test.result }}',
-              build:     '${{ needs.build.result }}',
+              lintCheck: '${{ needs.lint-check.result }}',
+              testBuild: '${{ needs.test-build.result }}',
             };
 
             let testDetail = '';
@@ -74,13 +63,10 @@ jobs:
               '<!-- ci-report -->',
               `## CI: ${headline}`,
               '',
-              '| ジョブ | 結果 | 詳細 |',
-              '|--------|:----:|------|',
-              `| npm audit | ${icon(results.audit)} | セキュリティ脆弱性チェック |`,
-              `| Type check | ${icon(results.typeCheck)} | TypeScript 型整合性 |`,
-              `| Lint | ${icon(results.lint)} | コードスタイル |`,
-              `| Tests | ${icon(results.test)} | ${testDetail} |`,
-              `| Build | ${icon(results.build)} | プロダクションビルド |`,
+              '| グループ | 結果 | 内容 |',
+              '|---------|:----:|------|',
+              `| Lint Check | ${icon(results.lintCheck)} | audit / type-check / lint |`,
+              `| Test & Build | ${icon(results.testBuild)} | ${testDetail} / build |`,
               `| Coverage | — | ${coverageDetail || 'N/A'} |`,
             ].join('\n');
 
