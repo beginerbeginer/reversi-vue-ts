@@ -1,4 +1,4 @@
-import { reactive, computed, ref } from "vue";
+import { reactive, computed, ref, toRaw } from "vue";
 import { defineStore } from "pinia";
 import { Board, CellState, Point } from "@/models/reversi";
 
@@ -11,12 +11,15 @@ export const useGameStore = defineStore("game", () => {
   );
 
   // 両者ともパスになる = どちらの手番でも置ける場所がない
+  // toRaw で next() を呼ぶことで reactive なターン変更を起こさずに相手番を検査する
   const isGameOver = computed(() => {
     const currentTurnCanPass = board.shouldPass();
-    board.next();
+    if (!currentTurnCanPass) return false;
+    const raw = toRaw(board);
+    raw.next();
     const otherTurnCanPass = board.shouldPass();
-    board.next();
-    return currentTurnCanPass && otherTurnCanPass;
+    raw.next();
+    return otherTurnCanPass;
   });
 
   const winner = computed((): CellState | null => {
