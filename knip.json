@@ -1,0 +1,8 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "ignoreDependencies": [
+    "@typescript-eslint/eslint-plugin",
+    "@typescript-eslint/parser",
+    "eslint-plugin-prettier"
+  ]
+}
