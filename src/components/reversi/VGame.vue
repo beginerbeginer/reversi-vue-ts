@@ -23,6 +23,11 @@
             黒 {{ store.board.blacks }} 対 白 {{ store.board.whites }}
           </div>
         </v-card-text>
+        <v-card-actions class="justify-center pb-4">
+          <v-btn color="primary" variant="elevated" @click="store.reset()">
+            もう一度
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <v-snackbar
