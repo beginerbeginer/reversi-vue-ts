@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("リバーシ ゲーム画面", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/game");
+    await page.goto("/#/game");
   });
 
   test("初期盤面が表示される", async ({ page }) => {
