@@ -2,6 +2,7 @@
   <div class="cell-wrapper" @click="onClick">
     <div class="cell"></div>
     <div class="stone" :class="stoneClass"></div>
+    <div v-if="isValid" class="valid-hint"></div>
   </div>
 </template>
 
@@ -17,6 +18,10 @@ const stoneClass = computed(() => ({
   "white-stone": props.cell.isWhite,
   "black-stone": props.cell.isBlack,
 }));
+
+const isValid = computed(() =>
+  store.validMoves.some((p) => p.x === props.cell.x && p.y === props.cell.y),
+);
 
 function onClick() {
   store.put(props.cell.x, props.cell.y);
@@ -50,5 +55,17 @@ function onClick() {
 
 .black-stone {
   background-color: black;
+}
+
+.valid-hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 11px;
+  width: 11px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
 }
 </style>

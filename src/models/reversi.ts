@@ -106,6 +106,18 @@ export class Board {
     return count;
   }
 
+  public validMoves(): Point[] {
+    const moves: Point[] = [];
+    for (let y = 0; y < 8; y++) {
+      for (let x = 0; x < 8; x++) {
+        if (this.search(new Point(x, y)).length > 0) {
+          moves.push(new Point(x, y));
+        }
+      }
+    }
+    return moves;
+  }
+
   // パスのロジック：全マスを検索、ひっくり返せるマスがなければ飛ばす
   public shouldPass(): boolean {
     for (let i = 0; i < 8; i++) {

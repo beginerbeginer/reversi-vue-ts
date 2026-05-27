@@ -22,6 +22,8 @@ export const useGameStore = defineStore("game", () => {
     return otherTurnCanPass;
   });
 
+  const validMoves = computed(() => board.validMoves());
+
   const winner = computed((): CellState | null => {
     if (board.blacks > board.whites) return CellState.Black;
     if (board.whites > board.blacks) return CellState.White;
@@ -56,5 +58,14 @@ export const useGameStore = defineStore("game", () => {
     }
   }
 
-  return { board, current, put, reset, lastPassed, isGameOver, winner };
+  return {
+    board,
+    current,
+    put,
+    reset,
+    lastPassed,
+    isGameOver,
+    winner,
+    validMoves,
+  };
 });
