@@ -4,6 +4,7 @@ import vuetify from "vite-plugin-vuetify";
 import path from "path";
 
 export default defineConfig({
+  base: process.env.GITHUB_ACTIONS ? "/reversi-vue-ts/" : "/",
   plugins: [vue(), vuetify({ autoImport: true })],
   resolve: {
     alias: { "@": path.resolve(__dirname, "./src") },
