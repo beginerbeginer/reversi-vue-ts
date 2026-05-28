@@ -2,72 +2,52 @@
 
 🎮 **[プレイする](https://beginerbeginer.github.io/reversi-vue-ts/)**
 
----
+Vue 3 + TypeScript で実装したリバーシゲーム。
 
-# 初期設定
+## 技術スタック
 
-* Vue CLIは導入済み
+| 用途 | ライブラリ |
+|---|---|
+| フレームワーク | Vue 3 + TypeScript |
+| ビルド | Vite |
+| 状態管理 | Pinia |
+| UI | Vuetify 4 |
+| ルーティング | Vue Router 5 |
+| 単体・結合テスト | Vitest |
+| E2E テスト | Playwright |
+| Lint / Format | ESLint + Prettier |
 
-```
-vue create reversi
-```
+## セットアップ
 
-```
-Vue CLI v4.5.13
-? Please pick a preset: Manually select features
-? Check the features needed for your project:
- ◯ Choose Vue version
- ◉ Babel
- ◉ TypeScript
- ◯ Progressive Web App (PWA) Support
- ◉ Router
- ◯ Vuex
- ◉ CSS Pre-processors
- ◉ Linter / Formatter
-❯◉ Unit Testing
- ◯ E2E Testing
-```
-
-```
-Vue CLI v4.5.13
-? Please pick a preset: Manually select features
-? Check the features needed for your project: Babel, TS, Router, CSS Pre-processors, Linter, Unit
-? Use class-style component syntax? Yes
-? Use Babel alongside TypeScript (required for modern mode, auto-detected polyfills, transpiling JSX)? Yes
-? Use history mode for router? (Requires proper server setup for index fallback in production) Yes
-? Pick a CSS pre-processor (PostCSS, Autoprefixer and CSS Modules are supported by default): Sass/SCSS (with dart-sass)
-? Pick a linter / formatter config: Prettier
-? Pick additional lint features: Lint on save
-? Pick a unit testing solution: Jest
-? Where do you prefer placing config for Babel, ESLint, etc.? In dedicated config files
-? Save this as a preset for future projects? (y/N) N
-```
-
-## Project setup
-```
+```bash
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
+## 開発
+
+```bash
+npm run dev
 ```
 
-### Compiles and minifies for production
+## テスト
+
+```bash
+npm run test:unit        # 単体テスト
+npm run test:integration # 結合テスト
+npm run test:e2e         # E2E テスト
+npm run test:coverage    # カバレッジ
 ```
+
+## ビルド
+
+```bash
 npm run build
 ```
 
-### Run your unit tests
-```
-npm run test:unit
-```
+## その他
 
-### Lints and fixes files
+```bash
+npm run type-check  # 型チェック
+npm run lint        # Lint
+npm run knip        # 未使用コード検出
 ```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-
