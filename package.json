@@ -12,6 +12,7 @@
     "type-check": "vue-tsc --noEmit",
     "test:unit": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
     "lint": "eslint . --ext .vue,.ts",
     "prepare": "npx simple-git-hooks || true"
   },
@@ -33,6 +34,7 @@
     "vuetify": "^4.0.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@typescript-eslint/eslint-plugin": "^8.59.4",
     "@typescript-eslint/parser": "^8.59.4",
     "@vitejs/plugin-vue": "^6.0.7",
