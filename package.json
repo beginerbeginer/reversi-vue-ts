@@ -19,7 +19,8 @@
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged",
-    "commit-msg": "npx --no -- commitlint --edit $1"
+    "commit-msg": "npx --no -- commitlint --edit $1",
+    "pre-push": "npx playwright test"
   },
   "lint-staged": {
     "*.{vue,ts}": [
