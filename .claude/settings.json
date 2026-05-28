@@ -8,7 +8,6 @@
       "Bash(git diff*)",
       "Bash(git log*)",
       "Bash(git fetch*)",
-      "Bash(git pull)",
       "Bash(gh pr list*)",
       "Bash(gh pr view*)",
       "Bash(gh pr checks*)",
