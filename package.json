@@ -20,7 +20,7 @@
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged",
     "commit-msg": "npx --no -- commitlint --edit $1",
-    "pre-push": "npx playwright test"
+    "pre-push": "npm run test:e2e"
   },
   "lint-staged": {
     "*.{vue,ts}": [
