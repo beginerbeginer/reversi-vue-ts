@@ -41,12 +41,20 @@ jobs:
               testBuild: '${{ needs.test-build.result }}',
             };
 
-            let testDetail = '';
+            let unitDetail = '';
             try {
               const raw = JSON.parse(fs.readFileSync('test-results.json', 'utf8'));
               const { numPassedTests, numFailedTests, numTotalTests } = raw;
-              testDetail = `${numPassedTests}/${numTotalTests} passed`;
-              if (numFailedTests > 0) testDetail += `, **${numFailedTests} failed**`;
+              unitDetail = `${numPassedTests}/${numTotalTests} passed`;
+              if (numFailedTests > 0) unitDetail += `, **${numFailedTests} failed**`;
+            } catch (_) {}
+
+            let integrationDetail = '';
+            try {
+              const raw = JSON.parse(fs.readFileSync('integration-test-results.json', 'utf8'));
+              const { numPassedTests, numFailedTests, numTotalTests } = raw;
+              integrationDetail = `${numPassedTests}/${numTotalTests} passed`;
+              if (numFailedTests > 0) integrationDetail += `, **${numFailedTests} failed**`;
             } catch (_) {}
 
             let coverageDetail = '';
@@ -66,7 +74,8 @@ jobs:
               '| グループ | 結果 | 内容 |',
               '|---------|:----:|------|',
               `| Lint Check | ${icon(results.lintCheck)} | audit / type-check / lint |`,
-              `| Test & Build | ${icon(results.testBuild)} | ${testDetail} / build |`,
+              `| Unit Tests | ${icon(results.testBuild)} | ${unitDetail || 'N/A'} |`,
+              `| Integration Tests | ${icon(results.testBuild)} | ${integrationDetail || 'N/A'} |`,
               `| Coverage | — | ${coverageDetail || 'N/A'} |`,
             ].join('\n');
 
