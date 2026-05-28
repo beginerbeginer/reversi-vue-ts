@@ -1,3 +1,9 @@
+# reversi-vue-ts
+
+🎮 **[プレイする](https://beginerbeginer.github.io/reversi-vue-ts/)**
+
+---
+
 # 初期設定
 
 * Vue CLIは導入済み
