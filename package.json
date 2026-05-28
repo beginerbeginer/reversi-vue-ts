@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "type-check": "vue-tsc --noEmit",
     "test:unit": "vitest",
+    "test:integration": "vitest --config vitest.integration.config.ts",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "lint": "eslint . --ext .vue,.ts",

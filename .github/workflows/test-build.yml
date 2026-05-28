@@ -14,11 +14,13 @@ jobs:
       - run: npm ci --ignore-scripts
       # テスト結果（JSON）とカバレッジ（json-summary）を一度に出力
       - run: npm run test:coverage -- --reporter=json --outputFile=test-results.json
+      - run: npm run test:integration -- --run --reporter=json --outputFile=integration-test-results.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: test-artifacts
           path: |
             test-results.json
+            integration-test-results.json
             coverage/coverage-summary.json
       - run: npm run build
