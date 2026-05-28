@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.2.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.1.0...v1.2.0) (2026-05-28)
+
+
+### Features
+
+* ダークモード切り替え機能を実装する ([be6a755](https://github.com/beginerbeginer/reversi-vue-ts/commit/be6a75530cd0160015c7ac66c3046a7d84ff9869))
+* ダークモード切り替え機能を実装する ([8b59299](https://github.com/beginerbeginer/reversi-vue-ts/commit/8b59299af17adbd3ddd1b1eb3c9fe51666c9d515)), closes [#167](https://github.com/beginerbeginer/reversi-vue-ts/issues/167)
+
+
+### Bug Fixes
+
+* use globalthis for resizeobserver mock ([39c6b12](https://github.com/beginerbeginer/reversi-vue-ts/commit/39c6b123118f1a3804d4953c3cf714ab15d56a52)), closes [#167](https://github.com/beginerbeginer/reversi-vue-ts/issues/167)
+
 ## [1.1.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.0.0...v1.1.0) (2026-05-28)
 
 
