@@ -2,6 +2,8 @@
 node_modules
 /dist
 /coverage
+/playwright-report
+/test-results
 
 # vitest coverage が生成する中間ファイル
 *.js.map
