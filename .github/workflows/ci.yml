@@ -2,8 +2,34 @@ name: CI
 on:
   push:
     branches: [main]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.ts"
+      - "vitest.integration.config.ts"
+      - "tsconfig*.json"
+      - ".eslintrc*"
+      - ".prettierrc*"
+      - ".github/workflows/ci.yml"
+      - ".github/workflows/lint-check.yml"
+      - ".github/workflows/test-build.yml"
   pull_request:
     branches: [main]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.ts"
+      - "vitest.integration.config.ts"
+      - "tsconfig*.json"
+      - ".eslintrc*"
+      - ".prettierrc*"
+      - ".github/workflows/ci.yml"
+      - ".github/workflows/lint-check.yml"
+      - ".github/workflows/test-build.yml"
 
 jobs:
   # audit / type-check / lint を直列で実行（軽量グループ、〜20秒）
