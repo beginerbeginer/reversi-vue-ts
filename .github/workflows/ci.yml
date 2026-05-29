@@ -34,10 +34,22 @@ on:
 jobs:
   # audit / type-check / lint を直列で実行（軽量グループ、〜20秒）
   lint-check:
+    # release-please PR は main マージ前に CI 済みのため再実行不要。
+    # fork 偽装防止: head repo + PR 作成者の両方を確認する。
+    if: >-
+      !(startsWith(github.head_ref, 'release-please--') &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        github.event.pull_request.user.login == 'beginerbeginer')
     uses: ./.github/workflows/lint-check.yml
 
   # test:coverage + build を直列で実行（重量グループ、〜60秒）
   test-build:
+    # release-please PR は main マージ前に CI 済みのため再実行不要。
+    # fork 偽装防止: head repo + PR 作成者の両方を確認する。
+    if: >-
+      !(startsWith(github.head_ref, 'release-please--') &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        github.event.pull_request.user.login == 'beginerbeginer')
     uses: ./.github/workflows/test-build.yml
 
   # 両グループ完了後に PR コメントへ表テーブルを投稿
@@ -90,7 +102,7 @@ jobs:
               coverageDetail = `Lines ${t.lines.pct}% | Stmts ${t.statements.pct}% | Branch ${t.branches.pct}% | Funcs ${t.functions.pct}%`;
             } catch (_) {}
 
-            const allPassed = Object.values(results).every(r => r === 'success');
+            const allPassed = Object.values(results).every(r => r === 'success' || r === 'skipped');
             const headline = allPassed ? '✅ All checks passed' : '❌ Some checks failed';
 
             const body = [
