@@ -1,3 +1,14 @@
+// jsdom は window.matchMedia を実装していないため、テスト環境では最小実装で補う。
+Object.defineProperty(window, "matchMedia", {
+  writable: true,
+  value: (query: string) => ({
+    matches: false,
+    media: query,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  }),
+});
+
 // jsdom には ResizeObserver が実装されていない。
 // Vuetify の VApp レイアウト初期化で参照されるため、テスト環境では最小実装で補う。
 globalThis.ResizeObserver = class {
