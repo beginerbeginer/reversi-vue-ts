@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.2.0...v1.2.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* localStorage のテーマ値を検証してから Vuetify に渡す ([f81dc85](https://github.com/beginerbeginer/reversi-vue-ts/commit/f81dc859772025b3a20b5cd543071d5ed6f23485))
+* localStorage のテーマ値を検証してから Vuetify に渡す ([d3921dc](https://github.com/beginerbeginer/reversi-vue-ts/commit/d3921dcfae300dbd9f07d31622a0430e5c5c6608))
+
 ## [1.2.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.1.0...v1.2.0) (2026-05-28)
 
 
