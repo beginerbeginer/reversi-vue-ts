@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.2.2](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.2.1...v1.2.2) (2026-05-29)
+
+
+### Bug Fixes
+
+* auto-merge ステップの GH_TOKEN も RELEASE_TOKEN に統一する ([8800303](https://github.com/beginerbeginer/reversi-vue-ts/commit/8800303760ee006a1f2ee12d8a28478cf5ae3fb0))
+* outputs.pr から PR 番号を正しく取り出す ([d2c7000](https://github.com/beginerbeginer/reversi-vue-ts/commit/d2c700082d5e2ecd453413c278f144bfd70c1a08))
+* release auto-merge ステップに GH_REPO を追加する ([27ab15b](https://github.com/beginerbeginer/reversi-vue-ts/commit/27ab15b952db12072aa8ba16532270a77ad85423))
+* release auto-merge ステップに GH_REPO を追加する ([7b51bce](https://github.com/beginerbeginer/reversi-vue-ts/commit/7b51bcef7e3f8b2648b19be97f984c423407aa71))
+* release PR の auto-merge が機能しない問題を PAT で解決する ([f709330](https://github.com/beginerbeginer/reversi-vue-ts/commit/f70933008d7b0f89759ba79e44c6e421cf8a1096))
+* release PR の auto-merge を正しい方法で実装する ([2fcaba9](https://github.com/beginerbeginer/reversi-vue-ts/commit/2fcaba92668e3fe9773c67bd5e0d14c65047c843))
+* release-please の token を RELEASE_TOKEN（PAT）に切り替える ([683de3a](https://github.com/beginerbeginer/reversi-vue-ts/commit/683de3ae7ce91d406f3151f77989636d88ecda46))
+
 ## [1.2.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.2.0...v1.2.1) (2026-05-29)
 
 
