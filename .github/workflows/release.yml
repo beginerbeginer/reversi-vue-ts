@@ -22,6 +22,7 @@ jobs:
       # enable-auto-merge は v4 非対応のため、outputs.pr を使って gh コマンドで設定する。
       - name: Enable auto-merge for release PR
         if: ${{ steps.release.outputs.pr }}
-        run: gh pr merge --auto --merge "${{ steps.release.outputs.pr }}"
+        # outputs.pr は JSON オブジェクト文字列のため fromJson で番号を取り出す
+        run: gh pr merge --auto --merge "${{ fromJson(steps.release.outputs.pr).number }}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
