@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.2.3](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.2.2...v1.2.3) (2026-05-29)
+
+
+### Bug Fixes
+
+* CI スキップ条件に PR 作成者チェックを追加し skipped を通過扱いにする ([9e19cae](https://github.com/beginerbeginer/reversi-vue-ts/commit/9e19cae1dd78d3ce1fba3e64b242748f26badae8))
+* release PR スキップ条件に head repo チェックを追加する ([dc3b275](https://github.com/beginerbeginer/reversi-vue-ts/commit/dc3b2754a7f38e079df8192fc12ad62671751a23))
+* release PR で CI をスキップする ([d2579c0](https://github.com/beginerbeginer/reversi-vue-ts/commit/d2579c0426c8736fc3e4666403b4bafad8189c70))
+* release PR で CI をスキップする ([2642845](https://github.com/beginerbeginer/reversi-vue-ts/commit/26428452c2c07ad7b080e5442f0a78481cfde234))
+
+
+### Reverts
+
+* release PR の CI スキップ条件を削除する ([66d781c](https://github.com/beginerbeginer/reversi-vue-ts/commit/66d781c0f4b1fb53cc12589d0cb68b62ba2b9117))
+* release PR の CI スキップ条件を削除する ([059defb](https://github.com/beginerbeginer/reversi-vue-ts/commit/059defb45d2aab60d71544fba66d75ea29311d94))
+
 ## [1.2.2](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.2.1...v1.2.2) (2026-05-29)
 
 
