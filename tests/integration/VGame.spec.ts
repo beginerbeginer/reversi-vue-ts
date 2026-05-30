@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
 import { setActivePinia, createPinia } from "pinia";
 import { createVuetify } from "vuetify";
@@ -6,6 +6,10 @@ import { nextTick } from "vue";
 import VGame from "@/components/reversi/VGame.vue";
 import { useGameStore } from "@/stores/game";
 import { CellState } from "@/models/reversi";
+
+// jsdom は <canvas> を実装しないため canvas-confetti をモックする。
+// npm install canvas で解決する方法もあるが、テスト目的で重い依存を追加するコストに見合わない。
+vi.mock("canvas-confetti");
 
 const vuetify = createVuetify();
 
