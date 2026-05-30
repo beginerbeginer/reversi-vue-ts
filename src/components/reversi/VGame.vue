@@ -43,6 +43,7 @@
 
 <script setup lang="ts">
 import { computed, watch, ref } from "vue";
+import confetti from "canvas-confetti";
 import VBoard from "@/components/reversi/VBoard.vue";
 import { useGameStore } from "@/stores/game";
 import { CellState } from "@/models/reversi";
@@ -58,6 +59,15 @@ watch(
   () => store.lastPassed,
   (val) => {
     if (val !== null) showPassNotice.value = true;
+  },
+);
+
+watch(
+  () => store.isGameOver,
+  (val) => {
+    if (val && store.winner !== null) {
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    }
   },
 );
 </script>
