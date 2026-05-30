@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.2.3...v1.3.0) (2026-05-30)
+
+
+### Features
+
+* 勝利時に紙吹雪エフェクトを表示する ([b57fb97](https://github.com/beginerbeginer/reversi-vue-ts/commit/b57fb97709f6f9aa2fbf1036f1ee8b6d823111f9))
+* 勝利時に紙吹雪エフェクトを表示する ([3623124](https://github.com/beginerbeginer/reversi-vue-ts/commit/36231248a7418935fb06433397e909f04c75f4f3)), closes [#125](https://github.com/beginerbeginer/reversi-vue-ts/issues/125)
+
+
+### Bug Fixes
+
+* integration テストで canvas-confetti をモックする ([7e35e94](https://github.com/beginerbeginer/reversi-vue-ts/commit/7e35e9426518b36856b4a5bff05a8c416d01656d))
+
 ## [1.2.3](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.2.2...v1.2.3) (2026-05-29)
 
 
