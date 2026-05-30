@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { mount } from "@vue/test-utils";
+import { nextTick } from "vue";
 import { setActivePinia, createPinia } from "pinia";
 import { createVuetify } from "vuetify";
 import { useGameStore } from "@/stores/game";
@@ -23,7 +24,7 @@ describe("VGame", () => {
     store.board.rows.forEach((row) =>
       row.cells.forEach((cell) => (cell.state = CellState.Black)),
     );
-    await new Promise((r) => setTimeout(r, 0));
+    await nextTick();
 
     expect(mockConfetti).toHaveBeenCalledOnce();
   });
@@ -33,13 +34,13 @@ describe("VGame", () => {
     store.board.rows.forEach((row) =>
       row.cells.forEach((cell) => (cell.state = CellState.White)),
     );
-    await new Promise((r) => setTimeout(r, 0));
+    await nextTick();
 
     expect(mockConfetti).toHaveBeenCalledOnce();
   });
 
   it("ゲームが終了していない状態では confetti が呼ばれない", async () => {
-    await new Promise((r) => setTimeout(r, 0));
+    await nextTick();
 
     expect(mockConfetti).not.toHaveBeenCalled();
   });
@@ -52,7 +53,7 @@ describe("VGame", () => {
         cell.state = count++ < 32 ? CellState.Black : CellState.White;
       }),
     );
-    await new Promise((r) => setTimeout(r, 0));
+    await nextTick();
 
     expect(mockConfetti).not.toHaveBeenCalled();
   });
