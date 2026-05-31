@@ -1,7 +1,16 @@
+---
+name: tag
+description: >
+  release-please による git tag・GitHub Release の運用フロー。
+  Release PR の確認方法、マージ判断基準、SemVer の意味を含む。
+  リリースしたい、タグを打ちたい、バージョンを上げたい、
+  Release PR をどうすべきか迷っているときに参照する。
+---
+
 # リリース（git tag）の手順
 
-このプロジェクトは release-please で git tag を自動管理しています。
-人間がやることは「Release PR をマージするかどうか判断する」だけです。
+このプロジェクトは release-please で git tag を自動管理している。
+人間がやることは「Release PR をマージするかどうか判断する」だけ。
 
 ---
 
@@ -28,8 +37,8 @@ release-please は PR を自動生成するだけで、マージするかどう�
 
 | 状況 | 判断 |
 |---|---|
-| feat が含まれる | リリース候補。マージを検討する |
-| fix だけ | バグ修正のみ。緊急度に応じて判断 |
+| feat が含まれる | 新機能がユーザーに届く。動作確認してからマージ |
+| fix だけ | バグ修正のみ。本番障害なら即マージ、そうでなければ次の feat と合わせる選択肢もある |
 | chore / docs / test だけ | バージョンは変わらないので Release PR は作られない |
 
 ## リリースする
