@@ -2,13 +2,13 @@ import { reactive, computed, ref, toRaw } from "vue";
 import { defineStore } from "pinia";
 import { Board, CellState, Point } from "@/models/reversi";
 
+type BoardSnapshot = { rows: { state: CellState }[][]; turn: CellState };
+
 export const useGameStore = defineStore("game", () => {
   const board = reactive(new Board());
   const lastPassed = ref<CellState | null>(null);
   const allowUndo = ref(false);
-  const history = ref<{ rows: { state: CellState }[][]; turn: CellState }[]>(
-    [],
-  );
+  const history = ref<BoardSnapshot[]>([]);
 
   const canUndo = computed(() => allowUndo.value && history.value.length > 0);
 
@@ -98,7 +98,6 @@ export const useGameStore = defineStore("game", () => {
     board,
     current,
     put,
-    reset,
     lastPassed,
     isGameOver,
     winner,

@@ -68,31 +68,31 @@ describe("useGameStore", () => {
     });
   });
 
-  describe("reset", () => {
-    it("allowUndo: true のとき、reset を呼ぶと canUndo が false になる", () => {
+  describe("reset (startGame 経由)", () => {
+    it("allowUndo: true のとき、startGame を呼ぶと canUndo が false になる", () => {
       const store = useGameStore();
       store.startGame({ allowUndo: true });
       store.put(3, 2);
-      store.reset();
+      store.startGame({ allowUndo: false });
       expect(store.canUndo).toBe(false);
     });
 
-    it("reset を呼ぶと石が初期配置に戻る", () => {
+    it("startGame を呼ぶと石が初期配置に戻る", () => {
       const store = useGameStore();
       store.put(3, 2);
-      store.reset();
+      store.startGame({ allowUndo: false });
       expect(store.board.blacks).toBe(2);
       expect(store.board.whites).toBe(2);
     });
 
-    it("reset を呼ぶと黒の手番に戻る", () => {
+    it("startGame を呼ぶと黒の手番に戻る", () => {
       const store = useGameStore();
       store.put(3, 2);
-      store.reset();
+      store.startGame({ allowUndo: false });
       expect(store.current).toBe("黒の手番");
     });
 
-    it("reset を呼ぶと lastPassed が null になる", () => {
+    it("startGame を呼ぶと lastPassed が null になる", () => {
       const store = useGameStore();
       store.board.rows.forEach((row) =>
         row.cells.forEach((cell) => (cell.state = CellState.Black)),
@@ -101,16 +101,16 @@ describe("useGameStore", () => {
       store.board.rows[0].cells[1].state = CellState.White;
       store.board.turn = CellState.Black;
       store.put(0, 0);
-      store.reset();
+      store.startGame({ allowUndo: false });
       expect(store.lastPassed).toBeNull();
     });
 
-    it("reset を呼ぶとゲームオーバーが解除される", () => {
+    it("startGame を呼ぶとゲームオーバーが解除される", () => {
       const store = useGameStore();
       store.board.rows.forEach((row) =>
         row.cells.forEach((cell) => (cell.state = CellState.Black)),
       );
-      store.reset();
+      store.startGame({ allowUndo: false });
       expect(store.isGameOver).toBe(false);
     });
   });
