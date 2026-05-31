@@ -58,8 +58,10 @@ auto-merge を無効化して手動マージしたい場合：
 # Release PR 番号を確認
 gh pr list --author "github-actions[bot]"
 
-# auto-merge を無効化してから手動マージ
-gh pr merge <PR番号> --disable-auto --merge
+# 1. auto-merge を無効化する（--disable-auto を渡すと即 return するため --merge と同時指定不可）
+gh pr merge <PR番号> --disable-auto
+# 2. 手動でマージする
+gh pr merge <PR番号> --merge
 ```
 
 ---
