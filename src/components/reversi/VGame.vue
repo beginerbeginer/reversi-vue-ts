@@ -34,6 +34,7 @@
           </div>
         </v-card-text>
         <v-card-actions class="justify-center pb-4">
+          <!-- 盤面リセットはスタート画面の startGame() が担う。ここでは遷移のみ行う。 -->
           <v-btn
             data-testid="retry-button"
             color="primary"
@@ -68,14 +69,20 @@ const store = useGameStore();
 const router = useRouter();
 const showPassNotice = ref(false);
 
-const passMessage = computed(() =>
-  store.lastPassed === CellState.Black ? "黒はパスです" : "白はパスです",
-);
+const passMessage = computed(() => {
+  if (store.lastPassed === CellState.Black) return "黒はパスです";
+  if (store.lastPassed === CellState.White) return "白はパスです";
+  return "";
+});
 
 watch(
   () => store.lastPassed,
   (val) => {
-    if (val !== null) showPassNotice.value = true;
+    if (val !== null) {
+      showPassNotice.value = true;
+    } else {
+      showPassNotice.value = false;
+    }
   },
 );
 
