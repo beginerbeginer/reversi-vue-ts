@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.4.0...v1.4.1) (2026-05-31)
+
+
+### Bug Fixes
+
+* ゲームオーバー時にパス通知が表示されないようにする ([11e035b](https://github.com/beginerbeginer/reversi-vue-ts/commit/11e035ba79e5586a433c813f488fdf567ab1df7a))
+* ゲームオーバー時にパス通知が表示されないようにする ([93e52f2](https://github.com/beginerbeginer/reversi-vue-ts/commit/93e52f2d83ae8e2ec25d816bbfae87c0c6acd4f4)), closes [#211](https://github.com/beginerbeginer/reversi-vue-ts/issues/211)
+* ゲームオーバー時にパス通知を抑制する ([841ab46](https://github.com/beginerbeginer/reversi-vue-ts/commit/841ab460ef2deca3b3bb780e5805df4759afb636)), closes [#212](https://github.com/beginerbeginer/reversi-vue-ts/issues/212)
+
 ## [1.4.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.3.0...v1.4.0) (2026-05-31)
 
 
