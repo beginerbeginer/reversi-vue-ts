@@ -187,6 +187,22 @@ describe("useGameStore", () => {
       store.undo();
       expect(store.canUndo).toBe(false);
     });
+
+    it("allowUndo: true のとき、無効なマス（石が置けない）をクリックしても canUndo は false のまま", () => {
+      const store = useGameStore();
+      store.startGame({ allowUndo: true });
+      store.put(0, 0); // 初期盤面で (0,0) は置けない無効な手
+      expect(store.canUndo).toBe(false);
+    });
+
+    it("allowUndo: true のとき、有効な手の後に無効なマスをクリックしても履歴は増えない", () => {
+      const store = useGameStore();
+      store.startGame({ allowUndo: true });
+      store.put(3, 2); // 有効な手
+      store.put(0, 0); // 無効な手
+      store.undo(); // 1回 undo
+      expect(store.canUndo).toBe(false); // 履歴が空になっているはず
+    });
   });
 
   describe("lastPassed", () => {

@@ -70,18 +70,21 @@ export const useGameStore = defineStore("game", () => {
     const turnBefore = board.turn;
     const wasEmpty = board.ref(p).isNone;
 
-    if (allowUndo.value) {
-      history.value.push({
-        rows: board.rows.map((row) =>
-          row.cells.map((c) => ({ state: c.state })),
-        ),
-        turn: board.turn,
-      });
-    }
+    const snapshot = allowUndo.value
+      ? {
+          rows: board.rows.map((row) =>
+            row.cells.map((c) => ({ state: c.state })),
+          ),
+          turn: board.turn,
+        }
+      : null;
 
     board.put(p);
 
     const stonePlaced = wasEmpty && !board.ref(p).isNone;
+    if (snapshot && stonePlaced) {
+      history.value.push(snapshot);
+    }
     // 石が置かれたのにターンが戻ってきた = 相手がパスされた
     if (stonePlaced && board.turn === turnBefore) {
       lastPassed.value =
