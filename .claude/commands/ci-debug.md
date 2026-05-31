@@ -8,8 +8,8 @@ PR のコメントに届く CI テーブルを見る：
 
 | グループ | 失敗例 |
 |---------|-------|
-| ❌ Lint Check | audit / type-check / lint のいずれか |
-| ❌ Test & Build | テスト失敗 / ビルドエラー |
+| ❌ Lint Check | audit / type-check / lint / knip のいずれか |
+| ❌ Test & Build | テスト失敗 / インテグレーションテスト失敗 / ビルドエラー |
 
 GitHub Actions のログは以下で確認：
 
@@ -33,6 +33,9 @@ npm run type-check
 
 # 3. lint
 npm run lint
+
+# 4. 未使用コード検出
+npm run knip
 ```
 
 ### Test & Build グループが落ちた場合
@@ -41,10 +44,13 @@ npm run lint
 # 1. テスト（詳細出力）
 npm run test:unit -- --reporter=verbose
 
-# 2. カバレッジ閾値確認
+# 2. インテグレーションテスト
+npm run test:integration
+
+# 3. カバレッジ閾値確認
 npm run test:coverage
 
-# 3. ビルド
+# 4. ビルド
 npm run build
 ```
 
@@ -114,6 +120,8 @@ push 前にローカルで CI と同じ手順を全部通す：
 npm audit --audit-level=high && \
 npm run type-check && \
 npm run lint && \
+npm run knip && \
+npm run test:integration && \
 npm run test:coverage && \
 npm run build && \
 echo "✅ 全チェック通過"
