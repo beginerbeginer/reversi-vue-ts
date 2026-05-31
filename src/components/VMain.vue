@@ -1,7 +1,20 @@
 <template>
   <v-container fluid>
+    <div class="d-flex justify-center mb-4">
+      <v-checkbox
+        v-model="allowUndoEnabled"
+        label="待った機能を有効にする"
+        data-testid="allow-undo-checkbox"
+        hide-details
+      />
+    </div>
     <div class="d-flex justify-center">
-      <v-btn color="primary" variant="outlined" @click="router.push('/game')">
+      <v-btn
+        color="primary"
+        variant="outlined"
+        data-testid="start-button"
+        @click="startGame"
+      >
         ゲームスタート！！
       </v-btn>
     </div>
@@ -9,6 +22,16 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useGameStore } from "@/stores/game";
+
 const router = useRouter();
+const store = useGameStore();
+const allowUndoEnabled = ref(false);
+
+function startGame() {
+  store.startGame({ allowUndo: allowUndoEnabled.value });
+  router.push("/game");
+}
 </script>

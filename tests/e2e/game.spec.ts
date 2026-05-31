@@ -65,7 +65,7 @@ test.describe("リバーシ ゲーム画面", () => {
     await expect(page.getByText(/黒 \d+ 対 白 \d+/)).toBeVisible();
   });
 
-  test("「もう一度」ボタンでゲームが初期状態に戻り再プレイできる", async ({
+  test("「もう一度」ボタンでゲームスタート画面に戻り、再スタートで初期状態から再プレイできる", async ({
     page,
   }) => {
     const cells = page.locator(".cell-wrapper");
@@ -75,6 +75,13 @@ test.describe("リバーシ ゲーム画面", () => {
     }
     await page.getByRole("button", { name: "もう一度" }).click();
 
+    // スタート画面に戻ることを確認
+    await expect(
+      page.getByRole("button", { name: "ゲームスタート！！" }),
+    ).toBeVisible();
+
+    // 再スタートして初期状態になることを確認
+    await page.getByRole("button", { name: "ゲームスタート！！" }).click();
     await expect(page.locator(".white-stone")).toHaveCount(2);
     await expect(page.locator(".black-stone")).toHaveCount(2);
     await expect(page.getByText("黒の手番")).toBeVisible();

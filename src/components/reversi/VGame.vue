@@ -12,6 +12,16 @@
     <div class="d-flex justify-center">
       <h1>黒の石：{{ store.board.blacks }}</h1>
     </div>
+    <div v-if="store.allowUndo" class="d-flex justify-center mt-2">
+      <v-btn
+        data-testid="undo-button"
+        :disabled="!store.canUndo"
+        variant="outlined"
+        @click="store.undo()"
+      >
+        待った
+      </v-btn>
+    </div>
     <v-dialog v-model="store.isGameOver" persistent max-width="400">
       <v-card>
         <v-card-title class="text-h5 text-center pt-6">ゲーム終了</v-card-title>
@@ -24,7 +34,12 @@
           </div>
         </v-card-text>
         <v-card-actions class="justify-center pb-4">
-          <v-btn color="primary" variant="elevated" @click="store.reset()">
+          <v-btn
+            data-testid="retry-button"
+            color="primary"
+            variant="elevated"
+            @click="router.push('/')"
+          >
             もう一度
           </v-btn>
         </v-card-actions>
@@ -43,12 +58,14 @@
 
 <script setup lang="ts">
 import { computed, watch, ref } from "vue";
+import { useRouter } from "vue-router";
 import confetti from "canvas-confetti";
 import VBoard from "@/components/reversi/VBoard.vue";
 import { useGameStore } from "@/stores/game";
 import { CellState } from "@/models/reversi";
 
 const store = useGameStore();
+const router = useRouter();
 const showPassNotice = ref(false);
 
 const passMessage = computed(() =>

@@ -5,6 +5,12 @@ import { Board, CellState, Point } from "@/models/reversi";
 export const useGameStore = defineStore("game", () => {
   const board = reactive(new Board());
   const lastPassed = ref<CellState | null>(null);
+  const allowUndo = ref(false);
+  const history = ref<{ rows: { state: CellState }[][]; turn: CellState }[]>(
+    [],
+  );
+
+  const canUndo = computed(() => allowUndo.value && history.value.length > 0);
 
   const current = computed(() =>
     board.turn === CellState.Black ? "黒の手番" : "白の手番",
@@ -30,6 +36,23 @@ export const useGameStore = defineStore("game", () => {
     return null;
   });
 
+  function startGame(options: { allowUndo: boolean }) {
+    allowUndo.value = options.allowUndo;
+    reset();
+  }
+
+  function undo() {
+    if (!canUndo.value) return;
+    const snapshot = history.value.pop()!;
+    board.turn = snapshot.turn;
+    board.rows.forEach((row, i) => {
+      row.cells.forEach((cell, j) => {
+        cell.state = snapshot.rows[i][j].state;
+      });
+    });
+    lastPassed.value = null;
+  }
+
   function reset() {
     const fresh = new Board();
     board.turn = fresh.turn;
@@ -39,6 +62,7 @@ export const useGameStore = defineStore("game", () => {
       });
     });
     lastPassed.value = null;
+    history.value = [];
   }
 
   function put(x: number, y: number) {
@@ -46,9 +70,21 @@ export const useGameStore = defineStore("game", () => {
     const turnBefore = board.turn;
     const wasEmpty = board.ref(p).isNone;
 
+    const snapshot = allowUndo.value
+      ? {
+          rows: board.rows.map((row) =>
+            row.cells.map((c) => ({ state: c.state })),
+          ),
+          turn: board.turn,
+        }
+      : null;
+
     board.put(p);
 
     const stonePlaced = wasEmpty && !board.ref(p).isNone;
+    if (snapshot && stonePlaced) {
+      history.value.push(snapshot);
+    }
     // 石が置かれたのにターンが戻ってきた = 相手がパスされた
     if (stonePlaced && board.turn === turnBefore) {
       lastPassed.value =
@@ -67,5 +103,9 @@ export const useGameStore = defineStore("game", () => {
     isGameOver,
     winner,
     validMoves,
+    allowUndo,
+    canUndo,
+    startGame,
+    undo,
   };
 });

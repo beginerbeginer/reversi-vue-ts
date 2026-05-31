@@ -3,6 +3,7 @@ import { mount, flushPromises } from "@vue/test-utils";
 import { setActivePinia, createPinia } from "pinia";
 import { createVuetify } from "vuetify";
 import { nextTick } from "vue";
+import { createRouter, createMemoryHistory } from "vue-router";
 import VGame from "@/components/reversi/VGame.vue";
 import { useGameStore } from "@/stores/game";
 import { CellState } from "@/models/reversi";
@@ -24,11 +25,19 @@ function fillBoard(
 
 describe("VGame", () => {
   let wrapper: ReturnType<typeof mount>;
+  let router: ReturnType<typeof createRouter>;
 
   beforeEach(() => {
     setActivePinia(createPinia());
+    router = createRouter({
+      history: createMemoryHistory(),
+      routes: [
+        { path: "/", component: {} },
+        { path: "/game", component: VGame },
+      ],
+    });
     wrapper = mount(VGame, {
-      global: { plugins: [vuetify] },
+      global: { plugins: [vuetify, router] },
       attachTo: document.body,
     });
   });
@@ -98,20 +107,19 @@ describe("VGame", () => {
       expect(document.body.textContent).toContain("引き分け");
     });
 
-    it("「もう一度」ボタンで手番・スコアが初期状態に戻る", async () => {
+    it("「もう一度」ボタンでスタート画面（/）へ遷移する", async () => {
       const store = useGameStore();
       fillBoard(store, CellState.Black);
       await nextTick();
 
+      const pushSpy = vi.spyOn(router, "push");
       const btn = document.body.querySelector<HTMLButtonElement>(
         ".v-overlay-container button",
       );
       btn?.click();
       await nextTick();
 
-      expect(wrapper.text()).toContain("黒の手番");
-      expect(wrapper.text()).toContain("白の石：2");
-      expect(wrapper.text()).toContain("黒の石：2");
+      expect(pushSpy).toHaveBeenCalledWith("/");
     });
   });
 
