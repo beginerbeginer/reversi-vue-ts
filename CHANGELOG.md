@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.4.1...v1.4.2) (2026-05-31)
+
+
+### Bug Fixes
+
+* **ci-debug:** knip と test:integration を CI 確認手順に追加する ([3c57d9f](https://github.com/beginerbeginer/reversi-vue-ts/commit/3c57d9f5b3a6090d9c336e85308e322fa1850e34))
+
 ## [1.4.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.4.0...v1.4.1) (2026-05-31)
 
 
