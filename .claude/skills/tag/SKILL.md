@@ -3,6 +3,7 @@ name: tag
 description: >
   release-please による git tag・GitHub Release の運用フロー。
   Release PR の確認方法、マージ判断基準、SemVer の意味を含む。
+when_to_use: >
   リリースしたい、タグを打ちたい、バージョンを上げたい、
   Release PR をどうすべきか迷っているときに参照する。
 ---
@@ -10,7 +11,7 @@ description: >
 # リリース（git tag）の手順
 
 このプロジェクトは release-please で git tag を自動管理している。
-人間がやることは「Release PR をマージするかどうか判断する」だけ。
+人間がやることは「Release PR の内容を確認し、問題があれば auto-merge を無効化する」だけ。
 
 ---
 
@@ -33,27 +34,34 @@ gh pr list --author "github-actions[bot]" --label "autorelease: pending"
 
 ## リリースの判断基準
 
-release-please は PR を自動生成するだけで、マージするかどうかは人間が決めます。
+release-please は PR を自動生成し、CI 通過後に**自動でマージされる**（release.yml で設定済み）。
+人間がやることは「Release PR の内容を確認し、問題があれば auto-merge を無効化する」だけ。
 
 | 状況 | 判断 |
 |---|---|
-| feat が含まれる | 新機能がユーザーに届く。動作確認してからマージ |
-| fix だけ | バグ修正のみ。本番障害なら即マージ、そうでなければ次の feat と合わせる選択肢もある |
+| feat が含まれる | 新機能がユーザーに届く。CHANGELOG を確認して問題なければ自動マージに任せる |
+| fix だけ | バグ修正のみ。緊急度が高くなければ次の feat と合わせることも検討できる（その場合 auto-merge を無効化） |
 | chore / docs / test だけ | バージョンは変わらないので Release PR は作られない |
 
 ## リリースする
 
-Release PR をマージするだけで以下が自動実行されます：
+Release PR が CI を通過すると自動でマージされ、以下が実行されます：
 
 1. `package.json` の version が更新される
 2. `CHANGELOG.md` が生成・更新される
 3. git tag（例: `v0.2.0`）が作成される
 4. GitHub Release が公開される
 
+auto-merge を無効化して手動マージしたい場合：
+
 ```bash
-# Release PR 番号を確認してマージ
+# Release PR 番号を確認
 gh pr list --author "github-actions[bot]"
-gh pm <PR番号>
+
+# 1. auto-merge を無効化する（--disable-auto を渡すと即 return するため --merge と同時指定不可）
+gh pr merge <PR番号> --disable-auto
+# 2. 手動でマージする
+gh pr merge <PR番号> --merge
 ```
 
 ---
