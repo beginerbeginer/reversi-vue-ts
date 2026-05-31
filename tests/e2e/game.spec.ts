@@ -109,7 +109,7 @@ test.describe("リバーシ ゲーム画面", () => {
 
   test("パス時にスナックバーが表示され手番が変わる", async ({ page }) => {
     // 黒がパスになる局面: 行7以外を黒で埋め、行7は [W,_,B,B,B,W,B,B]
-    // この状態で白が (1,7) に置くと黒が挟まれずパスになる
+    // 左上隅を空けることで、白の (1,7) put 後もゲームオーバーにならずパス通知が出る（#212）
     await page.evaluate(() => {
       const store = (
         document.querySelector("#app") as any
@@ -122,6 +122,7 @@ test.describe("リバーシ ゲーム画面", () => {
       store.board.rows[7].cells[0].state = "white";
       store.board.rows[7].cells[1].state = "none";
       store.board.rows[7].cells[5].state = "white";
+      store.board.rows[0].cells[0].state = "none";
       store.board.turn = "white";
     });
 
