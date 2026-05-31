@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.4.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.3.0...v1.4.0) (2026-05-31)
+
+
+### Features
+
+* ゲーム開始前のモード選択で待った機能を有効化できるようにする ([ea4d9b8](https://github.com/beginerbeginer/reversi-vue-ts/commit/ea4d9b8657534b7ea085d626812cef35217bf654))
+* ゲーム開始前のモード選択で待った機能を有効化できるようにする ([3a0cd9a](https://github.com/beginerbeginer/reversi-vue-ts/commit/3a0cd9a4b7bacd74a3cc9edffb388462ba065305))
+
+
+### Bug Fixes
+
+* 無効な手でも履歴に追加されていたバグを修正 ([e90eecb](https://github.com/beginerbeginer/reversi-vue-ts/commit/e90eecb841be57039f86851963305bf6f160e0d8))
+
 ## [1.3.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.2.3...v1.3.0) (2026-05-30)
 
 
