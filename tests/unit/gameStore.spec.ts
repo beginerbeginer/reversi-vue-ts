@@ -219,8 +219,31 @@ describe("useGameStore", () => {
 
     it("オートパスが発生したとき、パスされた側の色が入る", () => {
       const store = useGameStore();
-      // 黒が (0,0) に置いたら白がパスになる盤面を作る
-      // 全マス黒で埋めて (0,0) だけ空け、(1,0) を白にする
+      // 黒が (0,0) に置いたら白がパスになるが、ゲームオーバーではない盤面を作る
+      // (0,0)=空き、(0,1)=白、(0,2)=黒 → 黒は (0,0) に置ける
+      // (0,3)=空き、(0,4)=白、(0,5)=黒 → put 後も黒は (0,3) に置けるのでゲームオーバーにならない
+      // 残りはすべて黒
+      store.board.rows.forEach((row) =>
+        row.cells.forEach((cell) => (cell.state = CellState.Black)),
+      );
+      store.board.rows[0].cells[0].state = CellState.None;
+      store.board.rows[0].cells[1].state = CellState.White;
+      // (0,2) は黒のまま
+      store.board.rows[0].cells[3].state = CellState.None;
+      store.board.rows[0].cells[4].state = CellState.White;
+      // (0,5) は黒のまま
+      store.board.turn = CellState.Black;
+
+      store.put(0, 0); // 黒 → (0,1) 反転 → 白は置けずパス → 黒の手番に戻る（ゲームオーバーなし）
+
+      expect(store.isGameOver).toBe(false); // ゲームオーバーでないことを保証
+      expect(store.lastPassed).toBe(CellState.White);
+    });
+
+    it("ゲームオーバーと同時にオートパスが発生しても lastPassed は null になる", () => {
+      const store = useGameStore();
+      // 全マス黒で埋め (0,0) だけ空け、(1,0) を白にする
+      // → 黒が (0,0) に置く → (1,0) が反転 → 全マス黒 → ゲームオーバー
       store.board.rows.forEach((row) =>
         row.cells.forEach((cell) => (cell.state = CellState.Black)),
       );
@@ -228,9 +251,10 @@ describe("useGameStore", () => {
       store.board.rows[0].cells[1].state = CellState.White;
       store.board.turn = CellState.Black;
 
-      store.put(0, 0); // 黒が (0,0) に置く → (1,0) が反転 → 白は置く場所がなくパス
+      store.put(0, 0);
 
-      expect(store.lastPassed).toBe(CellState.White);
+      expect(store.isGameOver).toBe(true); // ゲームオーバーであることを保証
+      expect(store.lastPassed).toBeNull(); // パス通知は出さない
     });
   });
 });

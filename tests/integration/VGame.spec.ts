@@ -126,11 +126,17 @@ describe("VGame", () => {
   describe("パス通知スナックバー", () => {
     it("パスが発生したとき「白はパスです」スナックバーが表示される", async () => {
       const store = useGameStore();
-      // 全マス黒で埋め (0,0) のみ空き・(1,0) を白にして黒番にする
-      // → 黒が (0,0) に置くと (1,0) が反転し白は置けずパスになる
+      // ゲームオーバーにならない「白パス」の盤面を作る
+      // (0,0)=空き、(0,1)=白、(0,2)=黒 → 黒は (0,0) に置ける
+      // (0,3)=空き、(0,4)=白、(0,5)=黒 → put 後も黒は (0,3) に置けるのでゲームオーバーにならない
+      // 残りはすべて黒
       fillBoard(store, CellState.Black);
       store.board.rows[0].cells[0].state = CellState.None;
       store.board.rows[0].cells[1].state = CellState.White;
+      // (0,2) は黒のまま
+      store.board.rows[0].cells[3].state = CellState.None;
+      store.board.rows[0].cells[4].state = CellState.White;
+      // (0,5) は黒のまま
       store.board.turn = CellState.Black;
 
       store.put(0, 0);

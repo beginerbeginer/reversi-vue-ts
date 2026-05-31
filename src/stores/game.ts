@@ -92,6 +92,10 @@ export const useGameStore = defineStore("game", () => {
     } else {
       lastPassed.value = null;
     }
+    // ゲームオーバー時はパス通知ではなく勝敗ダイアログのみ表示する
+    if (isGameOver.value) {
+      lastPassed.value = null;
+    }
   }
 
   return {
