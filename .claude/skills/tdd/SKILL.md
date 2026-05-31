@@ -1,9 +1,12 @@
 ---
 name: tdd
 description: >
-  t_wada（和田卓人）式 TDD の実装フロー。Red→Green→Refactor のサイクル、
-  テストリストの作り方、仮実装・三角測量・明白な実装の使い分けを含む。
-  テストを書く、TDD で実装する、テストリストを作る、という作業を始めるときに参照する。
+  t_wada（和田卓人）式 TDD の実装フロー。
+  Red→Green→Refactor のサイクル、テストリストの作り方、
+  仮実装・三角測量・明白な実装の使い分けを含む。
+when_to_use: >
+  テストを書く、TDD で実装する、テストリストを作る、
+  Red→Green→Refactor のリズムで進めたいときに参照する。
 ---
 
 # t_wada 式 TDD で実装する

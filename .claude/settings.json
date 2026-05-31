@@ -25,5 +25,8 @@
       "Bash(git branch -D*)",
       "Bash(rm -rf*)"
     ]
+  },
+  "enabledPlugins": {
+    "example-skills@anthropic-agent-skills": true
   }
 }
