@@ -7,7 +7,6 @@ description: >
 when_to_use: >
   コミットする前、PR を作成する前、新しいファイルを追加するとき、
   .env ファイルに触れたとき、認証情報を扱うコードを書いたときに参照する。
-disable-model-invocation: true
 ---
 
 # git にセキュアな情報を上げない
