@@ -41,7 +41,8 @@ jobs:
             }
 
             let rows = [];
-            let allPassed = true;
+            let passedCount = 0;
+            let failedCount = 0;
 
             try {
               const raw = JSON.parse(fs.readFileSync('a11y-results.json', 'utf8'));
@@ -49,23 +50,49 @@ jobs:
               function walk(suite) {
                 for (const spec of suite.specs || []) {
                   const status = spec.tests?.[0]?.results?.[0]?.status ?? 'unknown';
-                  if (status !== 'passed') allPassed = false;
+                  if (status === 'passed') passedCount++;
+                  else failedCount++;
                   rows.push({ title: spec.title, status });
                 }
                 for (const s of suite.suites || []) walk(s);
               }
               for (const s of raw.suites || []) walk(s);
             } catch (e) {
-              allPassed = false;
+              failedCount++;
               rows = [{ title: 'テスト実行エラー', status: 'failed' }];
             }
+
+            const total = passedCount + failedCount;
+            const allPassed = failedCount === 0;
+
+            // 違反テスト数でランクを決定する
+            function getRank(violated) {
+              if (violated === 0) return { label: 'S_Rank', color: 'brightgreen', display: 'S ランク' };
+              if (violated <= 2) return { label: 'A_Rank', color: 'yellowgreen', display: 'A ランク' };
+              if (violated <= 5) return { label: 'B_Rank', color: 'yellow',      display: 'B ランク' };
+              return                    { label: 'C_Rank', color: 'red',          display: 'C ランク' };
+            }
+
+            const rank = getRank(failedCount);
+            const badgeUrl = `https://img.shields.io/badge/A11y-${rank.label}-${rank.color}?style=flat-square`;
+
+            // Mermaid 円グラフ（GitHub の issue/PR コメントでレンダリングされる）
+            const pieChart = [
+              '```mermaid',
+              `pie title WCAG チェック結果（${total} テスト）`,
+              `    "通過" : ${passedCount}`,
+              `    "違反" : ${failedCount}`,
+              '```',
+            ].join('\n');
 
             const headline = allPassed ? '✅ WCAG チェック通過' : '❌ WCAG 違反を検出';
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
 
             const lines = [
               '<!-- a11y-report -->',
-              `## A11y: ${headline}`,
+              `## A11y: ${headline}　![rank](${badgeUrl})`,
+              '',
+              pieChart,
               '',
               '| 画面 | 結果 |',
               '|------|:----:|',
