@@ -9,6 +9,7 @@ module.exports = {
     "eslint:recommended",
     "@vue/eslint-config-typescript",
     "@vue/eslint-config-prettier",
+    "plugin:vuejs-accessibility/recommended",
   ],
   parserOptions: {
     ecmaVersion: 2020,
