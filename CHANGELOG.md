@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.3](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.4.2...v1.4.3) (2026-05-31)
+
+
+### Bug Fixes
+
+* **settings:** enabledPlugins をプロジェクト設定から削除する ([27da6b1](https://github.com/beginerbeginer/reversi-vue-ts/commit/27da6b10d4a7f864a262bf3de5ddd34e422bc7dc))
+* **skills:** git-secret-guard から disable-model-invocation を削除する ([02b51fc](https://github.com/beginerbeginer/reversi-vue-ts/commit/02b51fc306368a75ae7c571559ebe73e255caafd))
+* **skills:** tag スキルの gh pr merge コマンドを2段階に分割する ([1c2d9db](https://github.com/beginerbeginer/reversi-vue-ts/commit/1c2d9db18f57790e4169d1913956f117d0babc3e))
+
 ## [1.4.2](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.4.1...v1.4.2) (2026-05-31)
 
 
