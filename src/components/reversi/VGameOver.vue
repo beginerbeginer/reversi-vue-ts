@@ -3,9 +3,12 @@
     <v-card>
       <v-card-title class="text-h5 text-center pt-6">ゲーム終了</v-card-title>
       <v-card-text class="text-center text-h6">
-        <span v-if="store.winner === CellState.Black">黒の勝ち 🎉</span>
-        <span v-else-if="store.winner === CellState.White">白の勝ち 🎉</span>
-        <span v-else>引き分け</span>
+        <!-- assertive でゲーム終了を即時アナウンス。polite では他の読み上げが優先されゲーム終了が伝わらないため -->
+        <span aria-live="assertive" aria-atomic="true">
+          <span v-if="store.winner === CellState.Black">黒の勝ち 🎉</span>
+          <span v-else-if="store.winner === CellState.White">白の勝ち 🎉</span>
+          <span v-else>引き分け</span>
+        </span>
         <div class="mt-2 text-body-1">
           黒 {{ store.board.blacks }} 対 白 {{ store.board.whites }}
         </div>
