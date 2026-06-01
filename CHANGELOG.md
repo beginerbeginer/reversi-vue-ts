@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.4.3...v1.5.0) (2026-06-01)
+
+
+### Features
+
+* **a11y:** ゲーム盤のアクセシビリティ対応を追加する ([8a45fe9](https://github.com/beginerbeginer/reversi-vue-ts/commit/8a45fe986335f83e7bf6d434852f39726162ad03))
+* **a11y:** ゲーム盤のアクセシビリティ対応を追加する ([c7cd693](https://github.com/beginerbeginer/reversi-vue-ts/commit/c7cd693236219eeca978fc5f262b013c4db0924b))
+
+
+### Bug Fixes
+
+* **a11y:** aria-disabled を削除して E2E の click 可否チェックを回避する ([61dab23](https://github.com/beginerbeginer/reversi-vue-ts/commit/61dab23299c25f2a4f69620869b2ad244ee36143))
+* **a11y:** 有効な手のマスだけ button / tabindex=0 にする ([9905245](https://github.com/beginerbeginer/reversi-vue-ts/commit/9905245217dfa89ab76e37414d7737003e432e8e))
+
 ## [1.4.3](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.4.2...v1.4.3) (2026-05-31)
 
 
