@@ -3,7 +3,13 @@
     <v-app-bar color="primary">
       <v-toolbar-title>Reversi</v-toolbar-title>
       <v-spacer />
-      <v-btn icon @click="toggleTheme">
+      <v-btn
+        icon
+        :aria-label="
+          isDark ? 'ライトモードに切り替える' : 'ダークモードに切り替える'
+        "
+        @click="toggleTheme"
+      >
         <v-icon>{{
           isDark ? "mdi-weather-sunny" : "mdi-weather-night"
         }}</v-icon>

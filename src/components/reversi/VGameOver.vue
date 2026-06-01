@@ -1,5 +1,10 @@
 <template>
-  <v-dialog v-model="store.isGameOver" persistent max-width="400">
+  <v-dialog
+    v-model="store.isGameOver"
+    persistent
+    max-width="400"
+    aria-label="ゲーム終了"
+  >
     <v-card>
       <v-card-title class="text-h5 text-center pt-6">ゲーム終了</v-card-title>
       <v-card-text class="text-center text-h6">
