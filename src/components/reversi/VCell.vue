@@ -4,7 +4,6 @@
     role="button"
     tabindex="0"
     :aria-label="ariaLabel"
-    :aria-disabled="!isValid && props.cell.isNone"
     @click="onClick"
     @keydown.enter.prevent="onClick"
     @keydown.space.prevent="onClick"
