@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.7.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.6.0...v1.7.0) (2026-06-01)
+
+
+### Features
+
+* **a11y:** @axe-core/playwright で WCAG 自動検知を E2E に追加する ([e4bc9cf](https://github.com/beginerbeginer/reversi-vue-ts/commit/e4bc9cf7f2df5364f35e834cf254a155d6042909))
+* **a11y:** @axe-core/playwright で WCAG 自動検知を E2E に追加する ([bef471c](https://github.com/beginerbeginer/reversi-vue-ts/commit/bef471c664b6e4ad751c2094c8a2043c787d22c7))
+* **ci:** a11y コメントに円グラフとランクバッジを追加する ([4b19ebd](https://github.com/beginerbeginer/reversi-vue-ts/commit/4b19ebd7eafaa1a65f13cae210f8adb3dba81e2c))
+* **ci:** axe a11y テストを CI で自動実行して PR にコメントする ([6a19d1e](https://github.com/beginerbeginer/reversi-vue-ts/commit/6a19d1ea067ba5dc3c8d537857a12ee28af3da61))
+
 ## [1.6.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.5.0...v1.6.0) (2026-06-01)
 
 
