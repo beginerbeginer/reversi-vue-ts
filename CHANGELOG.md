@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.5.0...v1.6.0) (2026-06-01)
+
+
+### Features
+
+* **lint:** eslint-plugin-vuejs-accessibility を追加して a11y 違反を自動検知する ([aa17146](https://github.com/beginerbeginer/reversi-vue-ts/commit/aa17146b450d85fed501a12153a32ecc1fe2fc91))
+* **lint:** eslint-plugin-vuejs-accessibility を追加して a11y 違反を自動検知する ([818d9e3](https://github.com/beginerbeginer/reversi-vue-ts/commit/818d9e3fbaf4ffd7953ea2b760000759e543dca7))
+
 ## [1.5.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.4.3...v1.5.0) (2026-06-01)
 
 
