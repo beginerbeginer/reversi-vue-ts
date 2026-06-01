@@ -70,6 +70,8 @@ export const useGameStore = defineStore("game", () => {
     const turnBefore = board.turn;
     const wasEmpty = board.ref(p).isNone;
 
+    // { state: c.state } で新オブジェクトを生成する。cell 参照ごと保存すると
+    // reactive な参照を共有してしまい、undo 後に現在の盤面が書き換わるため
     const snapshot = allowUndo.value
       ? {
           rows: board.rows.map((row) =>
