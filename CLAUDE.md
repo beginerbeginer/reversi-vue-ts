@@ -25,32 +25,19 @@ npm run test:e2e         # Playwright E2E テスト
 
 ## 開発フロー
 
-新機能は `/new-feature` スキル、実装は `/tdd` スキル（t_wada 式 TDD）に従う。
-CI 失敗時は `/ci-debug` スキルで調査する。
-Vue コンポーネント設計は `/vue-component-rules` に従う。
+| スキル | 使いどき |
+|--------|---------|
+| `/new-feature` | 新機能開発の開始 |
+| `/tdd` | t_wada 式 TDD で実装する |
+| `/ci-debug` | CI 失敗時の調査 |
+| `/vue-component-rules` | Vue コンポーネント設計の確認 |
+| `/update-rules` | セッションで決めた規約をルールとして永続化する |
+| `/best-practice` | Claude Code の活用法を確認する |
 
-## コミットメッセージ
+コミット・ブランチ・コードコメントの規約は `.claude/rules/git-workflow.md` を参照すること。
 
-Conventional Commits 形式。`commit-msg` フックで自動チェックされる。
+## コマンド
 
-```
-<type>(<scope>): <subject>
-
-type: feat | fix | docs | style | refactor | test | chore
-```
-
-例: `fix(board): shouldPass が両者パス時にゲームを終了しない問題を修正する`
-
-## コードコメントのルール
-
-**Why not** スタイルで書く。How/What はコードを見ればわかるので書かない。
-
-```ts
-// nextTick を使う。DOM 更新前に querySelector すると null になるため
-```
-
-## ブランチ・PR
-
-- `main` への直接 push 禁止
-- PR 作成 → CI 通過 → マージ
-- pre-push フックで Playwright が自動実行される
+| コマンド | 説明 |
+|---------|------|
+| `/claude-commit` | 直近コミットに Claude を co-author として追加する |
