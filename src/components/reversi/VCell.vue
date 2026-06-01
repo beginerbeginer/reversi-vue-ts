@@ -1,8 +1,8 @@
 <template>
   <div
     class="cell-wrapper"
-    role="button"
-    tabindex="0"
+    :role="cellRole"
+    :tabindex="cellTabIndex"
     :aria-label="ariaLabel"
     @click="onClick"
     @keydown.enter.prevent="onClick"
@@ -30,6 +30,17 @@ const stoneClass = computed(() => ({
 const isValid = computed(() =>
   store.validMoves.some((p) => p.x === props.cell.x && p.y === props.cell.y),
 );
+
+// 有効な手だけ button にする。石や置けないマスを button にするとキーボードユーザーが
+// Tab で 64 マス全部を通過しなければならず、目的の操作に到達できないため
+const cellRole = computed(() => {
+  if (isValid.value) return "button";
+  if (props.cell.isBlack || props.cell.isWhite) return "img";
+  return "presentation";
+});
+
+// 有効な手だけ Tab 停止にする。それ以外は tabindex="-1" でフォーカス対象から除外する
+const cellTabIndex = computed(() => (isValid.value ? 0 : -1));
 
 // 座標は 1 始まりで表記する。スクリーンリーダー向けに石の状態を自然言語で伝えるため
 const ariaLabel = computed(() => {

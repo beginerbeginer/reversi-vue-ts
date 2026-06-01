@@ -41,12 +41,31 @@ describe("VCell", () => {
   });
 
   describe("アクセシビリティ", () => {
-    it("cell-wrapper に role='button' と tabindex='0' が付いている", () => {
-      const cell = new Cell(0, 0);
+    it("有効な手のマスは role='button' と tabindex='0'", () => {
+      const store = useGameStore();
+      // (3,2) は初期盤面で黒の有効な手
+      const cell = store.board.rows[2].cells[3];
       const wrapper = mount(VCell, { props: { cell } });
       const el = wrapper.find(".cell-wrapper");
       expect(el.attributes("role")).toBe("button");
       expect(el.attributes("tabindex")).toBe("0");
+    });
+
+    it("黒石のセルは role='img' と tabindex='-1'", () => {
+      const cell = new Cell(0, 0);
+      cell.state = CellState.Black;
+      const wrapper = mount(VCell, { props: { cell } });
+      const el = wrapper.find(".cell-wrapper");
+      expect(el.attributes("role")).toBe("img");
+      expect(el.attributes("tabindex")).toBe("-1");
+    });
+
+    it("置けない空きマスは role='presentation' と tabindex='-1'", () => {
+      const cell = new Cell(0, 0);
+      const wrapper = mount(VCell, { props: { cell } });
+      const el = wrapper.find(".cell-wrapper");
+      expect(el.attributes("role")).toBe("presentation");
+      expect(el.attributes("tabindex")).toBe("-1");
     });
 
     it("黒石のセルの aria-label は '座標 黒の石'", () => {
