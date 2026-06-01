@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="d-flex justify-center">
+    <div class="d-flex justify-center" aria-live="polite" aria-atomic="true">
       <h1>{{ store.current }}</h1>
     </div>
-    <div class="d-flex justify-center">
+    <div class="d-flex justify-center" aria-live="polite" aria-atomic="true">
       <h1>白の石：{{ store.board.whites }}</h1>
     </div>
-    <div class="d-flex justify-center">
+    <div class="d-flex justify-center" aria-live="polite" aria-atomic="true">
       <h1>黒の石：{{ store.board.blacks }}</h1>
     </div>
     <div v-if="store.allowUndo" class="d-flex justify-center mt-2">
