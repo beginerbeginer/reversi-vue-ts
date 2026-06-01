@@ -1,5 +1,6 @@
 <template>
   <v-container fluid>
+    <h1 class="text-h4 text-center mb-6">リバーシ</h1>
     <div class="d-flex justify-center mb-4">
       <v-checkbox
         v-model="allowUndoEnabled"
