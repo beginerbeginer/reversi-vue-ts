@@ -41,31 +41,37 @@ describe("VCell", () => {
   });
 
   describe("アクセシビリティ", () => {
-    it("有効な手のマスは role='button' と tabindex='0'", () => {
+    it("有効な手のマスは <button> 要素でレンダリングされる", () => {
       const store = useGameStore();
       // (3,2) は初期盤面で黒の有効な手
       const cell = store.board.rows[2].cells[3];
       const wrapper = mount(VCell, { props: { cell } });
-      const el = wrapper.find(".cell-wrapper");
-      expect(el.attributes("role")).toBe("button");
-      expect(el.attributes("tabindex")).toBe("0");
+      expect(wrapper.find("button.cell-wrapper").exists()).toBe(true);
     });
 
-    it("黒石のセルは role='img' と tabindex='-1'", () => {
+    it("有効な手のマスの aria-label は '座標 置けます'", () => {
+      const store = useGameStore();
+      const cell = store.board.rows[2].cells[3]; // (3,2)
+      const wrapper = mount(VCell, { props: { cell } });
+      expect(wrapper.find("button.cell-wrapper").attributes("aria-label")).toBe(
+        "4,3 置けます",
+      );
+    });
+
+    it("黒石のセルは role='img' の <div> でレンダリングされる", () => {
       const cell = new Cell(0, 0);
       cell.state = CellState.Black;
       const wrapper = mount(VCell, { props: { cell } });
-      const el = wrapper.find(".cell-wrapper");
+      const el = wrapper.find("div.cell-wrapper");
       expect(el.attributes("role")).toBe("img");
-      expect(el.attributes("tabindex")).toBe("-1");
     });
 
-    it("置けない空きマスは role='presentation' と tabindex='-1'", () => {
+    it("置けない空きマスは role 属性なし・aria-label なしの <div>", () => {
       const cell = new Cell(0, 0);
       const wrapper = mount(VCell, { props: { cell } });
-      const el = wrapper.find(".cell-wrapper");
-      expect(el.attributes("role")).toBe("presentation");
-      expect(el.attributes("tabindex")).toBe("-1");
+      const el = wrapper.find("div.cell-wrapper");
+      expect(el.attributes("role")).toBeUndefined();
+      expect(el.attributes("aria-label")).toBeUndefined();
     });
 
     it("黒石のセルの aria-label は '座標 黒の石'", () => {
@@ -86,12 +92,12 @@ describe("VCell", () => {
       );
     });
 
-    it("空きセルの aria-label は '座標 空き'", () => {
+    it("空きセルは aria-label を持たない（非インタラクティブ）", () => {
       const cell = new Cell(0, 0);
       const wrapper = mount(VCell, { props: { cell } });
-      expect(wrapper.find(".cell-wrapper").attributes("aria-label")).toContain(
-        "空き",
-      );
+      expect(
+        wrapper.find(".cell-wrapper").attributes("aria-label"),
+      ).toBeUndefined();
     });
 
     it("Enter キーで put が呼ばれる", async () => {
