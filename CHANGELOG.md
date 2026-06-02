@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.7.1...v1.8.0) (2026-06-02)
+
+
+### Features
+
+* **settings:** 設定ページとホバープレビュー機能を追加する ([9629aed](https://github.com/beginerbeginer/reversi-vue-ts/commit/9629aedd2bd56c9cd48cb44018b5570e774eb577))
+* **settings:** 設定ページとホバープレビュー機能を追加する ([f283daf](https://github.com/beginerbeginer/reversi-vue-ts/commit/f283daf2744124aa4916ccb89426352720f2b017))
+
 ## [1.7.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.7.0...v1.7.1) (2026-06-02)
 
 
