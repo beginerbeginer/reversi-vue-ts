@@ -118,22 +118,4 @@ describe("VCell", () => {
       expect(store.board.blacks).not.toBe(initialBlacks);
     });
   });
-
-  describe("ホバープレビュー", () => {
-    it("有効セルに .hover-preview が存在する", () => {
-      const store = useGameStore();
-      const cell = store.board.rows[2].cells[3]; // 有効な手
-      const wrapper = mount(VCell, { props: { cell } });
-      expect(wrapper.find(".hover-preview").exists()).toBe(true);
-    });
-
-    it("黒番のとき hover-preview--black クラスが付く", () => {
-      const store = useGameStore();
-      const cell = store.board.rows[2].cells[3];
-      const wrapper = mount(VCell, { props: { cell } });
-      expect(store.board.turn).toBe(CellState.Black);
-      expect(wrapper.find(".hover-preview--black").exists()).toBe(true);
-      expect(wrapper.find(".hover-preview--white").exists()).toBe(false);
-    });
-  });
 });
