@@ -118,17 +118,10 @@ export class Board {
     return moves;
   }
 
-  // パスのロジック：全マスを検索、ひっくり返せるマスがなければ飛ばす
+  // validMoves() を再利用する。独立した 64 マス探索を重複して書くと
+  // 「置けるか」の判定ロジックが 2 箇所に分散し、片方だけ変更したときに差異が生じるため
   public shouldPass(): boolean {
-    for (let i = 0; i < 8; i++) {
-      for (let j = 0; j < 8; j++) {
-        const reversedList = this.search(new Point(i, j));
-        if (reversedList.length > 0) {
-          return false;
-        }
-      }
-    }
-    return true;
+    return this.validMoves().length === 0;
   }
 }
 

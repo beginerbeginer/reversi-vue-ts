@@ -16,19 +16,19 @@ export const useGameStore = defineStore("game", () => {
     board.turn === CellState.Black ? "黒の手番" : "白の手番",
   );
 
+  const validMoves = computed(() => board.validMoves());
+
   // 両者ともパスになる = どちらの手番でも置ける場所がない
+  // 現在手番は validMoves（computed 済み）を再利用し、64 マス探索の重複を避ける
   // toRaw で next() を呼ぶことで reactive なターン変更を起こさずに相手番を検査する
   const isGameOver = computed(() => {
-    const currentTurnCanPass = board.shouldPass();
-    if (!currentTurnCanPass) return false;
+    if (validMoves.value.length > 0) return false;
     const raw = toRaw(board);
     raw.next();
-    const otherTurnCanPass = board.shouldPass();
+    const otherCanMove = raw.validMoves().length > 0;
     raw.next();
-    return otherTurnCanPass;
+    return !otherCanMove;
   });
-
-  const validMoves = computed(() => board.validMoves());
 
   const winner = computed((): CellState | null => {
     if (board.blacks > board.whites) return CellState.Black;
