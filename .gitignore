@@ -24,6 +24,9 @@ pnpm-debug.log*
 # Claude Code のローカル設定（個人の環境専用・絶対パスを含む）
 .claude/settings.local.json
 
+# Playwright MCP のスナップショット・スクリーンショット（ローカル確認用）
+.playwright-mcp/
+
 # Editor directories and files
 .idea
 .vscode
