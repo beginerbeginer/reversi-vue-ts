@@ -11,6 +11,11 @@
     <div class="cell"></div>
     <div class="stone" :class="stoneClass"></div>
     <div class="valid-hint"></div>
+    <div
+      v-if="settingsStore.hoverPreview"
+      class="hover-preview"
+      :class="hoverPreviewClass"
+    ></div>
   </button>
   <!-- 石・空きマスはインタラクションなし -->
   <div
@@ -28,11 +33,13 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { type Cell } from "@/models/reversi";
+import { type Cell, CellState } from "@/models/reversi";
 import { useGameStore } from "@/stores/game";
+import { useSettingsStore } from "@/stores/settings";
 
 const props = defineProps<{ cell: Cell }>();
 const store = useGameStore();
+const settingsStore = useSettingsStore();
 
 const stoneClass = computed(() => ({
   "white-stone": props.cell.isWhite,
@@ -42,6 +49,12 @@ const stoneClass = computed(() => ({
 const isValid = computed(() =>
   store.validMoves.some((p) => p.x === props.cell.x && p.y === props.cell.y),
 );
+
+// 現在手番の色でプレビュー石を表示する。手番が変われば自動で切り替わる
+const hoverPreviewClass = computed(() => ({
+  "hover-preview--black": store.board.turn === CellState.Black,
+  "hover-preview--white": store.board.turn === CellState.White,
+}));
 
 // 座標は 1 始まりで表記する。スクリーンリーダー向けに石の状態を自然言語で伝えるため
 const ariaLabel = computed(() => {
@@ -100,5 +113,37 @@ function onClick() {
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.4);
   pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.hover-preview {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none;
+}
+
+.hover-preview--black {
+  background-color: black;
+}
+
+.hover-preview--white {
+  background-color: white;
+}
+
+/* ホバー・フォーカス時にプレビュー石を表示し、ヒントドットを隠す */
+.cell-wrapper:hover .hover-preview,
+.cell-wrapper:focus-visible .hover-preview {
+  opacity: 0.5;
+}
+
+.cell-wrapper:hover .valid-hint,
+.cell-wrapper:focus-visible .valid-hint {
+  opacity: 0;
 }
 </style>
