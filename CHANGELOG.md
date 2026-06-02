@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.7.0...v1.7.1) (2026-06-02)
+
+
+### Performance Improvements
+
+* **store:** isGameOver で validMoves の computed 結果を再利用する ([b6a31de](https://github.com/beginerbeginer/reversi-vue-ts/commit/b6a31de2f676f0ee5acdcae974ea0bc6d8beb5a7))
+* **store:** isGameOver で validMoves の computed 結果を再利用する ([8fcc547](https://github.com/beginerbeginer/reversi-vue-ts/commit/8fcc5472a9d2190f8168bc06cad7ff0affc23641))
+
 ## [1.7.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.6.0...v1.7.0) (2026-06-01)
 
 
