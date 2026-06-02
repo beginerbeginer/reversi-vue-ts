@@ -4,7 +4,6 @@ import { setActivePinia, createPinia } from "pinia";
 import VCell from "@/components/reversi/VCell.vue";
 import { Cell, CellState } from "@/models/reversi";
 import { useGameStore } from "@/stores/game";
-import { useSettingsStore } from "@/stores/settings";
 
 describe("VCell", () => {
   beforeEach(() => {
@@ -121,19 +120,8 @@ describe("VCell", () => {
   });
 
   describe("ホバープレビュー", () => {
-    it("hoverPreview OFF のとき .hover-preview は存在しない", () => {
+    it("有効セルに .hover-preview が存在する", () => {
       const store = useGameStore();
-      const settings = useSettingsStore();
-      settings.hoverPreview = false;
-      const cell = store.board.rows[2].cells[3]; // 有効な手
-      const wrapper = mount(VCell, { props: { cell } });
-      expect(wrapper.find(".hover-preview").exists()).toBe(false);
-    });
-
-    it("hoverPreview ON のとき有効セルに .hover-preview が存在する", () => {
-      const store = useGameStore();
-      const settings = useSettingsStore();
-      settings.hoverPreview = true;
       const cell = store.board.rows[2].cells[3]; // 有効な手
       const wrapper = mount(VCell, { props: { cell } });
       expect(wrapper.find(".hover-preview").exists()).toBe(true);
@@ -141,8 +129,6 @@ describe("VCell", () => {
 
     it("黒番のとき hover-preview--black クラスが付く", () => {
       const store = useGameStore();
-      const settings = useSettingsStore();
-      settings.hoverPreview = true;
       const cell = store.board.rows[2].cells[3];
       const wrapper = mount(VCell, { props: { cell } });
       expect(store.board.turn).toBe(CellState.Black);

@@ -11,11 +11,7 @@
     <div class="cell"></div>
     <div class="stone" :class="stoneClass"></div>
     <div class="valid-hint"></div>
-    <div
-      v-if="settingsStore.hoverPreview"
-      class="hover-preview"
-      :class="hoverPreviewClass"
-    ></div>
+    <div class="hover-preview" :class="hoverPreviewClass"></div>
   </button>
   <!-- 石・空きマスはインタラクションなし -->
   <div
@@ -35,11 +31,9 @@
 import { computed } from "vue";
 import { type Cell, CellState } from "@/models/reversi";
 import { useGameStore } from "@/stores/game";
-import { useSettingsStore } from "@/stores/settings";
 
 const props = defineProps<{ cell: Cell }>();
 const store = useGameStore();
-const settingsStore = useSettingsStore();
 
 const stoneClass = computed(() => ({
   "white-stone": props.cell.isWhite,

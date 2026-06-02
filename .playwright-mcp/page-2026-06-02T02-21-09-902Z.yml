@@ -1,0 +1,25 @@
+- generic [ref=e4]:
+  - banner [ref=e5]:
+    - generic [ref=e6]:
+      - generic [ref=e8]: Reversi
+      - button "ダークモードに切り替える" [ref=e9] [cursor=pointer]:
+        - generic [ref=e11]: 󰖔
+      - button "設定" [ref=e12] [cursor=pointer]:
+        - generic [ref=e14]: 󰒓
+  - main [ref=e15]:
+    - generic [ref=e61]:
+      - generic [ref=e63]:
+        - button "4,3 置けます" [ref=e124] [cursor=pointer]
+        - generic [ref=e139]:
+          - button "3,4 置けます" [ref=e146] [cursor=pointer]
+          - img "4,4 白の石" [ref=e149] [cursor=pointer]
+          - img "5,4 黒の石" [ref=e152] [cursor=pointer]
+        - generic [ref=e164]:
+          - img "4,5 黒の石" [ref=e174] [cursor=pointer]
+          - img "5,5 白の石" [ref=e177] [cursor=pointer]
+          - button "6,5 置けます" [ref=e180] [cursor=pointer]
+        - button "5,6 置けます" [ref=e202] [cursor=pointer]
+      - generic [ref=e264]:
+        - heading "黒の手番" [level=1] [ref=e266]
+        - heading "白の石：2" [level=1] [ref=e268]
+        - heading "黒の石：2" [level=1] [ref=e270]
