@@ -36,6 +36,8 @@ npm run test:e2e         # Playwright E2E テスト
 
 コミット・ブランチ・コードコメントの規約は `.claude/rules/git-workflow.md` を参照すること。
 
+テストファイルの構成・分割基準は `.claude/rules/test-organization.md` を参照すること。
+
 ## コマンド
 
 | コマンド | 説明 |
