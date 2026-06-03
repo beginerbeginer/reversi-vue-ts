@@ -1,0 +1,31 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`VGameScore スナップショット > 初期状態（黒2・白2）のスコア表示が変わらない 1`] = `
+"<div>
+  <div class="d-flex justify-center" aria-live="polite" aria-atomic="true">
+    <h1>黒の手番</h1>
+  </div>
+  <div class="d-flex justify-center" aria-live="polite" aria-atomic="true">
+    <h1>白の石：2</h1>
+  </div>
+  <div class="d-flex justify-center" aria-live="polite" aria-atomic="true">
+    <h1>黒の石：2</h1>
+  </div>
+  <!--v-if-->
+</div>"
+`;
+
+exports[`VGameScore スナップショット > 黒優勢のスコア表示が変わらない 1`] = `
+"<div>
+  <div class="d-flex justify-center" aria-live="polite" aria-atomic="true">
+    <h1>黒の手番</h1>
+  </div>
+  <div class="d-flex justify-center" aria-live="polite" aria-atomic="true">
+    <h1>白の石：0</h1>
+  </div>
+  <div class="d-flex justify-center" aria-live="polite" aria-atomic="true">
+    <h1>黒の石：64</h1>
+  </div>
+  <!--v-if-->
+</div>"
+`;
