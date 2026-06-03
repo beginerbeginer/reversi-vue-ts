@@ -1,5 +1,8 @@
 # Claude Code 活用リファレンス
 
+> 参照元: https://github.com/shanraisshan/claude-code-best-practice
+> Boris Cherny（Claude Code 開発者）および Claude Code チームの tips を元に構成
+
 ## Plan Mode
 
 複雑なタスクは実装前にプランを立てる。「良いプランがあれば実装は1-shotで決まる」が基本姿勢。
