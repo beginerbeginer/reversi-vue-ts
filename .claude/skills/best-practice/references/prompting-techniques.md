@@ -1,5 +1,8 @@
 # プロンプティング技法リファレンス
 
+> 参照元: https://github.com/shanraisshan/claude-code-best-practice
+> Boris Cherny（Claude Code 開発者）および Claude Code チームの tips を元に構成
+
 ## 原則：マイクロマネジメントしない
 
 **What（何を達成したいか）** と **制約（守るべき条件）** を渡せば十分。
