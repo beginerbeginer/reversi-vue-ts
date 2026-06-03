@@ -1,0 +1,28 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`VCell スナップショット > 白石セルの HTML が変わらない 1`] = `
+"<!-- 有効な手はネイティブ button を使う。div + role="button" より意味が明確で linter も通るため -->
+<!-- 石・空きマスはインタラクションなし -->
+<div data-v-32e34ed9="" class="cell-wrapper" role="img" aria-label="5,4 白の石">
+  <div data-v-32e34ed9="" class="cell"></div>
+  <div data-v-32e34ed9="" class="stone white-stone"></div>
+</div>"
+`;
+
+exports[`VCell スナップショット > 空きセルの HTML が変わらない 1`] = `
+"<!-- 有効な手はネイティブ button を使う。div + role="button" より意味が明確で linter も通るため -->
+<!-- 石・空きマスはインタラクションなし -->
+<div data-v-32e34ed9="" class="cell-wrapper">
+  <div data-v-32e34ed9="" class="cell"></div>
+  <div data-v-32e34ed9="" class="stone"></div>
+</div>"
+`;
+
+exports[`VCell スナップショット > 黒石セルの HTML が変わらない 1`] = `
+"<!-- 有効な手はネイティブ button を使う。div + role="button" より意味が明確で linter も通るため -->
+<button data-v-32e34ed9="" class="cell-wrapper" aria-label="4,3 黒の石">
+  <div data-v-32e34ed9="" class="cell"></div>
+  <div data-v-32e34ed9="" class="stone black-stone"></div>
+  <div data-v-32e34ed9="" class="valid-hint"></div>
+</button>"
+`;
