@@ -16,11 +16,10 @@ describe("Board / search()", () => {
 
   it("相手石の先に自分の石がない（挟めない）場合は空配列を返す", () => {
     const board = new Board();
-    // (0,1) の下に (0,2)=White のみ（先が (0,3)=None）
-    board.rows[0].cells[1].state = CellState.None;
-    board.rows[0].cells[2].state = CellState.White;
+    // rows[p.y].cells[p.x] のため (0,2) = rows[2].cells[0]
+    board.rows[2].cells[0].state = CellState.White;
     board.turn = CellState.Black;
-    // (0,1) から下: White, None → 挟めない（先に自石なし）
+    // (0,1) から下: (0,2)=White, (0,3)=None → 先に自石なしで挟めない
     expect(board.search(new Point(0, 1))).toHaveLength(0);
   });
 
