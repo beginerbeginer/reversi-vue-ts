@@ -3,11 +3,13 @@ import { defineStore } from "pinia";
 import { Board, CellState, Point } from "@/models/reversi";
 
 type BoardSnapshot = { rows: { state: CellState }[][]; turn: CellState };
+export type GameMode = "normal" | "cpu";
 
 export const useGameStore = defineStore("game", () => {
   const board = reactive(new Board());
   const lastPassed = ref<CellState | null>(null);
   const allowUndo = ref(false);
+  const gameMode = ref<GameMode>("normal");
   const history = ref<BoardSnapshot[]>([]);
 
   const canUndo = computed(() => allowUndo.value && history.value.length > 0);
@@ -36,8 +38,9 @@ export const useGameStore = defineStore("game", () => {
     return null;
   });
 
-  function startGame(options: { allowUndo: boolean }) {
+  function startGame(options: { allowUndo: boolean; gameMode?: GameMode }) {
     allowUndo.value = options.allowUndo;
+    gameMode.value = options.gameMode ?? "normal";
     reset();
   }
 
@@ -109,6 +112,7 @@ export const useGameStore = defineStore("game", () => {
     winner,
     validMoves,
     allowUndo,
+    gameMode,
     canUndo,
     startGame,
     undo,

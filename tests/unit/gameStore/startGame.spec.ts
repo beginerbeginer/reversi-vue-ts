@@ -54,4 +54,22 @@ describe("useGameStore / startGame・reset", () => {
     expect(store.board.blacks).toBe(2);
     expect(store.board.whites).toBe(2);
   });
+
+  it("startGame を gameMode 省略で呼ぶと gameMode がデフォルト 'normal' になる", () => {
+    const store = useGameStore();
+    store.startGame({ allowUndo: false });
+    expect(store.gameMode).toBe("normal");
+  });
+
+  it("startGame({ gameMode: 'cpu' }) を呼ぶと gameMode が 'cpu' になる", () => {
+    const store = useGameStore();
+    store.startGame({ allowUndo: false, gameMode: "cpu" });
+    expect(store.gameMode).toBe("cpu");
+  });
+
+  it("startGame({ gameMode: 'normal' }) を呼ぶと gameMode が 'normal' になる", () => {
+    const store = useGameStore();
+    store.startGame({ allowUndo: false, gameMode: "normal" });
+    expect(store.gameMode).toBe("normal");
+  });
 });

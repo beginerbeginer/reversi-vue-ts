@@ -44,4 +44,25 @@ describe("VMain", () => {
     expect(store.allowUndo).toBe(false);
     expect(mockPush).toHaveBeenCalledWith("/game");
   });
+
+  it("ノーマルモードとCPUモードの選択ボタンが表示される", () => {
+    const wrapper = mount(VMain, { global: { plugins: [vuetify] } });
+    expect(wrapper.find("[data-testid='mode-normal']").exists()).toBe(true);
+    expect(wrapper.find("[data-testid='mode-cpu']").exists()).toBe(true);
+  });
+
+  it("デフォルト（ノーマルモード）でスタートすると gameMode: normal が store に保存される", async () => {
+    const wrapper = mount(VMain, { global: { plugins: [vuetify] } });
+    const store = useGameStore();
+    await wrapper.find("[data-testid='start-button']").trigger("click");
+    expect(store.gameMode).toBe("normal");
+  });
+
+  it("CPUモードを選択してスタートすると gameMode: cpu が store に保存される", async () => {
+    const wrapper = mount(VMain, { global: { plugins: [vuetify] } });
+    const store = useGameStore();
+    await wrapper.find("[data-testid='mode-cpu']").trigger("click");
+    await wrapper.find("[data-testid='start-button']").trigger("click");
+    expect(store.gameMode).toBe("cpu");
+  });
 });
