@@ -3,7 +3,12 @@
     <h1 class="text-h4 text-center mb-6">リバーシ</h1>
 
     <div class="d-flex justify-center mb-4">
-      <v-btn-toggle v-model="selectedMode" mandatory data-testid="mode-toggle">
+      <v-btn-toggle
+        v-model="selectedMode"
+        mandatory
+        color="primary"
+        data-testid="mode-toggle"
+      >
         <v-btn value="normal" data-testid="mode-normal">ノーマル</v-btn>
         <v-btn value="cpu" data-testid="mode-cpu">CPU対戦</v-btn>
       </v-btn-toggle>
