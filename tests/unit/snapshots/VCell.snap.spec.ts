@@ -16,7 +16,7 @@ describe("VCell スナップショット", () => {
   });
 
   it("黒石セルの HTML が変わらない", () => {
-    const cell = new Cell(3, 2);
+    const cell = new Cell(3, 4);
     cell.state = CellState.Black;
     const wrapper = mount(VCell, { props: { cell } });
     expect(wrapper.html()).toMatchSnapshot();

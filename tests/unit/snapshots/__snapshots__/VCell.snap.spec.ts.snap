@@ -20,9 +20,9 @@ exports[`VCell スナップショット > 空きセルの HTML が変わらな�
 
 exports[`VCell スナップショット > 黒石セルの HTML が変わらない 1`] = `
 "<!-- 有効な手はネイティブ button を使う。div + role="button" より意味が明確で linter も通るため -->
-<button data-v-32e34ed9="" class="cell-wrapper" aria-label="4,3 黒の石">
+<!-- 石・空きマスはインタラクションなし -->
+<div data-v-32e34ed9="" class="cell-wrapper" role="img" aria-label="4,5 黒の石">
   <div data-v-32e34ed9="" class="cell"></div>
   <div data-v-32e34ed9="" class="stone black-stone"></div>
-  <div data-v-32e34ed9="" class="valid-hint"></div>
-</button>"
+</div>"
 `;
