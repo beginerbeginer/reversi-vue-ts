@@ -6,6 +6,7 @@ import { createRouter, createMemoryHistory } from "vue-router";
 import VMain from "@/components/VMain.vue";
 import VGame from "@/components/reversi/VGame.vue";
 import { useGameStore } from "@/stores/game";
+import { routes } from "@/router/index";
 import { CellState } from "@/models/reversi";
 
 vi.mock("canvas-confetti");
@@ -15,10 +16,7 @@ const vuetify = createVuetify();
 function makeRouter() {
   return createRouter({
     history: createMemoryHistory(),
-    routes: [
-      { path: "/", component: VMain },
-      { path: "/game", component: VGame },
-    ],
+    routes,
   });
 }
 
