@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.8.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.8.0...v1.8.1) (2026-06-06)
+
+
+### Bug Fixes
+
+* **test:** router 統合テストで本番ルートレコードを使う ([392b02c](https://github.com/beginerbeginer/reversi-vue-ts/commit/392b02c2e99a1c4812922e268a57c25e43108163))
+* **test:** router 統合テストで本番ルートレコードを使う ([f5fa296](https://github.com/beginerbeginer/reversi-vue-ts/commit/f5fa296be6b0f64ca2fd74220e45e3502514d8b4)), closes [#271](https://github.com/beginerbeginer/reversi-vue-ts/issues/271)
+* **test:** 黒石スナップショットを実際に占有済みのセルで撮り直す ([0663088](https://github.com/beginerbeginer/reversi-vue-ts/commit/06630883322be9b8a7f22f09f6fa1768e5d47201))
+* **test:** 黒石スナップショットを実際に占有済みのセルで撮り直す ([087023c](https://github.com/beginerbeginer/reversi-vue-ts/commit/087023c9c6f58039b10266c1a161106767846cc3)), closes [#270](https://github.com/beginerbeginer/reversi-vue-ts/issues/270)
+
 ## [1.8.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.7.1...v1.8.0) (2026-06-02)
 
 
