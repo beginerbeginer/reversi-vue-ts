@@ -63,7 +63,7 @@ describe("Router ナビゲーション", () => {
         .setValue(true);
       await wrapper.find("[data-testid='start-button']").trigger("click");
       await flushPromises();
-      expect(spy).toHaveBeenCalledWith({ allowUndo: true });
+      expect(spy).toHaveBeenCalledWith({ allowUndo: true, gameMode: "normal" });
     });
   });
 

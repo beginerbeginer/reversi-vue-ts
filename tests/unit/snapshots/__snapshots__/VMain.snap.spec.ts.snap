@@ -4,14 +4,25 @@ exports[`VMain スナップショット > スタート画面の HTML が変わ�
 "<div class="v-container v-container--fluid v-locale--is-ltr">
   <h1 class="text-h4 text-center mb-6">リバーシ</h1>
   <div class="d-flex justify-center mb-4">
+    <div class="v-btn-group v-btn-group--horizontal v-theme--light v-btn-group--density-default v-btn-toggle" data-testid="mode-toggle"><button type="button" class="v-btn v-btn--active v-btn--flat v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated" style="height: auto;" data-testid="mode-normal" value="normal"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">ノーマル</span>
+        <!---->
+        <!---->
+      </button><button type="button" class="v-btn v-btn--flat v-theme--light v-btn--density-default v-btn--size-default v-btn--variant-elevated" style="height: auto;" data-testid="mode-cpu" value="cpu"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+        <!----><span class="v-btn__content" data-no-activator="">CPU対戦</span>
+        <!---->
+        <!---->
+      </button></div>
+  </div>
+  <div class="d-flex justify-center mb-4">
     <div class="v-input v-input--horizontal v-input--center-affix v-input--density-default v-theme--light v-locale--is-ltr v-input--dirty v-checkbox" data-testid="allow-undo-checkbox">
       <!---->
       <div class="v-input__control">
         <div class="v-selection-control v-selection-control--density-default v-checkbox-btn">
           <div class="v-selection-control__wrapper">
             <!---->
-            <div class="v-selection-control__input"><i class="mdi-checkbox-blank-outline mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i><input id="checkbox-v-0" aria-disabled="false" aria-label="待った機能を有効にする" type="checkbox" value="true"></div>
-          </div><label class="v-label v-label--clickable" for="checkbox-v-0">
+            <div class="v-selection-control__input"><i class="mdi-checkbox-blank-outline mdi v-icon notranslate v-theme--light v-icon--size-default" aria-hidden="true"></i><input id="checkbox-v-2" aria-disabled="false" aria-label="待った機能を有効にする" type="checkbox" value="true"></div>
+          </div><label class="v-label v-label--clickable" for="checkbox-v-2">
             <!---->待った機能を有効にする
           </label>
         </div>
