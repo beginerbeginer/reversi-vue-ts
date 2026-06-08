@@ -1,17 +1,17 @@
 import { describe, it, expect } from "vitest";
 import { Board, CellState } from "@/models/reversi";
-import { selectMove } from "@/models/cpu";
+import { selectMoveBeginner } from "@/models/cpu";
 
-describe("初級CPU selectMove", () => {
+describe("初級CPU selectMoveBeginner", () => {
   it("有効手が複数あるとき、そのうちの1つを返す", () => {
     const board = new Board();
-    const move = selectMove(board, CellState.Black);
+    const move = selectMoveBeginner(board, CellState.Black);
     expect(move).not.toBeNull();
   });
 
   it("返した手は必ず有効な手である", () => {
     const board = new Board();
-    const move = selectMove(board, CellState.Black);
+    const move = selectMoveBeginner(board, CellState.Black);
     expect(board.search(move!).length).toBeGreaterThan(0);
   });
 
@@ -20,7 +20,7 @@ describe("初級CPU selectMove", () => {
     board.rows.forEach((row) =>
       row.cells.forEach((cell) => (cell.state = CellState.Black)),
     );
-    const move = selectMove(board, CellState.White);
+    const move = selectMoveBeginner(board, CellState.White);
     expect(move).toBeNull();
   });
 });

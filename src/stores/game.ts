@@ -1,10 +1,11 @@
 import { reactive, computed, ref, toRaw } from "vue";
 import { defineStore } from "pinia";
 import { Board, CellState, Point } from "@/models/reversi";
-import { selectMove } from "@/models/cpu";
+import { selectMoveBeginner } from "@/models/cpu";
 
 type BoardSnapshot = { rows: { state: CellState }[][]; turn: CellState };
 export type GameMode = "normal" | "cpu";
+export type CpuLevel = "beginner";
 
 export const useGameStore = defineStore("game", () => {
   const board = reactive(new Board());
@@ -12,6 +13,7 @@ export const useGameStore = defineStore("game", () => {
   const allowUndo = ref(false);
   const gameMode = ref<GameMode>("normal");
   const cpuColor = ref<CellState>(CellState.White);
+  const cpuLevel = ref<CpuLevel>("beginner");
   const history = ref<BoardSnapshot[]>([]);
 
   const canUndo = computed(() => allowUndo.value && history.value.length > 0);
@@ -40,15 +42,44 @@ export const useGameStore = defineStore("game", () => {
     return null;
   });
 
+  // レベルごとの selectMove を返す。レベルを追加するときはここにケースを追加する
+  function getCpuMoveSelector() {
+    return selectMoveBeginner;
+  }
+
+  // 全レベル共通: 500ms 待機してから CPU が着手する
+  // put() から再帰呼び出しせず fire-and-forget で呼ぶことで
+  // lastPassed の退避/復元ハックが不要になる
+  async function cpuTurn(): Promise<void> {
+    await new Promise<void>((resolve) => setTimeout(resolve, 500));
+    if (
+      gameMode.value !== "cpu" ||
+      isGameOver.value ||
+      board.turn !== cpuColor.value
+    )
+      return;
+    const selectMove = getCpuMoveSelector();
+    const move = selectMove(toRaw(board), cpuColor.value);
+    if (move) {
+      put(move.x, move.y, true);
+      // 人間がパスになった場合、CPU がもう一度打つ（再度 0.5s 待つ）
+      if (!isGameOver.value && board.turn === cpuColor.value) {
+        void cpuTurn();
+      }
+    }
+  }
+
   function startGame(options: {
     allowUndo: boolean;
     gameMode?: GameMode;
     playerColor?: "black" | "white";
+    cpuLevel?: CpuLevel;
   }) {
     allowUndo.value = options.allowUndo;
     gameMode.value = options.gameMode ?? "normal";
     cpuColor.value =
       options.playerColor === "white" ? CellState.Black : CellState.White;
+    cpuLevel.value = options.cpuLevel ?? "beginner";
     reset();
   }
 
@@ -115,29 +146,25 @@ export const useGameStore = defineStore("game", () => {
       lastPassed.value = null;
     }
 
-    // cpu モードで人間が石を置けた後、CPU の手番なら自動着手する
+    // cpu モードで人間が石を置けた後、CPU の手番なら非同期で着手する
     if (
       gameMode.value === "cpu" &&
       stonePlaced &&
       !isGameOver.value &&
       board.turn === cpuColor.value
     ) {
-      // CPU の応手で人間パスの通知を上書きしないよう退避する
-      const passedBefore = lastPassed.value;
-      const cpuMove = selectMove(toRaw(board), cpuColor.value);
-      if (cpuMove) {
-        put(cpuMove.x, cpuMove.y, true);
-        if (passedBefore !== null) lastPassed.value = passedBefore;
-      }
+      void cpuTurn();
     }
   }
 
   function triggerCpuMove() {
-    if (gameMode.value !== "cpu") return;
-    if (board.turn !== cpuColor.value) return;
-    if (isGameOver.value) return;
-    const move = selectMove(toRaw(board), cpuColor.value);
-    if (move) put(move.x, move.y, true);
+    if (
+      gameMode.value !== "cpu" ||
+      board.turn !== cpuColor.value ||
+      isGameOver.value
+    )
+      return;
+    void cpuTurn();
   }
 
   return {
@@ -151,6 +178,7 @@ export const useGameStore = defineStore("game", () => {
     allowUndo,
     gameMode,
     cpuColor,
+    cpuLevel,
     canUndo,
     startGame,
     undo,
