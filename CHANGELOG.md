@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.10.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.9.0...v1.10.0) (2026-06-08)
+
+
+### Features
+
+* **ui:** cpu対戦時に先手/後手を選択できる UI を追加する ([5cefd4f](https://github.com/beginerbeginer/reversi-vue-ts/commit/5cefd4fb28889c88ce08d4b63b95455b11da2b77))
+* **ui:** cpu対戦時に先手/後手を選択できる UI を追加する ([#288](https://github.com/beginerbeginer/reversi-vue-ts/issues/288)) ([32d96eb](https://github.com/beginerbeginer/reversi-vue-ts/commit/32d96eba78bc5dfdee8b30d655b1abdb0ba5a036))
+
 ## [1.9.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.8.2...v1.9.0) (2026-06-08)
 
 
