@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.9.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.8.2...v1.9.0) (2026-06-08)
+
+
+### Features
+
+* **ui:** スタート画面にノーマル/CPUモード選択UIを追加する ([f3b0714](https://github.com/beginerbeginer/reversi-vue-ts/commit/f3b0714d75e217d5f74de414daa8f422ec48fb80))
+* **ui:** スタート画面にノーマル/CPUモード選択UIを追加する ([e0be7aa](https://github.com/beginerbeginer/reversi-vue-ts/commit/e0be7aa6c1956f6bae5cf6204f3a6619fe43130f)), closes [#279](https://github.com/beginerbeginer/reversi-vue-ts/issues/279)
+
+
+### Bug Fixes
+
+* **test:** gameMode 追加後の startGame 呼び出し引数アサーションを修正する ([e0362ed](https://github.com/beginerbeginer/reversi-vue-ts/commit/e0362ed5177d46fcf94267f4ce3297ed4c07d295))
+* **ui:** モード選択トグルの選択状態が見た目で判断できない問題を修正する ([5c2a825](https://github.com/beginerbeginer/reversi-vue-ts/commit/5c2a8257e5c45d9a1db4aa246c8849697c7081a0))
+
 ## [1.8.2](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.8.1...v1.8.2) (2026-06-06)
 
 
