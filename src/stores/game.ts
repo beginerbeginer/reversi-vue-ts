@@ -10,6 +10,7 @@ export const useGameStore = defineStore("game", () => {
   const lastPassed = ref<CellState | null>(null);
   const allowUndo = ref(false);
   const gameMode = ref<GameMode>("normal");
+  const cpuColor = ref<CellState>(CellState.White);
   const history = ref<BoardSnapshot[]>([]);
 
   const canUndo = computed(() => allowUndo.value && history.value.length > 0);
@@ -38,9 +39,15 @@ export const useGameStore = defineStore("game", () => {
     return null;
   });
 
-  function startGame(options: { allowUndo: boolean; gameMode?: GameMode }) {
+  function startGame(options: {
+    allowUndo: boolean;
+    gameMode?: GameMode;
+    playerColor?: "black" | "white";
+  }) {
     allowUndo.value = options.allowUndo;
     gameMode.value = options.gameMode ?? "normal";
+    cpuColor.value =
+      options.playerColor === "white" ? CellState.Black : CellState.White;
     reset();
   }
 
@@ -113,6 +120,7 @@ export const useGameStore = defineStore("game", () => {
     validMoves,
     allowUndo,
     gameMode,
+    cpuColor,
     canUndo,
     startGame,
     undo,

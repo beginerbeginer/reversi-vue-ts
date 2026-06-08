@@ -14,6 +14,18 @@
       </v-btn-toggle>
     </div>
 
+    <div v-if="selectedMode === 'cpu'" class="d-flex justify-center mb-4">
+      <v-btn-toggle
+        v-model="selectedPlayerColor"
+        mandatory
+        color="primary"
+        data-testid="player-color-toggle"
+      >
+        <v-btn value="black" data-testid="player-color-black">黒（先手）</v-btn>
+        <v-btn value="white" data-testid="player-color-white">白（後手）</v-btn>
+      </v-btn-toggle>
+    </div>
+
     <div class="d-flex justify-center mb-4">
       <v-checkbox
         v-model="allowUndoEnabled"
@@ -46,11 +58,13 @@ const router = useRouter();
 const store = useGameStore();
 const allowUndoEnabled = ref(false);
 const selectedMode = ref<GameMode>("normal");
+const selectedPlayerColor = ref<"black" | "white">("black");
 
 function startGame() {
   store.startGame({
     allowUndo: allowUndoEnabled.value,
     gameMode: selectedMode.value,
+    playerColor: selectedPlayerColor.value,
   });
   router.push("/game");
 }

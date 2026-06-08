@@ -65,4 +65,36 @@ describe("VMain", () => {
     await wrapper.find("[data-testid='start-button']").trigger("click");
     expect(store.gameMode).toBe("cpu");
   });
+
+  it("ノーマルモードでは先手/後手トグルが表示されない", () => {
+    const wrapper = mount(VMain, { global: { plugins: [vuetify] } });
+    expect(wrapper.find("[data-testid='player-color-toggle']").exists()).toBe(
+      false,
+    );
+  });
+
+  it("CPU対戦モードを選択すると先手/後手トグルが表示される", async () => {
+    const wrapper = mount(VMain, { global: { plugins: [vuetify] } });
+    await wrapper.find("[data-testid='mode-cpu']").trigger("click");
+    expect(wrapper.find("[data-testid='player-color-toggle']").exists()).toBe(
+      true,
+    );
+  });
+
+  it("CPU対戦 + 黒（先手）でスタートすると store の cpuColor が White になる", async () => {
+    const wrapper = mount(VMain, { global: { plugins: [vuetify] } });
+    const store = useGameStore();
+    await wrapper.find("[data-testid='mode-cpu']").trigger("click");
+    await wrapper.find("[data-testid='start-button']").trigger("click");
+    expect(store.cpuColor).toBe("white");
+  });
+
+  it("CPU対戦 + 白（後手）でスタートすると store の cpuColor が Black になる", async () => {
+    const wrapper = mount(VMain, { global: { plugins: [vuetify] } });
+    const store = useGameStore();
+    await wrapper.find("[data-testid='mode-cpu']").trigger("click");
+    await wrapper.find("[data-testid='player-color-white']").trigger("click");
+    await wrapper.find("[data-testid='start-button']").trigger("click");
+    expect(store.cpuColor).toBe("black");
+  });
 });
