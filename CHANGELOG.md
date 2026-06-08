@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.2](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.8.1...v1.8.2) (2026-06-06)
+
+
+### Bug Fixes
+
+* **test:** 「挟めない」テストのボードセットアップを正しい座標に修正する ([f196d4e](https://github.com/beginerbeginer/reversi-vue-ts/commit/f196d4eaff3c029e2aecf940183ac5a21c93b7be))
+* **test:** 「挟めない」テストのボードセットアップを正しい座標に修正する ([2c377bd](https://github.com/beginerbeginer/reversi-vue-ts/commit/2c377bd1bb9ada51c9e17ea30baef2384e08e827)), closes [#276](https://github.com/beginerbeginer/reversi-vue-ts/issues/276)
+
 ## [1.8.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.8.0...v1.8.1) (2026-06-06)
 
 
