@@ -1,6 +1,7 @@
 import { reactive, computed, ref, toRaw } from "vue";
 import { defineStore } from "pinia";
 import { Board, CellState, Point } from "@/models/reversi";
+import { selectMove } from "@/models/cpu";
 
 type BoardSnapshot = { rows: { state: CellState }[][]; turn: CellState };
 export type GameMode = "normal" | "cpu";
@@ -107,6 +108,19 @@ export const useGameStore = defineStore("game", () => {
     // ゲームオーバー時はパス通知ではなく勝敗ダイアログのみ表示する
     if (isGameOver.value) {
       lastPassed.value = null;
+    }
+
+    // cpu モードで人間が石を置けた後、CPU の手番なら自動着手する
+    if (
+      gameMode.value === "cpu" &&
+      stonePlaced &&
+      !isGameOver.value &&
+      board.turn === cpuColor.value
+    ) {
+      const cpuMove = selectMove(toRaw(board), cpuColor.value);
+      if (cpuMove) {
+        put(cpuMove.x, cpuMove.y);
+      }
     }
   }
 
