@@ -56,4 +56,44 @@ describe("useGameStore / CPU自動着手", () => {
     expect(store.isGameOver).toBe(true);
     expect(store.board.blacks + store.board.whites).toBe(totalBefore + 1);
   });
+
+  it("triggerCpuMove() は CPU が先手のとき石を自動で置く", () => {
+    const store = useGameStore();
+    store.startGame({
+      allowUndo: false,
+      gameMode: "cpu",
+      playerColor: "white",
+    });
+    const blacksBefore = store.board.blacks;
+    store.triggerCpuMove();
+    expect(store.board.blacks).toBeGreaterThan(blacksBefore);
+  });
+
+  it("triggerCpuMove() は normal モードでは何もしない", () => {
+    const store = useGameStore();
+    store.startGame({ allowUndo: false, gameMode: "normal" });
+    const blacksBefore = store.board.blacks;
+    store.triggerCpuMove();
+    expect(store.board.blacks).toBe(blacksBefore);
+  });
+
+  it("triggerCpuMove() は人間が先手（board.turn が cpuColor と不一致）では何もしない", () => {
+    const store = useGameStore();
+    store.startGame({
+      allowUndo: false,
+      gameMode: "cpu",
+      playerColor: "black",
+    });
+    const blacksBefore = store.board.blacks;
+    store.triggerCpuMove();
+    expect(store.board.blacks).toBe(blacksBefore);
+  });
+
+  it("cpu モードで put() → undo() すると人間の手番（黒）に戻る", () => {
+    const store = useGameStore();
+    store.startGame({ allowUndo: true, gameMode: "cpu", playerColor: "black" });
+    store.put(3, 2);
+    store.undo();
+    expect(store.board.turn).toBe(CellState.Black);
+  });
 });

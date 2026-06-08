@@ -76,21 +76,23 @@ export const useGameStore = defineStore("game", () => {
     history.value = [];
   }
 
-  function put(x: number, y: number) {
+  function put(x: number, y: number, isCpuMove = false) {
     const p = new Point(x, y);
     const turnBefore = board.turn;
     const wasEmpty = board.ref(p).isNone;
 
     // { state: c.state } で新オブジェクトを生成する。cell 参照ごと保存すると
     // reactive な参照を共有してしまい、undo 後に現在の盤面が書き換わるため
-    const snapshot = allowUndo.value
-      ? {
-          rows: board.rows.map((row) =>
-            row.cells.map((c) => ({ state: c.state })),
-          ),
-          turn: board.turn,
-        }
-      : null;
+    // CPU の着手は人間が undo したときに一緒に巻き戻すため history に積まない
+    const snapshot =
+      allowUndo.value && !isCpuMove
+        ? {
+            rows: board.rows.map((row) =>
+              row.cells.map((c) => ({ state: c.state })),
+            ),
+            turn: board.turn,
+          }
+        : null;
 
     board.put(p);
 
@@ -117,11 +119,22 @@ export const useGameStore = defineStore("game", () => {
       !isGameOver.value &&
       board.turn === cpuColor.value
     ) {
+      // CPU の応手で人間パスの通知を上書きしないよう退避する
+      const passedBefore = lastPassed.value;
       const cpuMove = selectMove(toRaw(board), cpuColor.value);
       if (cpuMove) {
-        put(cpuMove.x, cpuMove.y);
+        put(cpuMove.x, cpuMove.y, true);
+        if (passedBefore !== null) lastPassed.value = passedBefore;
       }
     }
+  }
+
+  function triggerCpuMove() {
+    if (gameMode.value !== "cpu") return;
+    if (board.turn !== cpuColor.value) return;
+    if (isGameOver.value) return;
+    const move = selectMove(toRaw(board), cpuColor.value);
+    if (move) put(move.x, move.y, true);
   }
 
   return {
@@ -138,5 +151,6 @@ export const useGameStore = defineStore("game", () => {
     canUndo,
     startGame,
     undo,
+    triggerCpuMove,
   };
 });
