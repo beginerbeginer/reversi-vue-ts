@@ -72,4 +72,30 @@ describe("useGameStore / startGame・reset", () => {
     store.startGame({ allowUndo: false, gameMode: "normal" });
     expect(store.gameMode).toBe("normal");
   });
+
+  it("startGame({ gameMode: 'cpu', playerColor: 'black' }) を呼ぶと cpuColor が White になる", () => {
+    const store = useGameStore();
+    store.startGame({
+      allowUndo: false,
+      gameMode: "cpu",
+      playerColor: "black",
+    });
+    expect(store.cpuColor).toBe(CellState.White);
+  });
+
+  it("startGame({ gameMode: 'cpu', playerColor: 'white' }) を呼ぶと cpuColor が Black になる", () => {
+    const store = useGameStore();
+    store.startGame({
+      allowUndo: false,
+      gameMode: "cpu",
+      playerColor: "white",
+    });
+    expect(store.cpuColor).toBe(CellState.Black);
+  });
+
+  it("playerColor を省略して startGame を呼ぶと cpuColor がデフォルト White になる", () => {
+    const store = useGameStore();
+    store.startGame({ allowUndo: false, gameMode: "cpu" });
+    expect(store.cpuColor).toBe(CellState.White);
+  });
 });
