@@ -77,6 +77,9 @@ export const useGameStore = defineStore("game", () => {
   }
 
   function put(x: number, y: number, isCpuMove = false) {
+    // cpu のターン中は人間の操作を受け付けない
+    if (!isCpuMove && gameMode.value === "cpu" && board.turn === cpuColor.value)
+      return;
     const p = new Point(x, y);
     const turnBefore = board.turn;
     const wasEmpty = board.ref(p).isNone;

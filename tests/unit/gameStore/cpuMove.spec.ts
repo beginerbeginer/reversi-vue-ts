@@ -96,4 +96,16 @@ describe("useGameStore / CPU自動着手", () => {
     store.undo();
     expect(store.board.turn).toBe(CellState.Black);
   });
+
+  it("cpu のターン中に人間が put() しても盤面が変わらない", () => {
+    const store = useGameStore();
+    store.startGame({
+      allowUndo: false,
+      gameMode: "cpu",
+      playerColor: "white",
+    });
+    const blacksBefore = store.board.blacks;
+    store.put(3, 2);
+    expect(store.board.blacks).toBe(blacksBefore);
+  });
 });
