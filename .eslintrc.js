@@ -17,5 +17,11 @@ module.exports = {
   rules: {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
+    // _ プレフィックスは「意図的な未使用」を示す TypeScript の慣例。
+    // 上位 CPU レベルで color を使うための統一インターフェースを維持するために必要
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      { argsIgnorePattern: "^_" },
+    ],
   },
 };

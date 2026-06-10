@@ -1,8 +1,11 @@
-import { Board, CellState, Point } from "@/models/reversi";
+import { Board, CellState } from "@/models/reversi";
+import type { Point } from "@/models/reversi";
 
+// _color は初級・中級では未使用だが、上位レベルで色を考慮するときのために
+// 全レベルで統一インターフェースを保つ
 export function selectMoveBeginner(
   board: Board,
-  color: CellState,
+  _color: CellState,
 ): Point | null {
   const moves = board.validMoves();
   if (moves.length === 0) return null;
@@ -11,7 +14,7 @@ export function selectMoveBeginner(
 
 export function selectMoveIntermediate(
   board: Board,
-  color: CellState,
+  _color: CellState,
 ): Point | null {
   const moves = board.validMoves();
   if (moves.length === 0) return null;

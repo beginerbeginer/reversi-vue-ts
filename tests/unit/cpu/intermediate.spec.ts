@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Board, CellState, Point } from "@/models/reversi";
+import { Board, CellState } from "@/models/reversi";
 import { selectMoveIntermediate } from "@/models/cpu";
 
 describe("中級CPU selectMoveIntermediate", () => {
