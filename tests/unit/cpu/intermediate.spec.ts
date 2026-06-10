@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { Board, CellState } from "@/models/reversi";
 import { selectMoveIntermediate } from "@/models/cpu";
 
@@ -27,12 +27,24 @@ describe("中級CPU selectMoveIntermediate", () => {
     expect(flips).toBe(maxFlips);
   });
 
-  it("同点の手が複数あるとき、いずれかの有効な手を返す", () => {
+  it("同点の手が複数あるとき、ランダムに1つを選ぶ", () => {
+    // 初期盤面は全有効手が1石返しで同点
     const board = new Board();
-    const move = selectMoveIntermediate(board, CellState.Black);
-    expect(move).not.toBeNull();
-    expect(
-      board.validMoves().some((p) => p.x === move!.x && p.y === move!.y),
-    ).toBe(true);
+    const allMoves = board.validMoves(); // 全候補は同点
+
+    const spy = vi.spyOn(Math, "random");
+    try {
+      // 先頭候補が選ばれること
+      spy.mockReturnValue(0);
+      const moveFirst = selectMoveIntermediate(board, CellState.Black);
+      expect(moveFirst).toEqual(allMoves[0]);
+
+      // 末尾候補が選ばれること
+      spy.mockReturnValue(1 - Number.EPSILON);
+      const moveLast = selectMoveIntermediate(board, CellState.Black);
+      expect(moveLast).toEqual(allMoves[allMoves.length - 1]);
+    } finally {
+      spy.mockRestore();
+    }
   });
 });

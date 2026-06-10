@@ -18,7 +18,10 @@ export function selectMoveIntermediate(
 ): Point | null {
   const moves = board.validMoves();
   if (moves.length === 0) return null;
-  return moves.reduce((best, p) =>
-    board.search(p).length > board.search(best).length ? p : best,
-  );
+  const scored = moves.map((p) => ({ p, flips: board.search(p).length }));
+  const maxFlips = Math.max(...scored.map(({ flips }) => flips));
+  const best = scored
+    .filter(({ flips }) => flips === maxFlips)
+    .map(({ p }) => p);
+  return best[Math.floor(Math.random() * best.length)];
 }
