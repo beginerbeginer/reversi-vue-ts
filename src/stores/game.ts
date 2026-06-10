@@ -75,8 +75,9 @@ export const useGameStore = defineStore("game", () => {
     playerColor?: "black" | "white";
     cpuLevel?: CpuLevel;
   }) {
-    allowUndo.value = options.allowUndo;
     gameMode.value = options.gameMode ?? "normal";
+    // cpu モードでは undo による巻き戻しが機能しないため強制的に無効化する
+    allowUndo.value = gameMode.value === "cpu" ? false : options.allowUndo;
     cpuColor.value =
       options.playerColor === "white" ? CellState.Black : CellState.White;
     cpuLevel.value = options.cpuLevel ?? "beginner";
