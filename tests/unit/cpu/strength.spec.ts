@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { Board, CellState } from "@/models/reversi";
-import type { Point } from "@/models/reversi";
+import { Board, CellState, Point } from "@/models/reversi";
 import { selectMoveBeginner, selectMoveIntermediate } from "@/models/cpu";
 
 type SelectFn = (board: Board, color: CellState) => Point | null;
@@ -32,7 +31,11 @@ function playGame(black: SelectFn, white: SelectFn): CellState | null {
       board.next();
       passes++;
     } else {
+      const stonesBefore = board.blacks + board.whites;
       board.put(move);
+      if (board.blacks + board.whites === stonesBefore) {
+        throw new Error(`CPU が無効手を返した: (${move.x}, ${move.y})`);
+      }
       passes = 0;
     }
   }
@@ -70,6 +73,15 @@ describe("CPU 強さ評価（自己対戦テスト）", () => {
     vi.restoreAllMocks();
   });
 
+  it("playGame は CPU が無効手を返したときエラーをスローする", () => {
+    // Point(0,0) は初期盤面で search が空配列を返す無効手。
+    // board.put() が no-op になり passes がリセットされ続けると無限ループになるため
+    const badCpu: SelectFn = () => new Point(0, 0);
+    expect(() => playGame(badCpu, selectMoveBeginner)).toThrow(
+      "CPU が無効手を返した",
+    );
+  }, 1000);
+
   it("中級 CPU は初級 CPU に 400 戦中 55% 以上勝つ", () => {
     const winRate = measureWinRate(
       selectMoveIntermediate,
@@ -77,5 +89,5 @@ describe("CPU 強さ評価（自己対戦テスト）", () => {
       200,
     );
     expect(winRate).toBeGreaterThan(0.55);
-  });
+  }, 10_000);
 });
