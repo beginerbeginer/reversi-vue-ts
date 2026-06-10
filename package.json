@@ -1,6 +1,6 @@
 {
   "name": "reversi",
-  "version": "1.12.1",
+  "version": "1.12.2",
   "private": true,
   "scripts": {
     "clean": "find src -name '*.js' -delete",

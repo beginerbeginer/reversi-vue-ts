@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.12.2](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.12.1...v1.12.2) (2026-06-10)
+
+
+### Bug Fixes
+
+* **cpu:** playGame が合法手があるのに null をパスとして扱う問題を修正する ([46d5f93](https://github.com/beginerbeginer/reversi-vue-ts/commit/46d5f931d513c7bb8eaa64c7ff7356dec87a1b55))
+* **cpu:** playGame が合法手チェックなしに null をパスとして扱う問題を修正する ([2310243](https://github.com/beginerbeginer/reversi-vue-ts/commit/23102432e04529abbd973c132413d0e94679b0c7))
+
 ## [1.12.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.12.0...v1.12.1) (2026-06-10)
 
 
