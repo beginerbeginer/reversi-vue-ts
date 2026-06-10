@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.12.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.12.0...v1.12.1) (2026-06-10)
+
+
+### Bug Fixes
+
+* **test:** cpu 強さ評価テストの Codex 指摘②③④を対応する ([8b6e4a7](https://github.com/beginerbeginer/reversi-vue-ts/commit/8b6e4a7b6f2263bdf4dcd75a45d728cca3c0303f))
+* **test:** seeded PRNG で strength テストを決定論的にする ([ed9c427](https://github.com/beginerbeginer/reversi-vue-ts/commit/ed9c427d52c25b67b467deb647603c7342cc9cdf))
+
 ## [1.12.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.11.1...v1.12.0) (2026-06-10)
 
 
