@@ -1,9 +1,21 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { Board, CellState } from "@/models/reversi";
 import type { Point } from "@/models/reversi";
 import { selectMoveBeginner, selectMoveIntermediate } from "@/models/cpu";
 
 type SelectFn = (board: Board, color: CellState) => Point | null;
+
+// 32-bit seed から決定論的な乱数列を生成する軽量 PRNG。
+// テスト中の Math.random を差し替えることで結果を再現可能にするために使う
+function mulberry32(seed: number): () => number {
+  return () => {
+    seed += 0x6d2b79f5;
+    let t = seed;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
 // 2 つの CPU 関数で 1 ゲームを完全シミュレートして勝者を返す
 // board.put() は「次の手番がパスになるケース」を内部で自動処理するため、
@@ -48,8 +60,16 @@ function measureWinRate(
 }
 
 describe("CPU 強さ評価（自己対戦テスト）", () => {
-  // 200 戦 × 2 方向 = 400 戦で測定。
-  // 貪欲法の実測勝率は約 60〜62%。閾値 0.55 は統計的に安定して超える値
+  beforeEach(() => {
+    // seed=42 で固定して毎回同じゲーム展開にする。
+    // Math.random をそのまま使うと統計的ばらつきで稀に閾値を下回り flaky になるため
+    vi.spyOn(Math, "random").mockImplementation(mulberry32(42));
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("中級 CPU は初級 CPU に 400 戦中 55% 以上勝つ", () => {
     const winRate = measureWinRate(
       selectMoveIntermediate,
