@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.11.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.10.0...v1.11.0) (2026-06-10)
+
+
+### Features
+
+* **cpu:** cpu着手に0.5秒の待機を設け、将来のレベル追加に対応した設計にする ([3cf360c](https://github.com/beginerbeginer/reversi-vue-ts/commit/3cf360c6670ecd02b4d80142b5beb9b2c90c8876))
+* **cpu:** 初級cpu を実装する（ランダム手選択・自動着手） ([3847b37](https://github.com/beginerbeginer/reversi-vue-ts/commit/3847b37ab3f5c6d0619f7316a504f7166a1f7cea))
+* **cpu:** 初級cpu を実装する（ランダム手選択・自動着手）([#283](https://github.com/beginerbeginer/reversi-vue-ts/issues/283)) ([c1a78a6](https://github.com/beginerbeginer/reversi-vue-ts/commit/c1a78a689a762a84155748e5f5da04734463cc85))
+
+
+### Bug Fixes
+
+* **cpu:** cpu のターン中に人間の操作が通ってしまう問題を修正する ([46edb7b](https://github.com/beginerbeginer/reversi-vue-ts/commit/46edb7b723c4f32a699b552c3c6d5d76b9ae1c11))
+* **cpu:** cpu モードの3つのバグを修正する ([#292](https://github.com/beginerbeginer/reversi-vue-ts/issues/292)) ([3a2930b](https://github.com/beginerbeginer/reversi-vue-ts/commit/3a2930b119fd3c4e3ef81c844ba2385a865a4cbe))
+* **ui:** cpu のターン中に「置けます」が表示されてしまう問題を修正する ([cd9f93d](https://github.com/beginerbeginer/reversi-vue-ts/commit/cd9f93da04852eb52536d4af3483765c6804d117))
+* **ui:** cpu モードで待った機能を選択できないようにする ([#302](https://github.com/beginerbeginer/reversi-vue-ts/issues/302)) ([8917138](https://github.com/beginerbeginer/reversi-vue-ts/commit/8917138c6b4eefffc1222265cf29dc4e212dbc25))
+
 ## [1.10.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.9.0...v1.10.0) (2026-06-08)
 
 
