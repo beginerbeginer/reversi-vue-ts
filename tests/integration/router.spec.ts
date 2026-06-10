@@ -65,6 +65,7 @@ describe("Router ナビゲーション", () => {
       await flushPromises();
       expect(spy).toHaveBeenCalledWith({
         allowUndo: true,
+        cpuLevel: "beginner",
         gameMode: "normal",
         playerColor: "black",
       });

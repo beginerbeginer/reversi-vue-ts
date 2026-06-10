@@ -104,4 +104,14 @@ describe("useGameStore / startGame・reset", () => {
     store.startGame({ allowUndo: true, gameMode: "cpu" });
     expect(store.allowUndo).toBe(false);
   });
+
+  it("startGame({ cpuLevel: 'intermediate' }) を呼ぶと store の cpuLevel が 'intermediate' になる", () => {
+    const store = useGameStore();
+    store.startGame({
+      allowUndo: false,
+      gameMode: "cpu",
+      cpuLevel: "intermediate",
+    });
+    expect(store.cpuLevel).toBe("intermediate");
+  });
 });
