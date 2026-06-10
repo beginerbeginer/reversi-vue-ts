@@ -1,9 +1,11 @@
 import { reactive, computed, ref, toRaw } from "vue";
 import { defineStore } from "pinia";
 import { Board, CellState, Point } from "@/models/reversi";
+import { selectMoveBeginner } from "@/models/cpu";
 
 type BoardSnapshot = { rows: { state: CellState }[][]; turn: CellState };
 export type GameMode = "normal" | "cpu";
+export type CpuLevel = "beginner";
 
 export const useGameStore = defineStore("game", () => {
   const board = reactive(new Board());
@@ -11,6 +13,7 @@ export const useGameStore = defineStore("game", () => {
   const allowUndo = ref(false);
   const gameMode = ref<GameMode>("normal");
   const cpuColor = ref<CellState>(CellState.White);
+  const cpuLevel = ref<CpuLevel>("beginner");
   const history = ref<BoardSnapshot[]>([]);
 
   const canUndo = computed(() => allowUndo.value && history.value.length > 0);
@@ -39,15 +42,45 @@ export const useGameStore = defineStore("game", () => {
     return null;
   });
 
+  // レベルごとの selectMove を返す。レベルを追加するときはここにケースを追加する
+  function getCpuMoveSelector() {
+    return selectMoveBeginner;
+  }
+
+  // 全レベル共通: 500ms 待機してから CPU が着手する
+  // put() から再帰呼び出しせず fire-and-forget で呼ぶことで
+  // lastPassed の退避/復元ハックが不要になる
+  async function cpuTurn(): Promise<void> {
+    await new Promise<void>((resolve) => setTimeout(resolve, 500));
+    if (
+      gameMode.value !== "cpu" ||
+      isGameOver.value ||
+      board.turn !== cpuColor.value
+    )
+      return;
+    const selectMove = getCpuMoveSelector();
+    const move = selectMove(toRaw(board), cpuColor.value);
+    if (move) {
+      put(move.x, move.y, true);
+      // 人間がパスになった場合、CPU がもう一度打つ（再度 0.5s 待つ）
+      if (!isGameOver.value && board.turn === cpuColor.value) {
+        void cpuTurn();
+      }
+    }
+  }
+
   function startGame(options: {
     allowUndo: boolean;
     gameMode?: GameMode;
     playerColor?: "black" | "white";
+    cpuLevel?: CpuLevel;
   }) {
-    allowUndo.value = options.allowUndo;
     gameMode.value = options.gameMode ?? "normal";
+    // cpu モードでは undo による巻き戻しが機能しないため強制的に無効化する
+    allowUndo.value = gameMode.value === "cpu" ? false : options.allowUndo;
     cpuColor.value =
       options.playerColor === "white" ? CellState.Black : CellState.White;
+    cpuLevel.value = options.cpuLevel ?? "beginner";
     reset();
   }
 
@@ -75,21 +108,26 @@ export const useGameStore = defineStore("game", () => {
     history.value = [];
   }
 
-  function put(x: number, y: number) {
+  function put(x: number, y: number, isCpuMove = false) {
+    // cpu のターン中は人間の操作を受け付けない
+    if (!isCpuMove && gameMode.value === "cpu" && board.turn === cpuColor.value)
+      return;
     const p = new Point(x, y);
     const turnBefore = board.turn;
     const wasEmpty = board.ref(p).isNone;
 
     // { state: c.state } で新オブジェクトを生成する。cell 参照ごと保存すると
     // reactive な参照を共有してしまい、undo 後に現在の盤面が書き換わるため
-    const snapshot = allowUndo.value
-      ? {
-          rows: board.rows.map((row) =>
-            row.cells.map((c) => ({ state: c.state })),
-          ),
-          turn: board.turn,
-        }
-      : null;
+    // CPU の着手は人間が undo したときに一緒に巻き戻すため history に積まない
+    const snapshot =
+      allowUndo.value && !isCpuMove
+        ? {
+            rows: board.rows.map((row) =>
+              row.cells.map((c) => ({ state: c.state })),
+            ),
+            turn: board.turn,
+          }
+        : null;
 
     board.put(p);
 
@@ -108,6 +146,26 @@ export const useGameStore = defineStore("game", () => {
     if (isGameOver.value) {
       lastPassed.value = null;
     }
+
+    // cpu モードで人間が石を置けた後、CPU の手番なら非同期で着手する
+    if (
+      gameMode.value === "cpu" &&
+      stonePlaced &&
+      !isGameOver.value &&
+      board.turn === cpuColor.value
+    ) {
+      void cpuTurn();
+    }
+  }
+
+  function triggerCpuMove() {
+    if (
+      gameMode.value !== "cpu" ||
+      board.turn !== cpuColor.value ||
+      isGameOver.value
+    )
+      return;
+    void cpuTurn();
   }
 
   return {
@@ -121,8 +179,10 @@ export const useGameStore = defineStore("game", () => {
     allowUndo,
     gameMode,
     cpuColor,
+    cpuLevel,
     canUndo,
     startGame,
     undo,
+    triggerCpuMove,
   };
 });

@@ -39,9 +39,15 @@ const stoneClass = computed(() => ({
   "black-stone": props.cell.isBlack,
 }));
 
-const isValid = computed(() =>
-  store.validMoves.some((p) => p.x === props.cell.x && p.y === props.cell.y),
-);
+// cpu のターン中は人間の有効手表示を消す。cpu の手番ハイライトを人間に見せると
+// 操作できると誤解させるため
+const isValid = computed(() => {
+  if (store.gameMode === "cpu" && store.board.turn === store.cpuColor)
+    return false;
+  return store.validMoves.some(
+    (p) => p.x === props.cell.x && p.y === props.cell.y,
+  );
+});
 
 // 座標は 1 始まりで表記する。スクリーンリーダー向けに石の状態を自然言語で伝えるため
 const ariaLabel = computed(() => {

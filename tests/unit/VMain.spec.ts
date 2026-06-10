@@ -97,4 +97,35 @@ describe("VMain", () => {
     await wrapper.find("[data-testid='start-button']").trigger("click");
     expect(store.cpuColor).toBe("black");
   });
+
+  it("CPU対戦モードを選択するとallowUndoチェックボックスがdisabledになる", async () => {
+    const wrapper = mount(VMain, { global: { plugins: [vuetify] } });
+    await wrapper.find("[data-testid='mode-cpu']").trigger("click");
+    const checkbox = wrapper.find(
+      "[data-testid='allow-undo-checkbox'] input[type='checkbox']",
+    );
+    expect((checkbox.element as HTMLInputElement).disabled).toBe(true);
+  });
+
+  it("CPU対戦モードに切り替えるとallowUndoがfalseにリセットされる", async () => {
+    const wrapper = mount(VMain, { global: { plugins: [vuetify] } });
+    const store = useGameStore();
+    const checkbox = wrapper.find(
+      "[data-testid='allow-undo-checkbox'] input[type='checkbox']",
+    );
+    await checkbox.setValue(true);
+    await wrapper.find("[data-testid='mode-cpu']").trigger("click");
+    await wrapper.find("[data-testid='start-button']").trigger("click");
+    expect(store.allowUndo).toBe(false);
+  });
+
+  it("ノーマルモードに戻すとallowUndoチェックボックスがenabledになる", async () => {
+    const wrapper = mount(VMain, { global: { plugins: [vuetify] } });
+    await wrapper.find("[data-testid='mode-cpu']").trigger("click");
+    await wrapper.find("[data-testid='mode-normal']").trigger("click");
+    const checkbox = wrapper.find(
+      "[data-testid='allow-undo-checkbox'] input[type='checkbox']",
+    );
+    expect((checkbox.element as HTMLInputElement).disabled).toBe(false);
+  });
 });

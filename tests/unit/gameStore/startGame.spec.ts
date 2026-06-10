@@ -98,4 +98,10 @@ describe("useGameStore / startGame・reset", () => {
     store.startGame({ allowUndo: false, gameMode: "cpu" });
     expect(store.cpuColor).toBe(CellState.White);
   });
+
+  it("startGame({ allowUndo: true, gameMode: 'cpu' }) を呼んでも store.allowUndo が false になる", () => {
+    const store = useGameStore();
+    store.startGame({ allowUndo: true, gameMode: "cpu" });
+    expect(store.allowUndo).toBe(false);
+  });
 });

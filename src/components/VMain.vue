@@ -31,7 +31,9 @@
         v-model="allowUndoEnabled"
         label="待った機能を有効にする"
         data-testid="allow-undo-checkbox"
-        hide-details
+        :disabled="selectedMode === 'cpu'"
+        :hint="selectedMode === 'cpu' ? 'CPU対戦では利用できません' : ''"
+        hide-details="auto"
       />
     </div>
 
@@ -49,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useGameStore } from "@/stores/game";
 import type { GameMode } from "@/stores/game";
@@ -59,6 +61,12 @@ const store = useGameStore();
 const allowUndoEnabled = ref(false);
 const selectedMode = ref<GameMode>("normal");
 const selectedPlayerColor = ref<"black" | "white">("black");
+
+// cpu モードに切り替えた瞬間に allowUndo を解除する。
+// disabled にするだけでは既存の true 値が残り startGame に渡ってしまうため
+watch(selectedMode, (mode) => {
+  if (mode === "cpu") allowUndoEnabled.value = false;
+});
 
 function startGame() {
   store.startGame({
