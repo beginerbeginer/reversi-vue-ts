@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.12.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.11.1...v1.12.0) (2026-06-10)
+
+
+### Features
+
+* **cpu:** 中級cpu を実装する（貪欲法・最大反転手選択）([#284](https://github.com/beginerbeginer/reversi-vue-ts/issues/284)) ([0388519](https://github.com/beginerbeginer/reversi-vue-ts/commit/03885198fed304af8bfe322b4e202f792bec13fa))
+* **cpu:** 中級cpu を実装する（貪欲法・最大反転手選択）([#284](https://github.com/beginerbeginer/reversi-vue-ts/issues/284)) ([1fcfb24](https://github.com/beginerbeginer/reversi-vue-ts/commit/1fcfb24e126345887ae46e091f08392b714400f3))
+
+
+### Bug Fixes
+
+* **cpu:** 同点候補からランダム選択・テスト強化 ([6502d7d](https://github.com/beginerbeginer/reversi-vue-ts/commit/6502d7de94ce479faa36bf474b2079e650e03ec8))
+* **lint:** 意図的未使用引数の警告を解消する ([1938082](https://github.com/beginerbeginer/reversi-vue-ts/commit/19380828fe317546428dfb39a4ebb39dd5e9af3d))
+
 ## [1.11.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.10.0...v1.11.0) (2026-06-10)
 
 
