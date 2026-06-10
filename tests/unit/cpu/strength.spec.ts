@@ -28,6 +28,13 @@ function playGame(black: SelectFn, white: SelectFn): CellState | null {
     const player = board.turn === CellState.Black ? black : white;
     const move = player(board, board.turn);
     if (move === null) {
+      // 合法手があるのに null を返すのは CPU のバグ。不正なゲームを進めると
+      // 強さ測定が誤った値になるため、ここで即エラーにする
+      if (board.validMoves().length > 0) {
+        throw new Error(
+          `CPU が合法手があるのに null を返した（合法手数: ${board.validMoves().length}）`,
+        );
+      }
       board.next();
       passes++;
     } else {
@@ -79,6 +86,15 @@ describe("CPU 強さ評価（自己対戦テスト）", () => {
     const badCpu: SelectFn = () => new Point(0, 0);
     expect(() => playGame(badCpu, selectMoveBeginner)).toThrow(
       "CPU が無効手を返した",
+    );
+  }, 1000);
+
+  it("playGame は合法手があるのに null を返した CPU に対してエラーをスローする", () => {
+    // 合法手があるのに null を返す CPU はバグ。不正パスとして進めると
+    // 強さ測定が誤った値になるため即エラーにする
+    const nullCpu: SelectFn = () => null;
+    expect(() => playGame(nullCpu, selectMoveBeginner)).toThrow(
+      "CPU が合法手があるのに null を返した",
     );
   }, 1000);
 
