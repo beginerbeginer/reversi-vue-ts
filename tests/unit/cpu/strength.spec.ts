@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { Board, CellState, Point } from "@/models/reversi";
-import { selectMoveBeginner, selectMoveIntermediate } from "@/models/cpu";
+import {
+  selectMoveBeginner,
+  selectMoveIntermediate,
+  selectMoveAdvanced,
+} from "@/models/cpu";
 
 type SelectFn = (board: Board, color: CellState) => Point | null;
 
@@ -97,6 +101,15 @@ describe("CPU 強さ評価（自己対戦テスト）", () => {
       "CPU が合法手があるのに null を返した",
     );
   }, 1000);
+
+  it("上級 CPU は中級 CPU に 400 戦中 55% 以上勝つ", () => {
+    const winRate = measureWinRate(
+      selectMoveAdvanced,
+      selectMoveIntermediate,
+      200,
+    );
+    expect(winRate).toBeGreaterThan(0.55);
+  }, 30_000);
 
   it("中級 CPU は初級 CPU に 400 戦中 55% 以上勝つ", () => {
     const winRate = measureWinRate(

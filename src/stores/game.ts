@@ -1,11 +1,15 @@
 import { reactive, computed, ref, toRaw } from "vue";
 import { defineStore } from "pinia";
 import { Board, CellState, Point } from "@/models/reversi";
-import { selectMoveBeginner, selectMoveIntermediate } from "@/models/cpu";
+import {
+  selectMoveBeginner,
+  selectMoveIntermediate,
+  selectMoveAdvanced,
+} from "@/models/cpu";
 
 type BoardSnapshot = { rows: { state: CellState }[][]; turn: CellState };
 export type GameMode = "normal" | "cpu";
-export type CpuLevel = "beginner" | "intermediate";
+export type CpuLevel = "beginner" | "intermediate" | "advanced";
 
 export const useGameStore = defineStore("game", () => {
   const board = reactive(new Board());
@@ -44,6 +48,7 @@ export const useGameStore = defineStore("game", () => {
 
   // レベルごとの selectMove を返す。レベルを追加するときはここにケースを追加する
   function getCpuMoveSelector() {
+    if (cpuLevel.value === "advanced") return selectMoveAdvanced;
     if (cpuLevel.value === "intermediate") return selectMoveIntermediate;
     return selectMoveBeginner;
   }

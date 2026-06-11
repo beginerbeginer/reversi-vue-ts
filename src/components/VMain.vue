@@ -37,6 +37,7 @@
         <v-btn value="intermediate" data-testid="cpu-level-intermediate"
           >中級</v-btn
         >
+        <v-btn value="advanced" data-testid="cpu-level-advanced">上級</v-btn>
       </v-btn-toggle>
     </div>
 
