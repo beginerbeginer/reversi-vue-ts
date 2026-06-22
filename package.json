@@ -33,7 +33,7 @@
     "@mdi/font": "^7.4.47",
     "canvas-confetti": "^1.9.4",
     "pinia": "^3.0.4",
-    "vue": "^3.4.0",
+    "vue": "^3.5.38",
     "vue-router": "^5.1.0",
     "vuetify": "^4.0.7"
   },
