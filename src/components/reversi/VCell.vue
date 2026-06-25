@@ -65,6 +65,9 @@ function onClick() {
 <style scoped>
 .cell-wrapper {
   position: relative;
+  /* 行内で 8 等分し正方形を保つ。固定 px だと狭幅画面で盤がはみ出すため */
+  flex: 1 1 0;
+  aspect-ratio: 1;
   /* button のデフォルトスタイルをリセットする。見た目はセルと同一にするため */
   padding: 0;
   border: none;
@@ -73,18 +76,19 @@ function onClick() {
 }
 
 .cell {
-  height: 64px;
-  width: 64px;
+  height: 100%;
+  width: 100%;
+  /* border をセル幅の内側に収める。relative なセル幅計算とずれないため */
+  box-sizing: border-box;
   background-color: darkgreen;
   border: 2px solid black;
 }
 
 .stone {
   position: absolute;
-  top: 2px;
-  left: 2px;
-  height: 60px;
-  width: 60px;
+  /* 旧 2px/64px ≒ 3% を比率で表現しつつ、下限を border 幅(2px)に揃える。
+     狭幅でセルが縮んでも石が枠線に被らないようにするため */
+  inset: max(2px, 3%);
   border-radius: 50%;
 }
 
@@ -101,8 +105,9 @@ function onClick() {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 11px;
-  width: 11px;
+  /* 旧 11px/64px ≒ 17% を比率で表現する */
+  width: 17%;
+  aspect-ratio: 1;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.4);
   pointer-events: none;
