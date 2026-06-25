@@ -59,8 +59,10 @@ export class Board {
       let cur = new Point(p.x + dx, p.y + dy);
       // 相手石が続く限り集め、自分の石で閉じれば確定。
       // 盤外・空マスに当たったら挟めないので空配列
-      while (cur.inBoard && !this.ref(cur).isNone) {
-        if (this.ref(cur).state === this.turn) return found;
+      while (cur.inBoard) {
+        const cell = this.ref(cur);
+        if (cell.isNone) return [];
+        if (cell.state === this.turn) return found;
         found.push(cur);
         cur = new Point(cur.x + dx, cur.y + dy);
       }
