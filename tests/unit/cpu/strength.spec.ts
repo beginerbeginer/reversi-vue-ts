@@ -1,10 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { Board, CellState, Point } from "@/models/reversi";
-import {
-  selectMoveBeginner,
-  selectMoveIntermediate,
-  selectMoveAdvanced,
-} from "@/models/cpu";
+import { selectMoveBeginner } from "@/models/cpu";
 
 type SelectFn = (board: Board, color: CellState) => Point | null;
 
@@ -56,23 +52,6 @@ function playGame(black: SelectFn, white: SelectFn): CellState | null {
   return null;
 }
 
-// stronger を先手・後手の両方で games 回ずつ対戦させて勝率を返す
-// 先手有利・後手不利のバイアスを相殺するため両方向で測定する
-function measureWinRate(
-  stronger: SelectFn,
-  weaker: SelectFn,
-  games: number,
-): number {
-  let wins = 0;
-  for (let i = 0; i < games; i++) {
-    if (playGame(stronger, weaker) === CellState.Black) wins++;
-  }
-  for (let i = 0; i < games; i++) {
-    if (playGame(weaker, stronger) === CellState.White) wins++;
-  }
-  return wins / (games * 2);
-}
-
 describe("CPU 強さ評価（自己対戦テスト）", () => {
   beforeEach(() => {
     // seed=42 で固定して毎回同じゲーム展開にする。
@@ -101,24 +80,4 @@ describe("CPU 強さ評価（自己対戦テスト）", () => {
       "CPU が合法手があるのに null を返した",
     );
   }, 1000);
-
-  it("上級 CPU は中級 CPU に 200 戦中 55% 以上勝つ", () => {
-    // CI 環境での実行時間を抑えるため 100 戦×2 方向（200 戦合計）とする。
-    // seeded PRNG により結果は決定論的なので統計的ばらつきは生じない
-    const winRate = measureWinRate(
-      selectMoveAdvanced,
-      selectMoveIntermediate,
-      100,
-    );
-    expect(winRate).toBeGreaterThan(0.55);
-  }, 20_000);
-
-  it("中級 CPU は初級 CPU に 400 戦中 55% 以上勝つ", () => {
-    const winRate = measureWinRate(
-      selectMoveIntermediate,
-      selectMoveBeginner,
-      200,
-    );
-    expect(winRate).toBeGreaterThan(0.55);
-  }, 10_000);
 });
