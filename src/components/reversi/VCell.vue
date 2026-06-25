@@ -86,8 +86,9 @@ function onClick() {
 
 .stone {
   position: absolute;
-  /* 旧 2px/64px ≒ 3% を比率で表現し、セルサイズに追従させる */
-  inset: 3%;
+  /* 旧 2px/64px ≒ 3% を比率で表現しつつ、下限を border 幅(2px)に揃える。
+     狭幅でセルが縮んでも石が枠線に被らないようにするため */
+  inset: max(2px, 3%);
   border-radius: 50%;
 }
 
