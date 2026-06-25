@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.13.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.12.2...v1.13.0) (2026-06-25)
+
+
+### Features
+
+* **cpu:** ミニマックス法（depth=2, α-β枝刈り）で上級 CPU を実装する ([e5a2763](https://github.com/beginerbeginer/reversi-vue-ts/commit/e5a2763e61f73255abd241d50f0e57f72bbe0be3))
+* **cpu:** ミニマックス法（depth=2, α-β枝刈り）で上級 CPU を実装する ([#285](https://github.com/beginerbeginer/reversi-vue-ts/issues/285)) ([3811812](https://github.com/beginerbeginer/reversi-vue-ts/commit/3811812c45ffe1a2eb28f9548dfe824f0e1450a7))
+
 ## [1.12.2](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.12.1...v1.12.2) (2026-06-10)
 
 
