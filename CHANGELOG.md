@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.13.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.13.0...v1.13.1) (2026-06-25)
+
+
+### Bug Fixes
+
+* **board:** 狭幅画面（iPhone SE 3rd）で盤面がはみ出さないようレスポンシブ化する ([e128c6d](https://github.com/beginerbeginer/reversi-vue-ts/commit/e128c6da55d3a6fea2f21530691c9893827bdc3f))
+* **board:** 狭幅画面で盤面がはみ出さないようレスポンシブ化する ([45e4b37](https://github.com/beginerbeginer/reversi-vue-ts/commit/45e4b37081726fe533a6fe120264e91c59e3a54f))
+* **board:** 石の余白の下限を border 幅に揃えて狭幅時の枠被りを防ぐ ([d9b8c9f](https://github.com/beginerbeginer/reversi-vue-ts/commit/d9b8c9f5a62890861d62fed4aaaa974f6234aa7d))
+
 ## [1.13.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.12.2...v1.13.0) (2026-06-25)
 
 
