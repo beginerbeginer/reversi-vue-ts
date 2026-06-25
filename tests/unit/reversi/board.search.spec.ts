@@ -123,4 +123,35 @@ describe("Board / search()", () => {
     const result = board.search(new Point(3, 2));
     expect(result).toEqual([expect.objectContaining({ x: 3, y: 3 })]);
   });
+
+  it("8方向すべてに挟める盤面では、各方向の相手石8つを返す", () => {
+    const board = new Board();
+    board.rows.forEach((row) =>
+      row.cells.forEach((cell) => (cell.state = CellState.None)),
+    );
+    // 中心 (4,4) を空にし、8方向それぞれ距離1に白・距離2に黒を置く。
+    // 黒番で (4,4) に置くと全方向で1つずつ挟め、白8つが返るはず
+    const dirs = [
+      [0, -1],
+      [0, 1],
+      [-1, 0],
+      [1, 0],
+      [-1, -1],
+      [1, -1],
+      [-1, 1],
+      [1, 1],
+    ];
+    for (const [dx, dy] of dirs) {
+      board.rows[4 + dy].cells[4 + dx].state = CellState.White;
+      board.rows[4 + dy * 2].cells[4 + dx * 2].state = CellState.Black;
+    }
+    board.turn = CellState.Black;
+    const result = board.search(new Point(4, 4));
+    expect(result).toHaveLength(8);
+    for (const [dx, dy] of dirs) {
+      expect(result).toContainEqual(
+        expect.objectContaining({ x: 4 + dx, y: 4 + dy }),
+      );
+    }
+  });
 });

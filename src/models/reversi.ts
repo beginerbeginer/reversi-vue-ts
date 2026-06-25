@@ -52,41 +52,33 @@ export class Board {
   public search(p: Point): Point[] {
     if (!this.ref(p).isNone) return [];
 
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
-    /**
-     * @param _p  :探索対象の座標
-     * @param next:次の座標を受け取る関数
-     * @param lst :リスト
-     */
-    const _search = (
-      _p: Point,
-      next: (pre: Point) => Point,
-      lst: Point[],
-    ): Point[] => {
-      const _next = next(_p);
-
-      if (!_next.inBoard || self.ref(_next).isNone) {
-        return [];
+    // アロー関数なので this は search() の this（＝Board）を束縛する。
+    // 通常関数だと this がずれるため self へ退避する必要があったが、不要
+    const searchDirection = (dx: number, dy: number): Point[] => {
+      const found: Point[] = [];
+      let cur = new Point(p.x + dx, p.y + dy);
+      // 相手石が続く限り集め、自分の石で閉じれば確定。
+      // 盤外・空マスに当たったら挟めないので空配列
+      while (cur.inBoard && !this.ref(cur).isNone) {
+        if (this.ref(cur).state === this.turn) return found;
+        found.push(cur);
+        cur = new Point(cur.x + dx, cur.y + dy);
       }
-      if (self.ref(_next).state !== self.turn) {
-        lst.push(_next);
-        return _search(_next, next, lst);
-      }
-      return lst;
+      return [];
     };
-    let result: Point[] = [];
 
-    // 石を置いたマスの周囲を探索
-    result = result.concat(_search(p, (p) => new Point(p.x, p.y + 1), []));
-    result = result.concat(_search(p, (p) => new Point(p.x, p.y - 1), []));
-    result = result.concat(_search(p, (p) => new Point(p.x + 1, p.y), []));
-    result = result.concat(_search(p, (p) => new Point(p.x - 1, p.y), []));
-    result = result.concat(_search(p, (p) => new Point(p.x + 1, p.y + 1), []));
-    result = result.concat(_search(p, (p) => new Point(p.x - 1, p.y + 1), []));
-    result = result.concat(_search(p, (p) => new Point(p.x + 1, p.y - 1), []));
-    result = result.concat(_search(p, (p) => new Point(p.x - 1, p.y - 1), []));
-    return result;
+    // 8方向の単位ベクトル（上下左右＋斜め4つ）
+    const directions = [
+      [0, 1],
+      [0, -1],
+      [1, 0],
+      [-1, 0],
+      [1, 1],
+      [-1, 1],
+      [1, -1],
+      [-1, -1],
+    ];
+    return directions.flatMap(([dx, dy]) => searchDirection(dx, dy));
   }
 
   public get blacks(): number {
