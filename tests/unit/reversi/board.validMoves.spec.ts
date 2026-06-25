@@ -20,4 +20,19 @@ describe("Board / validMoves()", () => {
     );
     expect(board.validMoves()).toHaveLength(0);
   });
+
+  it("validMovesFor(color) は手番に関係なくその色の合法手を返し、turn を変えない", () => {
+    // 期待値: 手番を白にしたときの合法手
+    const ref = new Board();
+    ref.turn = CellState.White;
+    const expectedWhite = ref.validMoves();
+
+    // 手番は黒のまま White を問い合わせる
+    const board = new Board(); // turn = Black
+    const result = board.validMovesFor(CellState.White);
+
+    expect(result).toEqual(expectedWhite);
+    // 純粋クエリ: 問い合わせで手番が変わらない
+    expect(board.turn).toBe(CellState.Black);
+  });
 });

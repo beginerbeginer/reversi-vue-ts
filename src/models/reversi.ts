@@ -50,10 +50,15 @@ export class Board {
 
   // 隣の石がひっくり返せるか探索
   public search(p: Point): Point[] {
+    return this.searchFor(p, this.turn);
+  }
+
+  // 指定色の視点で p に置いたとき挟める相手石を返す純粋クエリ。
+  // turn を変更せずに相手番を検査できるよう、手番依存を color 引数に切り出した
+  public searchFor(p: Point, color: CellState): Point[] {
     if (!this.ref(p).isNone) return [];
 
-    // アロー関数なので this は search() の this（＝Board）を束縛する。
-    // 通常関数だと this がずれるため self へ退避する必要があったが、不要
+    // アロー関数なので this は searchFor() の this（＝Board）を束縛する
     const searchDirection = (dx: number, dy: number): Point[] => {
       const found: Point[] = [];
       let cur = new Point(p.x + dx, p.y + dy);
@@ -62,7 +67,7 @@ export class Board {
       while (cur.inBoard) {
         const cell = this.ref(cur);
         if (cell.isNone) return [];
-        if (cell.state === this.turn) return found;
+        if (cell.state === color) return found;
         found.push(cur);
         cur = new Point(cur.x + dx, cur.y + dy);
       }
@@ -100,10 +105,15 @@ export class Board {
   }
 
   public validMoves(): Point[] {
+    return this.validMovesFor(this.turn);
+  }
+
+  // 指定色の合法手を返す純粋クエリ。turn を変更せずに相手番を問い合わせるため
+  public validMovesFor(color: CellState): Point[] {
     const moves: Point[] = [];
     for (let y = 0; y < 8; y++) {
       for (let x = 0; x < 8; x++) {
-        if (this.search(new Point(x, y)).length > 0) {
+        if (this.searchFor(new Point(x, y), color).length > 0) {
           moves.push(new Point(x, y));
         }
       }
