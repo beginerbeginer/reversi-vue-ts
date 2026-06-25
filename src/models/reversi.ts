@@ -10,7 +10,6 @@ export class Board {
     this.rows[3].cells[4].state = CellState.Black;
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   public put(p: Point) {
     if (!this.ref(p).isNone) {
       return;
