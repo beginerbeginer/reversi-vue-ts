@@ -49,6 +49,9 @@ export class Board {
   }
 
   // 隣の石がひっくり返せるか探索
+  // searchFor に統一せず薄いラッパーを残す。put・CPU・テストなど 27 箇所が
+  // search(p) を呼んでおり、「今の手番」での探索が大多数。色指定を省ける窓口を
+  // 残すことで既存呼び出しを変更せずに済み、呼び出し側の意図も簡潔になるため
   public search(p: Point): Point[] {
     return this.searchFor(p, this.turn);
   }
