@@ -28,16 +28,14 @@ export const useGameStore = defineStore("game", () => {
 
   const validMoves = computed(() => board.validMoves());
 
-  // 両者ともパスになる = どちらの手番でも置ける場所がない
-  // 現在手番は validMoves（computed 済み）を再利用し、64 マス探索の重複を避ける
-  // toRaw で next() を呼ぶことで reactive なターン変更を起こさずに相手番を検査する
+  // 両者ともパスになる = どちらの手番でも置ける場所がない。
+  // 現在手番は validMoves（computed 済み）を再利用し、64 マス探索の重複を避ける。
+  // 相手番は turn を変えずに validMovesFor で問い合わせる（破壊的な next() の往復が不要）
   const isGameOver = computed(() => {
     if (validMoves.value.length > 0) return false;
-    const raw = toRaw(board);
-    raw.next();
-    const otherCanMove = raw.validMoves().length > 0;
-    raw.next();
-    return !otherCanMove;
+    const opponent =
+      board.turn === CellState.Black ? CellState.White : CellState.Black;
+    return board.validMovesFor(opponent).length === 0;
   });
 
   const winner = computed((): CellState | null => {
