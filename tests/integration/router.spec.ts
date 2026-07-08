@@ -130,4 +130,14 @@ describe("Router ナビゲーション", () => {
       wrapper.unmount();
     });
   });
+
+  describe("ルート名", () => {
+    // ルート名は画面（ページ）を表す識別子。コンポーネント接頭辞 V を流用しない
+    it("画面を表すルート名（Home / Game）で定義されている", () => {
+      const home = routes.find((r) => r.path === "/");
+      const game = routes.find((r) => r.path === "/game");
+      expect(home?.name).toBe("Home");
+      expect(game?.name).toBe("Game");
+    });
+  });
 });
