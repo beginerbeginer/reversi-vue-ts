@@ -31,23 +31,14 @@ import { computed } from "vue";
 import { type Cell } from "@/models/reversi";
 import { useGameStore } from "@/stores/game";
 
-const props = defineProps<{ cell: Cell }>();
-const store = useGameStore();
+// isValid は親から props で受け取る。末端の VCell が store 全体に依存すると
+// 単体テストで Pinia の丸ごとセットアップが必要になり結合が強くなるため
+const props = defineProps<{ cell: Cell; isValid: boolean }>();
 
 const stoneClass = computed(() => ({
   "white-stone": props.cell.isWhite,
   "black-stone": props.cell.isBlack,
 }));
-
-// cpu のターン中は人間の有効手表示を消す。cpu の手番ハイライトを人間に見せると
-// 操作できると誤解させるため
-const isValid = computed(() => {
-  if (store.gameMode === "cpu" && store.board.turn === store.cpuColor)
-    return false;
-  return store.validMoves.some(
-    (p) => p.x === props.cell.x && p.y === props.cell.y,
-  );
-});
 
 // 座標は 1 始まりで表記する。スクリーンリーダー向けに石の状態を自然言語で伝えるため
 const ariaLabel = computed(() => {
@@ -57,8 +48,10 @@ const ariaLabel = computed(() => {
   return `${pos} 置けます`;
 });
 
+// store の取得を着手時まで遅らせる。setup で呼ぶと表示だけの VCell も
+// Pinia セットアップを要求してしまい、単体テストの負荷が下がらないため
 function onClick() {
-  store.put(props.cell.x, props.cell.y);
+  useGameStore().put(props.cell.x, props.cell.y);
 }
 </script>
 
