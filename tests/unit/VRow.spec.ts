@@ -25,4 +25,12 @@ describe("VRow", () => {
     const wrapper = mount(VRow, { props: { row, validMoves: [] } });
     expect(wrapper.findAll("button.cell-wrapper").length).toBe(0);
   });
+
+  it("x が一致しても y が異なるなら有効手にならない", () => {
+    const row = new Row(0); // この行のセルは y=0
+    // x=2 は一致するが y=5 の別行の手。座標は x,y の両方で一致させる必要がある
+    const validMoves = [new Point(2, 5)];
+    const wrapper = mount(VRow, { props: { row, validMoves } });
+    expect(wrapper.findAll("button.cell-wrapper").length).toBe(0);
+  });
 });
