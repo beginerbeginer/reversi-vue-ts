@@ -1,14 +1,20 @@
 <template>
   <div class="board">
-    <VRow v-for="row in board.rows" :key="row.num" :row="row" />
+    <VRow
+      v-for="row in board.rows"
+      :key="row.num"
+      :row="row"
+      :valid-moves="validMoves"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import VRow from "@/components/reversi/VRow.vue";
-import { type Board } from "@/models/reversi";
+import { type Board, type Point } from "@/models/reversi";
 
-defineProps<{ board: Board }>();
+// validMoves は VGame（store を知る層）から受け取り VRow へ中継するだけ
+defineProps<{ board: Board; validMoves: Point[] }>();
 </script>
 
 <style scoped>
