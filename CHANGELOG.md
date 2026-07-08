@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.14.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.13.1...v1.14.0) (2026-07-08)
+
+
+### Features
+
+* **skills:** 結合度を均衡結合モデルで診断する coupling-check スキルを追加する ([fcca1d4](https://github.com/beginerbeginer/reversi-vue-ts/commit/fcca1d4217aa9cd3f8127b7944d88cf40ef24b26))
+* **skills:** 結合度を均衡結合モデルで診断する coupling-check スキルを追加する ([1ef637d](https://github.com/beginerbeginer/reversi-vue-ts/commit/1ef637dcb5c748e835674b966adffc27a7e641fd)), closes [#344](https://github.com/beginerbeginer/reversi-vue-ts/issues/344)
+
+
+### Bug Fixes
+
+* **skills:** coupling-check の Codex レビュー指摘4点を反映する ([2d79ff2](https://github.com/beginerbeginer/reversi-vue-ts/commit/2d79ff282939f06cb630455e4cefc71b2ff53deb))
+
 ## [1.13.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.13.0...v1.13.1) (2026-06-25)
 
 
