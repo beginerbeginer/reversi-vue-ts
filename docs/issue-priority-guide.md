@@ -10,9 +10,9 @@
 | コアゲーム（ゲームオーバー・パス・結果画面・ハイライト・リセット・待った） | ✅ 完成 | `src/models/reversi.ts` / `src/stores/game.ts` |
 | CI（lint-check / test-build / a11y / E2E）+ Branch protection + 必須チェック | ✅ 完成 | `.github/workflows/` + GitHub Settings |
 | commitlint / PR・issue テンプレート / CODEOWNERS / pre-push E2E | ✅ 完成 | `package.json` / `.github/` |
-| GitHub Pages 自動デプロイ | ✅ 完成 | `deploy.yml`（main への push で毎回デプロイ） |
-| リリース自動化（release-please: バージョン・CHANGELOG・タグ・Release） | ✅ 完成 | `release.yml`（v1.13.x 稼働中） |
-| レスポンシブ（iPhone SE 3rd 対応）・ダークモード・キーボード操作・a11y | ✅ 完成 | #340 / `App.vue` / `VCell.vue` / `a11y.yml` |
+| GitHub Pages 自動デプロイ | ✅ 完成 | `.github/workflows/deploy.yml`（main への push で毎回デプロイ） |
+| リリース自動化（release-please: バージョン・CHANGELOG・タグ・Release） | ✅ 完成 | `.github/workflows/release.yml`（v1.13.x 稼働中） |
+| レスポンシブ（iPhone SE 3rd 対応）・ダークモード・キーボード操作・a11y | ✅ 完成 | #340 / `src/App.vue` / `src/components/reversi/VCell.vue` / `.github/workflows/a11y.yml` |
 | CPU 対戦モード（初級・中級・上級 ＋ 先手/後手・レベル選択 UI） | ✅ 完成 | #279 / #321 / `src/models/cpu.ts` |
 | リファクタリングトラック（成果物削除→reversi.ts→isGameOver→VCell疎結合→ルート名） | ✅ 完了 | #314（#309→#310→#311→#312→#313） |
 | ESLint 10 フラットコンフィグ / eslint-plugin-vue 10 / 依存の健全化 | ✅ 完了 | #321 に同梱 |
@@ -40,7 +40,7 @@
 
 1. RELEASE_TOKEN（Fine-grained PAT）の再発行と Secrets 更新 —
    **オーナーの手作業が必要**（PAT 発行は Claude では代行不可）
-2. `release.yml` の実行ログに出ている `error message: Error: unexpected token ' '`
+2. `.github/workflows/release.yml` の実行ログに出ている `error message: Error: unexpected token ' '`
    の調査 — トークン更新だけでは直らない設定起因の可能性が残っているため、
    更新後に release PR で CI が自動起動することを必ず確認する
 
@@ -51,10 +51,10 @@
 | issue | 状態 | アクション |
 |-------|------|-----------|
 | #284 中級CPU（貪欲法） | `selectMoveIntermediate` 実装済み | クローズ |
-| #45 ランダムAI / #46 Greedy AI / #43 ミニマックス / #95 αβ枝刈り | `cpu.ts` に実装済み（#321） | クローズ |
+| #45 ランダムAI / #46 Greedy AI / #43 ミニマックス / #95 αβ枝刈り | `src/models/cpu.ts` に実装済み（#321） | クローズ |
 | #42 レスポンシブ | #340 / PR #341 で対応済み | クローズ |
-| #57 ダークモード | `App.vue` のテーマ切替で実装済み | クローズ |
-| #40 キーボードナビ / #65 ARIA ラベル | `VCell` の button 化・aria-label で実装済み | 実装確認のうえクローズ |
+| #57 ダークモード | `src/App.vue` のテーマ切替で実装済み | クローズ |
+| #40 キーボードナビ / #65 ARIA ラベル | `src/components/reversi/VCell.vue` の button 化・aria-label で実装済み | 実装確認のうえクローズ |
 | #80 E2E テスト（Playwright） | `tests/e2e/` 稼働中 | クローズ |
 | #107 semantic-release / #108 Changelog / #109 GitHub Release | release-please で実現済み | クローズ（重複） |
 | #7 Node.js v20 対応 | CI は Node 22 で稼働中 | 陳腐化を確認してクローズ |
@@ -105,7 +105,7 @@
 - #103 Mutation testing（Stryker）— テストの強度を測る
 - #106 Playwright コンポーネントテスト
 
-**なぜこの位置か**: Step 3 で `cpu.ts` / `reversi.ts` を触る期間は退行リスクが
+**なぜこの位置か**: Step 3 で `src/models/cpu.ts` / `src/models/reversi.ts` を触る期間は退行リスクが
 最も高い期間でもある。並走させると投資対効果が最大。
 
 ### ✨ Step 5 — UX・単発機能（独立して選べる）
