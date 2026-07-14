@@ -57,7 +57,7 @@
 | #40 キーボードナビ / #65 ARIA ラベル | `src/components/reversi/VCell.vue` の button 化・aria-label で実装済み | 実装確認のうえクローズ |
 | #80 E2E テスト（Playwright） | `tests/e2e/` 稼働中 | クローズ |
 | #107 semantic-release / #108 Changelog / #109 GitHub Release | release-please で実現済み | クローズ（重複） |
-| #7 Node.js v20 対応 | CI は Node 22 で稼働中 | 陳腐化を確認してクローズ |
+| #7 Node.js v20 対応 | 自動実行される CI（lint-check/test-build/a11y/deploy）は Node 22 だが、`.github/workflows/e2e.yml`（`workflow_dispatch` の手動実行専用）だけ Node 20 のまま | クローズせず、e2e.yml を Node 22 に上げてから閉じる |
 | #282 CPU エピック / #150 UX エピック | 一部完了 | チェックリストを実態に更新 |
 | Dependabot PR（eslint / vuetify / prettier ほか） | CI 通過待ち | 緑ならマージ |
 
