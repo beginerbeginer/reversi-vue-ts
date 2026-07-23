@@ -1,243 +1,154 @@
-# 120 issue 優先順位付けガイド（ジュニア向け）
+# issue 優先順位ガイド
 
-## 現状確認
+> 2026-07-15 全面更新（#359）。旧版は Tier 0〜3 を「未実装」として書かれていたが、
+> それらは全て完了したため、現存するオープン issue で書き直した。
 
-| 項目 | 状態 | ファイル |
-|------|------|---------|
-| CI（lint-check / test-build / report） | ✅ 完成 | `.github/workflows/ci.yml` 他 |
-| TypeScript `strict: true` | ✅ 済み | `tsconfig.json` |
-| pre-commit hook（lint-staged + simple-git-hooks） | ✅ 済み | `package.json` |
-| Vitest + @vitest/coverage-v8 | ✅ 済み | `package.json` |
-| 基本テスト（Board / Row / Cell / Store） | ✅ 5ファイル存在 | `tests/unit/` |
+## 現状確認（完了済みのもの）
 
-「まだない」もの：
+| 項目 | 状態 | 根拠 |
+|------|------|------|
+| コアゲーム（ゲームオーバー・パス・結果画面・ハイライト・リセット・待った） | ✅ 完成 | `src/models/reversi.ts` / `src/stores/game.ts` |
+| CI（lint-check / test-build / a11y / E2E）+ Branch protection + 必須チェック | ✅ 完成 | `.github/workflows/` + GitHub Settings |
+| commitlint / PR・issue テンプレート / CODEOWNERS / pre-push E2E | ✅ 完成 | `package.json` / `.github/` |
+| GitHub Pages 自動デプロイ | ✅ 完成 | `.github/workflows/deploy.yml`（main への push で毎回デプロイ） |
+| リリース自動化（release-please: バージョン・CHANGELOG・タグ・Release） | ✅ 完成 | `.github/workflows/release.yml`（v1.13.x 稼働中） |
+| レスポンシブ（iPhone SE 3rd 対応）・ダークモード・キーボード操作・a11y | ✅ 完成 | #340 / `src/App.vue` / `src/components/reversi/VCell.vue` / `.github/workflows/a11y.yml` |
+| CPU 対戦モード（初級・中級・上級 ＋ 先手/後手・レベル選択 UI） | ✅ 完成 | #279 / #321 / `src/models/cpu.ts` |
+| リファクタリングトラック（成果物削除→reversi.ts→isGameOver→VCell疎結合→ルート名） | ✅ 完了 | #314（#309→#310→#311→#312→#313） |
+| ESLint 10 フラットコンフィグ / eslint-plugin-vue 10 / 依存の健全化 | ✅ 完了 | #321 に同梱 |
 
-- ゲームオーバー検出（`Board.isGameOver()` が未実装）
-- `shouldPass()` が「双方置けない = ゲーム終了」を判定していない
-- リセットボタン、結果画面、ハイライトなど UI 機能
-- Branch protection / Required status checks（GitHub Settings での設定）
-- CODEOWNERS、PR テンプレート、issue テンプレート、commitlint
+まだないもの（オープン issue が対応）：
+
+- 超上級・達人 CPU（#286 / #287）と、その土台になる評価関数の改善（#357）
+- release PR の CI が起動しない問題の恒久対応（#358）
+- カバレッジ閾値の CI 強制（#35）・property-based / mutation testing（#102 / #103 / #106）
+- 統計・棋譜・共有などの機能群、モニタリング、ドキュメント、マルチプレイヤー
 
 ---
 
-## 優先順位の考え方（3つの型）
+## 現時点の課題と解決順序
 
-### 型 A「家を建てる順番」
+### 🚑 Step 1 — リリースの詰まりを直す（#358・最優先）
+
+**課題**: release-please の release PR で必須 CI が起動せず、auto-merge が BLOCKED のまま
+リリースが止まる（#342 で発生。close → reopen の手動回避が毎リリース必要）。
+
+**なぜ最優先か**: この先どのトラックを進めても、成果物は最後に必ずリリースを通る。
+上流のダムが詰まっている状態で下流の機能を作っても、届けるたびに手動回避コストを払う。
+
+**修理の内容**（詳細は #358）:
+
+1. RELEASE_TOKEN（Fine-grained PAT）の再発行と Secrets 更新 —
+   **オーナーの手作業が必要**（PAT 発行は Claude では代行不可）
+2. `.github/workflows/release.yml` の実行ログに出ている `error message: Error: unexpected token ' '`
+   の調査 — トークン更新だけでは直らない設定起因の可能性が残っているため、
+   更新後に release PR で CI が自動起動することを必ず確認する
+
+### 🧹 Step 2 — 台帳の整理（判断のみ・30分で終わる）
+
+**課題**: 実装済み・陳腐化 issue が残っていて、優先順位の判断を歪める。
+
+| issue | 状態 | アクション |
+|-------|------|-----------|
+| #284 中級CPU（貪欲法） | `selectMoveIntermediate` 実装済み | クローズ |
+| #45 ランダムAI / #46 Greedy AI / #43 ミニマックス / #95 αβ枝刈り | `src/models/cpu.ts` に実装済み（#321） | クローズ |
+| #42 レスポンシブ | #340 / PR #341 で対応済み | クローズ |
+| #57 ダークモード | `src/App.vue` のテーマ切替で実装済み | クローズ |
+| #40 キーボードナビ / #65 ARIA ラベル | `src/components/reversi/VCell.vue` の button 化・aria-label で実装済み | 実装確認のうえクローズ |
+| #80 E2E テスト（Playwright） | `tests/e2e/` 稼働中 | クローズ |
+| #107 semantic-release / #108 Changelog / #109 GitHub Release | release-please で実現済み | クローズ（重複） |
+| #7 Node.js v20 対応 | 自動実行される CI（lint-check/test-build/a11y/deploy）は Node 22 だが、`.github/workflows/e2e.yml`（`workflow_dispatch` の手動実行専用）だけ Node 20 のまま | クローズせず、e2e.yml を Node 22 に上げてから閉じる |
+| #282 CPU エピック / #150 UX エピック | 一部完了 | チェックリストを実態に更新 |
+| Dependabot PR（eslint / vuetify / prettier ほか） | CI 通過待ち | 緑ならマージ |
+
+> オープン issue は約 107 件あり、#96 未満の古い番号帯に「実装済みなのに
+> オープン」が集中している。上記以外にも見つけたら同様に閉じる。
+
+**なぜ 2 番目か**: 台帳が正しくないと、以後のすべての「次は何をやるか」の判断が
+古い情報の上に積み上がる。手を動かす前に在庫を正す。
+
+### 🤖 Step 3 — CPU の強さ改善（#357 → #286 → #287・体感の主課題）
+
+**課題**: 上級以上の CPU が弱すぎる（#357）。原因はコードで特定済み：
+
+1. 評価関数が**石数差のみ**（`evaluate() = 自石数 − 相手石数`）。リバーシでは
+   序中盤の石数最大化は悪手で、隅・辺の位置価値と着手可能数（mobility）が定石
+2. 探索が **2 手読み**（`MINIMAX_DEPTH = 2`）
+3. 結果として中級（最大フリップ貪欲）と方向性が同じで差が出ない
+
+**実装順と理由**:
 
 ```
-地盤（CI・ルール）を固める
-  → 柱（コアゲームロジック）を立てる
-    → 内装（UX・AI）を仕上げる
-      → 増築（マルチプレイヤー・リリース自動化）する
+#357 上級の評価関数改善（位置重み軽量版 + mobility）
+  → #286 超上級（探索を 4〜5 手へ深化。αβ は実装済み）
+    → #287 達人（フル位置評価テーブル。#98 と統合検討）
+      → #96 MCTS / #97 完全読み（さらに上を作るなら）
+従属 : #99 思考時間制限（深読みの暴走防止）
+       #139 Web Worker（深さ 4〜5 で UI がフリーズしたら）
+検証 : #100 AI vs AI（強さの目視確認・観戦）
 ```
 
-地盤なしで内装を作ると、後で基礎工事のたびに内装を壊すことになる。
+- **評価が先、探索が後**: 探索は評価関数の良し悪しを増幅するだけ。石数差評価のまま
+  深く読むと「悪手を確信をもって選ぶ」CPU になる。#357 は depth を触らないので
+  最小変更で体感が改善し、#286/#287 の土台になる
+- **勝率測定は開発時スクリプトで行い、CI に自己対戦テストは入れない**。
+  重い・flaky・決定論スナップショットで価値が低いとして削除した経緯がある（#337）
 
-### 型 B「依存グラフ」
+### 🛡 Step 4 — 品質の盾（CPU 作業と並走できる）
 
-依存されている「根」から実装する。依存している「葉」は後回し。
+盤面ロジックは入力空間が広く、実例ベースのテストでは穴が残る。
 
-```
-#1 ゲームオーバー検出 ──→ #5 結果画面
-                      ──→ #10 ゲームオーバーテスト（TDD: 同時）
+- #35 カバレッジ閾値を CI で強制 — 既にカバレッジ計測は動いているので、
+  閾値を設定するだけ。後から入れるほど下回ったとき直すコストが増える
+- #102 Property-based testing（fast-check）— `Board` の不変条件（石数の総和、
+  合法手の対称性）の検証に最適。CPU 改善の回帰検知にも効く
+- #103 Mutation testing（Stryker）— テストの強度を測る
+- #106 Playwright コンポーネントテスト
 
-#3 ハイライトロジック ──→ #6 ホバープレビュー
-                      ──→ #69 ヒント機能
+**なぜこの位置か**: Step 3 で `src/models/cpu.ts` / `src/models/reversi.ts` を触る期間は退行リスクが
+最も高い期間でもある。並走させると投資対効果が最大。
 
-#21 ランダム AI ──→ #22 Greedy ──→ #19 Minimax ──→ #71 Alpha-Beta
-                                                  ──→ #72 MCTS
-                                                  ──→ #73 完全読み
+### ✨ Step 5 — UX・単発機能（独立して選べる）
 
-#30 オンライン対戦 ──→ #31 部屋作成 ──→ #32 観戦 ──→ #103 QR招待
+エピック #150 の残項目と、依存のない単発 issue 群。Step 3 と競合しないので、
+気分転換や隙間時間の受け皿にする。
 
-#26 棋譜保存 ──→ #27 再生モード ──→ #116 IndexedDB
-#28 待った ──→ #98 局面からやり直し
+- 共有系: #121（局面 URL 共有）→ #123（Web Share API）→ #124（PNG エクスポート）
+- プレイ体験: #120（持ち時間）/ #122（局面からやり直し）/ #126（手の評価コメント、#357 の評価関数を再利用）
+- パフォーマンス: #138（v-memo / computed 見直し）→ #141（Lazy loading）→ #140（IndexedDB）
 
-#56 E2E (Playwright) ──→ #57 Visual Regression ──→ #82 コンポーネントテスト
+### 🔧 Step 6 — 運用・セキュリティ・ドキュメント（低頻度・まとめて）
 
-#86 Branch protection ──→ #88 Required status checks
-#83 semantic-release ──→ #84 Changelog ──→ #85 GitHub Release
-```
+本番運用や公開範囲の拡大タイミングで効く項目。急がないが、忘れない。
 
-### 型 C「後から入れるコスト」
+- セキュリティ: #142（Dependabot auto-merge）→ #143（secret scanning）→ #144（npm provenance）
+- CI/CD: #113（Merge queue）— PR 同時進行が増えたら
+- DX: #116（Volta）→ #114/#115（Dev Container / Codespaces）→ #117〜#119（VueUse 系）
+- モニタリング: #133（Sentry）→ #135（Web Vitals）→ #134/#136/#137（アナリティクス）
+- ドキュメント: #128（ADR）→ #130/#131（SECURITY / CODE_OF_CONDUCT）→ #132（Wiki）
 
-commitlint・カバレッジ閾値・ESLint strict は後から入れると既存コードが全部引っかかる。
-CI が安定している**今**入れるのが最安値。
+### 🌐 Step 7 — 大物（最後）
 
----
-
-## Tier 別着手順
-
-### 🏗 Tier 0 — 地盤（GitHub Settings + コード規約の強制）
-
-> 優先理由：全 PR に影響するルールを最初に設定しないと、後で「今まで入ったコードが全部違反」になる。
-> CI 自体は既存。不足しているのは GitHub 側の設定と commitlint のみ。
-
-| # | タイトル | 備考 |
-|---|---------|------|
-| #86 | Branch protection rules | GitHub Settings で main への直プッシュを禁止 |
-| #88 | Required status checks | `lint-check` / `test-build` を必須にする（#86 と同時） |
-| #87 | CODEOWNERS | `.github/CODEOWNERS` を作るだけ |
-| #13 | PR テンプレート | `.github/pull_request_template.md` |
-| #14 | issue テンプレート | `.github/ISSUE_TEMPLATE/` ディレクトリ |
-| #62 | commitlint | `@commitlint/config-conventional` + `simple-git-hooks` の `commit-msg` フックに追加 |
-| #12 | /ci-debug コマンド | CI 失敗時の対処手順を `CONTRIBUTING.md` に定型化 |
-
-**順序**: #86+#88（セット、GitHub Web UI）→ #87 → #13 → #14 → #62 → #12
+- #153 マルチプレイヤー（#127 QR 招待を含む）— サーバーサイドが必要な最重量級
+- #152 統計・ゲームバリエーション — コア安定後の増築
 
 ---
 
-### 🧪 Tier 1 — 安全網（テスト補強）
+## 3原則（更新版）
 
-> 優先理由：Tier 2 でコアロジックを変更する直前にテストを書く。
-> `tests/unit/reversi.spec.ts` は基本ケースのみ。`shouldPass()` と `search()` のエッジケースが未テスト。
-> TypeScript strict は tsconfig.json で既に有効。#63 は ESLint の TypeScript strict ルール追加を指す。
-
-| # | タイトル | 備考 |
-|---|---------|------|
-| #7 | `shouldPass()` のテスト | 両者置けない→ゲームオーバーのケースを含む |
-| #8 | `search()` のテスト | 8方向探索・反転なしケース |
-| #9 | 境界エッジケーステスト | 端・角・盤面満杯 |
-| #63 | `@typescript-eslint` strict ルール追加 | `.eslintrc.js` に `plugin:@typescript-eslint/strict` 追加 |
-| #64 | `import/no-cycle` | `eslint-plugin-import` を追加して循環依存を検出 |
-| #11 | カバレッジ閾値を CI で強制 | #7〜#9 が揃ったら `vite.config.ts` の `coverage.thresholds` に追加 |
-
-**順序**: #7 → #8 → #9 → #63 → #64 → #11
-
----
-
-### 🎮 Tier 2 — コアゲームを完成させる
-
-> 優先理由：動くゲームがなければ UX 改善も AI も「壊れたゲームの飾り」になる。
-> 現在 `shouldPass()` は「次のプレイヤーが置けない場合」にパスするが、双方置けない = ゲーム終了の検出が未実装。
-
-具体的な不足箇所：
-- `src/models/reversi.ts` — `Board.isGameOver()` が存在しない、`Board.put()` にゲームオーバー判定なし
-- `src/stores/game.ts` — `isGameOver` / `winner` のような computed が存在しない
-- `src/components/reversi/VGame.vue` — リセットボタン・結果表示なし
-
-| # | タイトル | 依存 |
-|---|---------|------|
-| #1 | ゲームオーバー検出 | `Board.isGameOver()` 追加 |
-| #10 | ゲームオーバーのテスト | #1 と同時（TDD） |
-| #2 | リセットボタン | store に `reset()` 追加 |
-| #4 | パス通知 | store に `isPassing` state 追加 |
-| #5 | ゲーム結果画面 | #1 必要 |
-| #3 | 置ける場所のハイライト | `Board.validMoves()` 追加 |
-
-**順序**: #1（+#10）→ #2 → #4 → #5 → #3
-
----
-
-### 🏠 Tier 3 — インフラ整備（デプロイ・観測可能性）
-
-> GitHub Pages が入ると「URL を送れば動作確認できる」状態になり、UX レビューが格段に楽になる。
-
-| # | タイトル |
-|---|---------|
-| #51 | GitHub Pages 自動デプロイ |
-| #56 | E2E テスト（Playwright） |
-| #57 | Visual Regression Testing（#56 の後） |
-| #58 | knip（未使用コード検出） |
-| #59 | madge（循環依存の構造可視化） |
-
-**順序**: #51 → #56 → #57 → #58 → #59
-
----
-
-### ✨ Tier 4 — UX・アクセシビリティ
-
-> AI より基本的な使いやすさが先。#3 ハイライト（Tier 2）が完成していることが前提。
-
-| # | タイトル | 備考 |
-|---|---------|------|
-| #18 | レスポンシブ対応 | — |
-| #16 | キーボードナビゲーション | — |
-| #17 | アニメーション | — |
-| #6 | ホバープレビュー | #3 のロジックを再利用 |
-| #33 | ダークモード | — |
-| #41〜#45 | アクセシビリティ（5件） | まとめて対応 |
-
----
-
-### 🤖 Tier 5 — AI（弱い順に実装）
-
-**絶対に弱い順で実装する**。強い AI は弱い AI の拡張として作る。
-
-```
-#21 ランダム AI
-  → #22 Greedy AI
-    → #19 Minimax（深さ制限あり）
-      → #74 評価関数チューニング
-      → #75 思考時間制限
-      → #71 Alpha-Beta pruning
-        → #76 AI vs AI
-        → #72 MCTS
-        → #73 完全読み
-→ #102 手の評価コメント（#19 以降）
-```
-
----
-
-### 📊 Tier 6 — 統計・ゲームバリエーション
-
-Tier 2 完成後に追加できる独立した機能群。
-
-| グループ | # |
-|---------|---|
-| 統計・実績 | #20, #46〜#50 |
-| 棋譜・履歴 | #26→#27→#116→#28→#98（この順） |
-| ゲームバリエーション | #23, #24, #25 |
-| 学習支援 | #39, #40, #69, #70 |
-
----
-
-### 🌐 Tier 7 — マルチプレイヤー
-
-サーバーサイド実装が必要な最も複雑な機能群。他の機能が揃ってから着手。
-
-```
-#29 ローカル2人対戦（サーバー不要）→ #30 オンライン対戦
-  → #31 部屋作成・招待リンク → #32 観戦 → #103 QR招待
-```
-
----
-
-### 🚀 Tier 8 — リリース自動化・高度な DX
-
-コードが安定してから入れる。早期に入れると設定変更のたびにリリースが走る。
-
-- `#83 semantic-release → #84 Changelog → #85 GitHub Release`
-- `#89 Merge queue`
-- `#90〜#92 Dev Container / Codespaces / Volta`
-- `#93〜#95 VueUse / @vueuse/motion / Floating UI`
-
----
-
-### 📄 Tier 9 — ドキュメント・セキュリティ・モニタリング
-
-OSS公開・チーム拡大・本番運用開始のタイミングで。
-
-- `#104〜#108` ドキュメント
-- `#65〜#68, #118〜#120` セキュリティ
-- `#109〜#113` モニタリング
-- `#114〜#117` パフォーマンス
-
----
-
-## 3原則（まとめ）
-
-1. **仕組みは機能より先** — テスト・lint・Branch protection が品質の盾。盾なしで機能を作ると作った端から品質が崩れる
-2. **依存している側は後回し** — 依存グラフを書いて「根」から着手する
-3. **弱いものから強いものへ** — AI はランダム→Greedy→Minimax の順、テストはユニット→E2E の順。「動く最小版」を先に
+1. **修理は機能より先** — リリースパイプラインの詰まり（#358）は全成果物に影響する。
+   ダムの上流から直す
+2. **台帳を正しくしてから選ぶ** — 実装済み issue（#284 等）を閉じないと、
+   優先順位の判断が古い情報の上に積み上がる
+3. **評価が先、探索が後（AI）／ 弱い順に実装** — 探索は評価関数を増幅するだけ。
+   #357 → #286 → #287 の順を守る
 
 ---
 
 ## 次の一手
 
 ```
-今すぐやること（Tier 0 の最初の2件）:
-  → #86: GitHub Settings → Branches → "Add branch protection rule" for `main`
-  → #88: 同じ画面で "Require status checks to pass" → lint-check / test-build を選択
-  ※ CI ワークフロー自体は既存（.github/workflows/）。設定は GitHub Web UI で完結する
+1. #358: RELEASE_TOKEN を再発行して Secrets を更新する（オーナー作業・30分）
+2. Step 2: #284・#107〜#109 をクローズし、Dependabot PR を処理する
+3. #357: /tdd で上級 CPU の評価関数改善に着手する
 ```
