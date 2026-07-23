@@ -10,6 +10,11 @@ import skipFormatting from "@vue/eslint-config-prettier/skip-formatting";
 
 // ESLint 10 はフラットコンフィグ（eslint.config.*）必須で旧 .eslintrc.js を読めない。
 // .eslintrc.js の extends/rules をそのままフラット形式へ移植している
+
+// TypeScript は 7 が出ているが 6 系に留めている。TS7 が JS API を出荷しておらず、
+// それを使う vueTsConfigs（内部で typescript-eslint）も vue-tsc も動かないため（#369 / #370）。
+// peer を無視して強行すると ESLint も型チェックも起動時に落ちるので --force は採らない。
+// oxlint や Biome への乗り換えでも解決しない（型情報ルールが .vue で使えない）
 export default defineConfigWithVueTs(
   {
     // build 成果物や生成 JS（npm run clean 対象）は lint しない
