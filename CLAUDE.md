@@ -32,6 +32,7 @@ npm run test:e2e         # Playwright E2E テスト
 | `/ci-debug` | CI 失敗時の調査 |
 | `/vue-component-rules` | Vue コンポーネント設計の確認 |
 | `/coupling-check` | 結合度を均衡結合モデル（強度・距離・変動性）で診断する |
+| `/review-checklist` | PR 作成前のセルフレビュー。レビュー指摘を受けたら追記する |
 | `/update-rules` | セッションで決めた規約をルールとして永続化する |
 | `/best-practice` | Claude Code の活用法を確認する |
 
