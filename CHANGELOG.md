@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.14.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.14.0...v1.14.1) (2026-07-23)
+
+
+### Bug Fixes
+
+* **deps:** npm audit の high 脆弱性4件を解消する ([bb15260](https://github.com/beginerbeginer/reversi-vue-ts/commit/bb152603ebce195c1c9ba432df45184d3e237c20))
+* **deps:** npm audit の high 脆弱性4件を解消する ([e7fe057](https://github.com/beginerbeginer/reversi-vue-ts/commit/e7fe05775987a3b8ca4766ef3fdb76dcbf47eb43))
+
 ## [1.14.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.13.1...v1.14.0) (2026-07-08)
 
 
