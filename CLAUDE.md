@@ -36,9 +36,12 @@ npm run test:e2e         # Playwright E2E テスト
 | `/update-rules` | セッションで決めた規約をルールとして永続化する |
 | `/best-practice` | Claude Code の活用法を確認する |
 
-コミット・ブランチ・コードコメントの規約は `.claude/rules/git-workflow.md` を参照すること。
+issue 作成・ブランチ作成・コミット・PR 作成の**前に** `.claude/rules/git-workflow.md` を読むこと。
+issue 先行ルール・ブランチ命名・コミット規約・gh エイリアス・コードコメント規約を定めている。
 
-テストファイルの構成・分割基準は `.claude/rules/test-organization.md` を参照すること。
+テストファイルを追加・作成する**前に** `.claude/rules/test-organization.md` を読むこと。
+
+このリポジトリの規約は `.claude/` 配下だけで完結する。上位ディレクトリの `CLAUDE.md` には依存しない。
 
 ## コマンド
 
