@@ -36,11 +36,11 @@ gh ic
 ### 2. ブランチを切る
 
 ```bash
-git checkout -b chore/N-説明
+git checkout -b <type>/<issue番号>-<説明>
 ```
 
-命名規則: `chore/N-説明`（N は issue 番号、説明は kebab-case）
-例: `chore/25-game-over-detection`
+命名規則は `.claude/rules/git-workflow.md` に従う。
+例: `feat/25-game-over-detection`
 
 ### 3. TDD で実装する（`/tdd` スキルに従う）
 
@@ -58,14 +58,8 @@ Refactor → テストが通ったままコードを整理する
 
 コミット前に `/git-secret-guard` でチェックする。
 
-コミットメッセージは **Why（なぜ）** を日本語で書く：
-
-```
-変更の要約（1行）
-
-変更した理由・背景。何が問題でなぜこの変更が必要だったか。
-How はコードを見ればわかるので書かない。
-```
+コミットメッセージの書式は `.claude/rules/git-workflow.md` に従う。
+Conventional Commits 形式が必須で、`commit-msg` フックの commitlint で検証される。
 
 ### 5. PR を作成する
 
