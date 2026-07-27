@@ -88,17 +88,27 @@ function evaluate(board: Board, color: CellState): number {
   return score;
 }
 
+// 探索の内部状態。評価したノード数を数えて枝刈りの効きをテストから観測できるようにする
+interface SearchContext {
+  color: CellState;
+  pruning: boolean;
+  evaluatedNodes: number;
+}
+
 // Board.put() は強制パスを内部で処理するため、
 // 着手後の clone.turn は常に正しい次手番を指す。
 // 現在手番が置けない（passes）ケースだけ手動で next() する。
 function minimax(
   board: Board,
   depth: number,
-  color: CellState,
   alpha: number,
   beta: number,
+  ctx: SearchContext,
 ): number {
-  if (depth === 0) return evaluate(board, color);
+  if (depth === 0) {
+    ctx.evaluatedNodes++;
+    return evaluate(board, ctx.color);
+  }
 
   const moves = board.validMoves();
 
@@ -106,21 +116,24 @@ function minimax(
     // 現在手番がパス。相手も置けなければゲーム終了
     const clone = cloneBoard(board);
     clone.next();
-    if (clone.validMoves().length === 0) return evaluate(board, color);
+    if (clone.validMoves().length === 0) {
+      ctx.evaluatedNodes++;
+      return evaluate(board, ctx.color);
+    }
     // パスは手数カウントを消費しない。探索深さを保ったまま次手番へ
-    return minimax(clone, depth, color, alpha, beta);
+    return minimax(clone, depth, alpha, beta, ctx);
   }
 
-  const isMaximizing = board.turn === color;
+  const isMaximizing = board.turn === ctx.color;
 
   if (isMaximizing) {
     let best = -Infinity;
     for (const move of moves) {
       const clone = cloneBoard(board);
       clone.put(move);
-      best = Math.max(best, minimax(clone, depth - 1, color, alpha, beta));
+      best = Math.max(best, minimax(clone, depth - 1, alpha, beta, ctx));
       alpha = Math.max(alpha, best);
-      if (beta <= alpha) break;
+      if (ctx.pruning && beta <= alpha) break;
     }
     return best;
   } else {
@@ -128,20 +141,34 @@ function minimax(
     for (const move of moves) {
       const clone = cloneBoard(board);
       clone.put(move);
-      best = Math.min(best, minimax(clone, depth - 1, color, alpha, beta));
+      best = Math.min(best, minimax(clone, depth - 1, alpha, beta, ctx));
       beta = Math.min(beta, best);
-      if (beta <= alpha) break;
+      if (ctx.pruning && beta <= alpha) break;
     }
     return best;
   }
 }
 
-export function selectMoveAdvanced(
+export interface AdvancedSearchResult {
+  move: Point | null;
+  evaluatedNodes: number;
+}
+
+// 探索結果と統計を返す。selectMoveAdvanced は手だけを使うが、
+// 枝刈りが実際に効いているかはノード数でしか観測できないため分けている
+export function searchAdvanced(
   board: Board,
   color: CellState,
-): Point | null {
+  options: { pruning?: boolean } = {},
+): AdvancedSearchResult {
+  const ctx: SearchContext = {
+    color,
+    pruning: options.pruning ?? true,
+    evaluatedNodes: 0,
+  };
+
   const moves = board.validMoves();
-  if (moves.length === 0) return null;
+  if (moves.length === 0) return { move: null, evaluatedNodes: 0 };
 
   let bestMove = moves[0];
   let bestScore = -Infinity;
@@ -149,17 +176,26 @@ export function selectMoveAdvanced(
   for (const move of moves) {
     const clone = cloneBoard(board);
     clone.put(move);
+    // 確定済みの bestScore を alpha として渡す。フルウィンドウのままだと
+    // 子ノードで beta <= alpha が成立せず枝刈りが一度も発動しない（#365）
     const score = minimax(
       clone,
       MINIMAX_DEPTH - 1,
-      color,
-      -Infinity,
+      ctx.pruning ? bestScore : -Infinity,
       +Infinity,
+      ctx,
     );
     if (score > bestScore) {
       bestScore = score;
       bestMove = move;
     }
   }
-  return bestMove;
+  return { move: bestMove, evaluatedNodes: ctx.evaluatedNodes };
+}
+
+export function selectMoveAdvanced(
+  board: Board,
+  color: CellState,
+): Point | null {
+  return searchAdvanced(board, color).move;
 }
