@@ -59,4 +59,24 @@ export default defineConfigWithVueTs(
       "@typescript-eslint/no-explicit-any": "off",
     },
   },
+  {
+    // 子から親へのデータ伝搬を emit ではなく Pinia アクションで行う設計を lint で固定する。
+    // ドキュメント（.claude/skills/vue-component-rules）だけでは破っても何も落ちず、
+    // VCell → VRow → VBoard → VGame の emit 連鎖が静かに復活しうるため。
+    // 2 経路あるので両方塞ぐ: defineEmits（script setup）と $emit（テンプレート）。
+    files: ["src/**/*.vue"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "CallExpression[callee.name='defineEmits']",
+          message:
+            "emit で親へデータを渡さない。子は Pinia ストアのアクションを直接呼ぶこと（.claude/skills/vue-component-rules/SKILL.md）。例外が必要なら本ファイルに files スコープと理由を書いて許可する。",
+        },
+      ],
+      // 未宣言の $emit を禁止する。defineEmits 自体を上で塞いでいるため、
+      // テンプレートから $emit を呼ぶ経路もこれで到達不能になる
+      "vue/require-explicit-emits": "error",
+    },
+  },
 );
