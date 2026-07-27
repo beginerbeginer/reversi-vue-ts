@@ -38,6 +38,7 @@
           >中級</v-btn
         >
         <v-btn value="advanced" data-testid="cpu-level-advanced">上級</v-btn>
+        <v-btn value="expert" data-testid="cpu-level-expert">超上級</v-btn>
       </v-btn-toggle>
     </div>
 

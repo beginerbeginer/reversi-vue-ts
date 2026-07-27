@@ -5,11 +5,12 @@ import {
   selectMoveBeginner,
   selectMoveIntermediate,
   selectMoveAdvanced,
+  selectMoveExpert,
 } from "@/models/cpu";
 
 type BoardSnapshot = { rows: { state: CellState }[][]; turn: CellState };
 export type GameMode = "normal" | "cpu";
-export type CpuLevel = "beginner" | "intermediate" | "advanced";
+export type CpuLevel = "beginner" | "intermediate" | "advanced" | "expert";
 
 export const useGameStore = defineStore("game", () => {
   const board = reactive(new Board());
@@ -46,6 +47,7 @@ export const useGameStore = defineStore("game", () => {
 
   // レベルごとの selectMove を返す。レベルを追加するときはここにケースを追加する
   function getCpuMoveSelector() {
+    if (cpuLevel.value === "expert") return selectMoveExpert;
     if (cpuLevel.value === "advanced") return selectMoveAdvanced;
     if (cpuLevel.value === "intermediate") return selectMoveIntermediate;
     return selectMoveBeginner;
