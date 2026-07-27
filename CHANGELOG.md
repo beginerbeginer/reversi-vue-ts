@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.14.2](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.14.1...v1.14.2) (2026-07-27)
+
+
+### Bug Fixes
+
+* **cpu:** 上級の評価関数を石数差から位置重みと着手可能数に変える ([474d6f2](https://github.com/beginerbeginer/reversi-vue-ts/commit/474d6f266d07f89562a704d562d7751a3e96f5bc))
+* **cpu:** 上級の評価関数を石数差から位置重みと着手可能数に変える ([3a2ff39](https://github.com/beginerbeginer/reversi-vue-ts/commit/3a2ff393793b3e4dab116ba5b4b83435316e5317)), closes [#357](https://github.com/beginerbeginer/reversi-vue-ts/issues/357)
+* **cpu:** 終局は位置重みではなく実際の石数勝敗で評価する ([8bcd759](https://github.com/beginerbeginer/reversi-vue-ts/commit/8bcd7599813a9a46f0fec5496515e77b56f49159))
+* **deps:** npm audit の high 脆弱性 7 件を解消する ([1c57a9a](https://github.com/beginerbeginer/reversi-vue-ts/commit/1c57a9a73aa7028f9a03cb7a905eb17944154657))
+* **deps:** npm audit の high 脆弱性 7 件を解消する ([71b7154](https://github.com/beginerbeginer/reversi-vue-ts/commit/71b71544f6e83f6376ab88e2135e90377045882d))
+
 ## [1.14.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.14.0...v1.14.1) (2026-07-23)
 
 
