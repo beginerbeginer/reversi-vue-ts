@@ -1,20 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { Board, CellState } from "@/models/reversi";
 import { selectMoveAdvanced, selectMoveIntermediate } from "@/models/cpu";
-
-// 文字列レイアウトから盤面を組む。B=黒 W=白 .=空
-function setBoard(board: Board, layout: string[]): void {
-  const map: Record<string, CellState> = {
-    B: CellState.Black,
-    W: CellState.White,
-    ".": CellState.None,
-  };
-  for (let y = 0; y < 8; y++) {
-    for (let x = 0; x < 8; x++) {
-      board.rows[y].cells[x].state = map[layout[y][x]];
-    }
-  }
-}
+import { setBoard } from "./board-layout";
 
 describe("selectMoveAdvanced", () => {
   it("合法手がある → validMoves() に含まれる手を返す", () => {
@@ -67,5 +54,57 @@ describe("selectMoveAdvanced", () => {
     expect(board.search(advancedMove!).length).toBeLessThan(
       board.search(greedyMove!).length,
     );
+  });
+
+  it("フリップ数が少なくても隅を取れるなら隅を選ぶ", () => {
+    // 隅 (0,0) は 1 石、(2,2) は 2 石返せる。石数だけ見る評価では (2,2) を
+    // 選んでしまうが、隅は相手にひっくり返されない確定石なので価値が高い。
+    // 白の応手が小さい手しか無い盤面にして、応手の綾で結果が揺れないようにする
+    const layout = [
+      ".WB.....",
+      "........",
+      "...WWB..",
+      "........",
+      "......WB",
+      "........",
+      ".....WB.",
+      "........",
+    ];
+    const board = new Board();
+    setBoard(board, layout);
+    board.turn = CellState.Black;
+
+    expect(selectMoveIntermediate(board, CellState.Black)).toMatchObject({
+      x: 2,
+      y: 2,
+    });
+    expect(selectMoveAdvanced(board, CellState.Black)).toMatchObject({
+      x: 0,
+      y: 0,
+    });
+  });
+
+  it("相手の着手可能数を抑える手を選ぶ", () => {
+    // (2,4) を選ぶと白の応手は 2 手、位置重みだけなら選ばれる (4,5) だと
+    // 7 手に広がる。相手の選択肢を奪うのはリバーシ序中盤の基本戦略で、
+    // mobility 項が無いと石数・位置がほぼ同等の局面で判断できない
+    const layout = [
+      "........",
+      "........",
+      "..W...BW",
+      "...BB...",
+      "...BB...",
+      "W..W.WBB",
+      "..B.B...",
+      "....B...",
+    ];
+    const board = new Board();
+    setBoard(board, layout);
+    board.turn = CellState.Black;
+
+    expect(selectMoveAdvanced(board, CellState.Black)).toMatchObject({
+      x: 2,
+      y: 4,
+    });
   });
 });

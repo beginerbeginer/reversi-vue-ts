@@ -40,10 +40,52 @@ function cloneBoard(board: Board): Board {
   return clone;
 }
 
+// 位置重み。隅は返されない確定石なので最大、隅に隣接する C 打ち・X 打ちは
+// 相手に隅を献上しやすいので負。辺はやや高い。8x8 の対称形
+// prettier-ignore
+const POSITION_WEIGHTS = [
+  [120, -20,  20,   5,   5,  20, -20, 120],
+  [-20, -40,  -5,  -5,  -5,  -5, -40, -20],
+  [ 20,  -5,  15,   3,   3,  15,  -5,  20],
+  [  5,  -5,   3,   3,   3,   3,  -5,   5],
+  [  5,  -5,   3,   3,   3,   3,  -5,   5],
+  [ 20,  -5,  15,   3,   3,  15,  -5,  20],
+  [-20, -40,  -5,  -5,  -5,  -5, -40, -20],
+  [120, -20,  20,   5,   5,  20, -20, 120],
+];
+
+// 着手可能数の差 1 手あたりの重み。隅(120)を上書きしない程度に効かせる
+const MOBILITY_WEIGHT = 5;
+
+// 石数差ではなく位置重みと着手可能数で評価する。序中盤の石数最大化は
+// 相手の着手可能数を増やして終盤に返される悪手のため（#357）
 function evaluate(board: Board, color: CellState): number {
-  return color === CellState.Black
-    ? board.blacks - board.whites
-    : board.whites - board.blacks;
+  const opponent =
+    color === CellState.Black ? CellState.White : CellState.Black;
+  const myMobility = board.validMovesFor(color).length;
+  const oppMobility = board.validMovesFor(opponent).length;
+
+  // 終局はヒューリスティックではなく実際の石数勝敗で評価する。位置重みのままだと
+  // 負ける終局を勝つ終局より高く評価し、読み切れる勝ちを捨てることがあるため
+  if (myMobility === 0 && oppMobility === 0) {
+    const mine = color === CellState.Black ? board.blacks : board.whites;
+    const theirs = color === CellState.Black ? board.whites : board.blacks;
+    // 位置重みの総和（最大でも千数百）を必ず上回る桁で勝敗を分離する
+    return (mine - theirs) * 10_000;
+  }
+
+  let score = 0;
+  for (let y = 0; y < 8; y++) {
+    for (let x = 0; x < 8; x++) {
+      const state = board.rows[y].cells[x].state;
+      if (state === CellState.None) continue;
+      score += state === color ? POSITION_WEIGHTS[y][x] : -POSITION_WEIGHTS[y][x];
+    }
+  }
+
+  score += MOBILITY_WEIGHT * (myMobility - oppMobility);
+
+  return score;
 }
 
 // Board.put() は強制パスを内部で処理するため、
