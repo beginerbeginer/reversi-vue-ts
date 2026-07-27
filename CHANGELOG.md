@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.16.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.15.0...v1.16.0) (2026-07-27)
+
+
+### Features
+
+* **lint:** emit によるデータ伝搬を ESLint で禁止する ([320e2a1](https://github.com/beginerbeginer/reversi-vue-ts/commit/320e2a17e2b552a5fa19a611d027e204bd618bba))
+* **lint:** emit によるデータ伝搬を ESLint で禁止する ([753447a](https://github.com/beginerbeginer/reversi-vue-ts/commit/753447afdd22a39544406bebbdf3c6f2491adc9c)), closes [#391](https://github.com/beginerbeginer/reversi-vue-ts/issues/391)
+
+
+### Bug Fixes
+
+* **ci:** eslint 設定の変更で CI が起動しない問題を修正する ([f69664b](https://github.com/beginerbeginer/reversi-vue-ts/commit/f69664b080a2b8ed1963a6c06cf074c8c195ec52)), closes [#391](https://github.com/beginerbeginer/reversi-vue-ts/issues/391)
+
 ## [1.15.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.14.3...v1.15.0) (2026-07-27)
 
 
