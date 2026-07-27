@@ -28,6 +28,15 @@ export function selectMoveIntermediate(
 
 const MINIMAX_DEPTH = 2;
 
+// 超上級の探索深さの上限。時間内に届かなければ反復深化が浅い結果で打ち切るので、
+// これは「最大でここまで」を表すだけで所要時間の保証ではない
+const EXPERT_DEPTH = 5;
+
+// 思考時間の上限。着手までの体感は cpuTurn の演出待ち 500ms との合計になるため、
+// 「3 秒以内に着手する」要件に対して余裕を持たせている。
+// 深さで時間を守ろうとすると局面次第で数秒かかる（#379）
+const EXPERT_TIME_LIMIT_MS = 1000;
+
 // new Board() は初期4石を置くため、全64マスを上書きして turn も合わせる
 function cloneBoard(board: Board): Board {
   const clone = new Board();
@@ -93,6 +102,24 @@ interface SearchContext {
   color: CellState;
   pruning: boolean;
   evaluatedNodes: number;
+  // 打ち切り時刻（performance.now() 基準）。Infinity なら無制限
+  deadline: number;
+  aborted: boolean;
+}
+
+// 打ち切り判定は「評価した末端の数」を目安に間引く。ノードごとに
+// performance.now() を呼ぶとその計測自体が探索より重くなるため
+const DEADLINE_CHECK_INTERVAL = 512;
+
+function isPastDeadline(ctx: SearchContext): boolean {
+  if (ctx.aborted) return true;
+  if (ctx.deadline === Infinity) return false;
+  if (ctx.evaluatedNodes % DEADLINE_CHECK_INTERVAL !== 0) return false;
+  if (performance.now() >= ctx.deadline) {
+    ctx.aborted = true;
+    return true;
+  }
+  return false;
 }
 
 // Board.put() は強制パスを内部で処理するため、
@@ -134,6 +161,7 @@ function minimax(
       best = Math.max(best, minimax(clone, depth - 1, alpha, beta, ctx));
       alpha = Math.max(alpha, best);
       if (ctx.pruning && beta <= alpha) break;
+      if (isPastDeadline(ctx)) break;
     }
     return best;
   } else {
@@ -144,6 +172,7 @@ function minimax(
       best = Math.min(best, minimax(clone, depth - 1, alpha, beta, ctx));
       beta = Math.min(beta, best);
       if (ctx.pruning && beta <= alpha) break;
+      if (isPastDeadline(ctx)) break;
     }
     return best;
   }
@@ -154,22 +183,13 @@ export interface AdvancedSearchResult {
   evaluatedNodes: number;
 }
 
-// 探索結果と統計を返す。selectMoveAdvanced は手だけを使うが、
-// 枝刈りが実際に効いているかはノード数でしか観測できないため分けている
-export function searchAdvanced(
+// 指定された深さで一度だけ探索する
+function searchAtDepth(
   board: Board,
-  color: CellState,
-  options: { pruning?: boolean } = {},
-): AdvancedSearchResult {
-  const ctx: SearchContext = {
-    color,
-    pruning: options.pruning ?? true,
-    evaluatedNodes: 0,
-  };
-
-  const moves = board.validMoves();
-  if (moves.length === 0) return { move: null, evaluatedNodes: 0 };
-
+  moves: Point[],
+  depth: number,
+  ctx: SearchContext,
+): Point {
   let bestMove = moves[0];
   let bestScore = -Infinity;
 
@@ -180,7 +200,7 @@ export function searchAdvanced(
     // 子ノードで beta <= alpha が成立せず枝刈りが一度も発動しない（#365）
     const score = minimax(
       clone,
-      MINIMAX_DEPTH - 1,
+      depth - 1,
       ctx.pruning ? bestScore : -Infinity,
       +Infinity,
       ctx,
@@ -189,8 +209,54 @@ export function searchAdvanced(
       bestScore = score;
       bestMove = move;
     }
+    if (isPastDeadline(ctx)) break;
+  }
+  return bestMove;
+}
+
+// 探索結果と統計を返す。呼び出し側は手だけを使うが、枝刈りの効きや
+// 探索の深さはノード数でしか観測できないため分けている。
+//
+// 深さ 1 から maxDepth まで一段ずつ深くする（反復深化）。深さを固定して
+// 時間内に収まることを期待すると、局面によっては数秒かかり UI が固まる。
+// 浅い探索の結果を捨てずに持っておけば、途中で時間切れになっても
+// 「そこまでに読めた最善手」を返せる（#379）
+function search(
+  board: Board,
+  color: CellState,
+  maxDepth: number,
+  options: { pruning?: boolean; timeLimitMs?: number } = {},
+): AdvancedSearchResult {
+  const ctx: SearchContext = {
+    color,
+    pruning: options.pruning ?? true,
+    evaluatedNodes: 0,
+    deadline:
+      options.timeLimitMs === undefined
+        ? Infinity
+        : performance.now() + options.timeLimitMs,
+    aborted: false,
+  };
+
+  const moves = board.validMoves();
+  if (moves.length === 0) return { move: null, evaluatedNodes: 0 };
+
+  let bestMove = moves[0];
+  for (let depth = 1; depth <= maxDepth; depth++) {
+    const move = searchAtDepth(board, moves, depth, ctx);
+    // 打ち切られた深さの結果は全候補を見ていないので採用しない
+    if (ctx.aborted) break;
+    bestMove = move;
   }
   return { move: bestMove, evaluatedNodes: ctx.evaluatedNodes };
+}
+
+export function searchAdvanced(
+  board: Board,
+  color: CellState,
+  options: { pruning?: boolean } = {},
+): AdvancedSearchResult {
+  return search(board, color, MINIMAX_DEPTH, options);
 }
 
 export function selectMoveAdvanced(
@@ -198,4 +264,22 @@ export function selectMoveAdvanced(
   color: CellState,
 ): Point | null {
   return searchAdvanced(board, color).move;
+}
+
+export function searchExpert(
+  board: Board,
+  color: CellState,
+  options: { pruning?: boolean; timeLimitMs?: number } = {},
+): AdvancedSearchResult {
+  return search(board, color, EXPERT_DEPTH, {
+    ...options,
+    timeLimitMs: options.timeLimitMs ?? EXPERT_TIME_LIMIT_MS,
+  });
+}
+
+export function selectMoveExpert(
+  board: Board,
+  color: CellState,
+): Point | null {
+  return searchExpert(board, color).move;
 }
