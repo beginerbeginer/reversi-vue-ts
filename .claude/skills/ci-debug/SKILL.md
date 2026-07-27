@@ -24,9 +24,20 @@ PR のコメントに届く CI テーブルを見る：
 GitHub Actions のログは以下で確認：
 
 ```bash
-gh run list --repo beginerbeginer/reversi-vue-ts --limit 5
+gh run list --limit 5
 gh run view <run-id> --log-failed
 ```
+
+> `--repo` は付けない。カレントリポジトリで解決されるため不要で、fork や worktree で
+> 別リポジトリを指してしまう。
+
+### E2E はこの範囲に含まれない
+
+`e2e.yml` は `workflow_dispatch` のみで、他のワークフローからも呼ばれていない。
+**E2E は CI で自動実行されない**ため、CI の失敗として現れることはない
+（`a11y.yml` が `tests/e2e/a11y.spec.ts` のみを、当該ファイル変更時に実行する）。
+E2E の自動ゲートは pre-push フックだけなので、E2E が疑わしいときは
+`npm run test:e2e` をローカルで実行して確認する。
 
 ---
 
@@ -52,10 +63,10 @@ npm run knip
 
 ```bash
 # 1. テスト（詳細出力）
-npm run test:unit -- --reporter=verbose
+npm run test:unit -- --run --reporter=verbose
 
 # 2. インテグレーションテスト
-npm run test:integration
+npm run test:integration -- --run
 
 # 3. カバレッジ閾値確認
 npm run test:coverage
@@ -63,6 +74,9 @@ npm run test:coverage
 # 4. ビルド
 npm run build
 ```
+
+> `--run` を明示する。CI 再現が目的なので実行モードを固定したい。
+> 非 TTY では付けなくても 1 回で終了するが、ターミナルから手動実行するとウォッチに入る。
 
 ---
 
@@ -97,10 +111,10 @@ npm run lint            # 残ったエラーを確認
 
 ```bash
 # 失敗したテストだけ実行
-npm run test:unit -- --reporter=verbose 2>&1 | grep -A 10 "FAIL"
+npm run test:unit -- --run --reporter=verbose 2>&1 | grep -A 10 "FAIL"
 
 # 特定のファイルだけ
-npm run test:unit -- tests/unit/reversi.spec.ts
+npm run test:unit -- --run tests/unit/reversi/board.search.spec.ts
 ```
 
 Pinia ストアのテストが落ちる場合は `beforeEach` に以下があるか確認：
@@ -132,13 +146,16 @@ npm audit --audit-level=high && \
 npm run type-check && \
 npm run lint && \
 npm run knip && \
-npm run test:integration && \
+npm run test:integration -- --run && \
 npm run test:coverage && \
 npm run build && \
 echo "✅ 全チェック通過"
 ```
 
-全部 ✅ になったらコミット・push する。
+> `test:unit` は独立して並べない。`test:coverage` がデフォルト設定
+> （`include: tests/unit/**/*.spec.ts`）で走るため、ユニットテストを包含している。
+>
+> E2E はこのチェーンに含まれない。pre-push フックが担当する。
 
 ---
 
