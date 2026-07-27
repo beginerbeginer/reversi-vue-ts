@@ -28,6 +28,10 @@ export function selectMoveIntermediate(
 
 const MINIMAX_DEPTH = 2;
 
+// 超上級の探索深さ。実測では最悪 753ms（depth 6 は最悪 13.6 秒で
+// 「3 秒以内に着手する」要件を満たせない）ため 5 を上限に選んだ
+const EXPERT_DEPTH = 5;
+
 // new Board() は初期4石を置くため、全64マスを上書きして turn も合わせる
 function cloneBoard(board: Board): Board {
   const clone = new Board();
@@ -154,11 +158,12 @@ export interface AdvancedSearchResult {
   evaluatedNodes: number;
 }
 
-// 探索結果と統計を返す。selectMoveAdvanced は手だけを使うが、
-// 枝刈りが実際に効いているかはノード数でしか観測できないため分けている
-export function searchAdvanced(
+// 探索結果と統計を返す。呼び出し側は手だけを使うが、枝刈りの効きや
+// 探索の深さはノード数でしか観測できないため分けている
+function search(
   board: Board,
   color: CellState,
+  depth: number,
   options: { pruning?: boolean } = {},
 ): AdvancedSearchResult {
   const ctx: SearchContext = {
@@ -180,7 +185,7 @@ export function searchAdvanced(
     // 子ノードで beta <= alpha が成立せず枝刈りが一度も発動しない（#365）
     const score = minimax(
       clone,
-      MINIMAX_DEPTH - 1,
+      depth - 1,
       ctx.pruning ? bestScore : -Infinity,
       +Infinity,
       ctx,
@@ -193,9 +198,32 @@ export function searchAdvanced(
   return { move: bestMove, evaluatedNodes: ctx.evaluatedNodes };
 }
 
+export function searchAdvanced(
+  board: Board,
+  color: CellState,
+  options: { pruning?: boolean } = {},
+): AdvancedSearchResult {
+  return search(board, color, MINIMAX_DEPTH, options);
+}
+
 export function selectMoveAdvanced(
   board: Board,
   color: CellState,
 ): Point | null {
   return searchAdvanced(board, color).move;
+}
+
+export function searchExpert(
+  board: Board,
+  color: CellState,
+  options: { pruning?: boolean } = {},
+): AdvancedSearchResult {
+  return search(board, color, EXPERT_DEPTH, options);
+}
+
+export function selectMoveExpert(
+  board: Board,
+  color: CellState,
+): Point | null {
+  return searchExpert(board, color).move;
 }
