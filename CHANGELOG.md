@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.3](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.14.2...v1.14.3) (2026-07-27)
+
+
+### Bug Fixes
+
+* **cpu:** ルートで alpha を伝播させて αβ枝刈りを実際に効かせる ([78af2f1](https://github.com/beginerbeginer/reversi-vue-ts/commit/78af2f1d8eccf95d1b9f812232262a78822951b1))
+
 ## [1.14.2](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.14.1...v1.14.2) (2026-07-27)
 
 
