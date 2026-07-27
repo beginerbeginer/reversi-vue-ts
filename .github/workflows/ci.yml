@@ -10,8 +10,9 @@ on:
       - "vite.config.ts"
       - "vitest.integration.config.ts"
       - "tsconfig*.json"
-      - ".eslintrc*"
-      - ".prettierrc*"
+      # フラットコンフィグ移行後の実ファイル名。.eslintrc* は既に存在しない
+      - "eslint.config.*"
+      - "knip.json"
       - ".github/workflows/ci.yml"
       - ".github/workflows/lint-check.yml"
       - ".github/workflows/test-build.yml"
@@ -25,8 +26,9 @@ on:
       - "vite.config.ts"
       - "vitest.integration.config.ts"
       - "tsconfig*.json"
-      - ".eslintrc*"
-      - ".prettierrc*"
+      # フラットコンフィグ移行後の実ファイル名。.eslintrc* は既に存在しない
+      - "eslint.config.*"
+      - "knip.json"
       - ".github/workflows/ci.yml"
       - ".github/workflows/lint-check.yml"
       - ".github/workflows/test-build.yml"
