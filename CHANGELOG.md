@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.15.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.14.3...v1.15.0) (2026-07-27)
+
+
+### Features
+
+* **cpu:** 超上級CPU（探索深さ5手）を追加する ([62c0bb5](https://github.com/beginerbeginer/reversi-vue-ts/commit/62c0bb59963a3c910b1def982c699eb4d2f9a70f))
+* **cpu:** 超上級CPU（探索深さ5手）を追加する ([2231a84](https://github.com/beginerbeginer/reversi-vue-ts/commit/2231a84f1f56d37d67e97b51857ff945ecb0a348)), closes [#286](https://github.com/beginerbeginer/reversi-vue-ts/issues/286)
+
+
+### Bug Fixes
+
+* **cpu:** 超上級の思考時間を反復深化とデッドラインで守る ([6a8c553](https://github.com/beginerbeginer/reversi-vue-ts/commit/6a8c55395bc1171449d93a8cf3c0eddc54421ffc))
+
 ## [1.14.3](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.14.2...v1.14.3) (2026-07-27)
 
 
