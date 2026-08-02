@@ -87,14 +87,17 @@ export default defineConfigWithVueTs(
           message: NO_EMIT_MESSAGE,
         },
         {
-          // Options API / defineComponent の emits オプション
-          selector: "Property[key.name='emits']",
+          // Options API / defineComponent の emits オプション。
+          // key.name は Identifier キーにしか一致せず、{ "emits": [...] } や
+          // { ["emits"]: [...] } は Literal キーなので key.value 側でも拾う。
+          // Vue も vue/require-explicit-emits もクォートキーを emits 宣言として
+          // 扱うため、片方だけだと宣言もテンプレートの $emit も素通りする（#400 codex 指摘）
+          selector: "Property[key.name='emits'], Property[key.value='emits']",
           message: NO_EMIT_MESSAGE,
         },
         {
           // setup(props, ctx) の ctx.emit / Options API の this.$emit
-          selector:
-            "MemberExpression[property.name=/^\\$?emit$/]",
+          selector: "MemberExpression[property.name=/^\\$?emit$/]",
           message: NO_EMIT_MESSAGE,
         },
         {

@@ -75,14 +75,23 @@ function onClick() { emit("put", new Point(x, y)); }
 ## emit 禁止は lint で強制されている
 
 このルールはドキュメントだけでなく `eslint.config.mjs` で機械的に落ちる。
-`src/**/*.vue` に対して 2 経路を塞いでいる。
+`src/**/*.vue` に対して、Vue が持つ emit の宣言経路を全て塞いでいる。
 
-| ルール | 塞ぐ経路 |
+| ルール（セレクタ） | 塞ぐ経路 |
 |--------|---------|
 | `no-restricted-syntax`（`defineEmits` の呼び出し） | `<script setup>` から emit を宣言する |
+| `no-restricted-syntax`（`defineModel` の呼び出し） | `update:modelValue` を暗黙に emit する |
+| `no-restricted-syntax`（`emits` プロパティ。`{ "emits": ... }` / `{ ["emits"]: ... }` も含む） | Options API・`defineComponent`・`defineOptions` の `emits` オプション |
+| `no-restricted-syntax`（`.emit` / `.$emit` のメンバ参照） | `setup(props, ctx)` の `ctx.emit`、Options API の `this.$emit` |
+| `no-restricted-syntax`（`emit` の分割代入） | `setup(props, { emit })` |
 | `vue/require-explicit-emits` | テンプレートから未宣言の `$emit` を呼ぶ |
 
+宣言経路を全て禁止しているため、テンプレートの `$emit` は常に「未宣言」となり
+`vue/require-explicit-emits` で落ちる。逆に宣言経路が 1 つでも通ると、
+`emits` を宣言したことでこのルールが満たされ、テンプレートの `$emit` まで通る（#392 / #400）。
+
 `npm run lint` で error になるため、CI（Lint Check グループ）で落ちる。
+6 経路が実際に error になることは `tests/unit/lint/no-emit.spec.ts` で検証している。
 
 ### 例外が必要になったら
 
