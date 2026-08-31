@@ -15,6 +15,11 @@ import skipFormatting from "@vue/eslint-config-prettier/skip-formatting";
 // それを使う vueTsConfigs（内部で typescript-eslint）も vue-tsc も動かないため（#369 / #370）。
 // peer を無視して強行すると ESLint も型チェックも起動時に落ちるので --force は採らない。
 // oxlint や Biome への乗り換えでも解決しない（型情報ルールが .vue で使えない）
+const NO_EMIT_MESSAGE =
+  "emit で親へデータを渡さない。子は Pinia ストアのアクションを直接呼ぶこと" +
+  "（.claude/skills/vue-component-rules/SKILL.md）。" +
+  "例外が必要なら本ファイルに files スコープと理由を書いて許可する。";
+
 export default defineConfigWithVueTs(
   {
     // build 成果物や生成 JS（npm run clean 対象）は lint しない
@@ -63,19 +68,47 @@ export default defineConfigWithVueTs(
     // 子から親へのデータ伝搬を emit ではなく Pinia アクションで行う設計を lint で固定する。
     // ドキュメント（.claude/skills/vue-component-rules）だけでは破っても何も落ちず、
     // VCell → VRow → VBoard → VGame の emit 連鎖が静かに復活しうるため。
-    // 2 経路あるので両方塞ぐ: defineEmits（script setup）と $emit（テンプレート）。
+    //
+    // Vue は emit の宣言経路が複数あり、1 つ塞いでも別経路が残る。
+    // 特に Options API の emits オプションは vue/require-explicit-emits を
+    // 満たしてしまうため、宣言側を塞がないとテンプレートの $emit も通る（#392 codex 指摘）。
     files: ["src/**/*.vue"],
     rules: {
       "no-restricted-syntax": [
         "error",
         {
+          // <script setup> の宣言
           selector: "CallExpression[callee.name='defineEmits']",
-          message:
-            "emit で親へデータを渡さない。子は Pinia ストアのアクションを直接呼ぶこと（.claude/skills/vue-component-rules/SKILL.md）。例外が必要なら本ファイルに files スコープと理由を書いて許可する。",
+          message: NO_EMIT_MESSAGE,
+        },
+        {
+          // defineModel は update:modelValue を暗黙に emit する
+          selector: "CallExpression[callee.name='defineModel']",
+          message: NO_EMIT_MESSAGE,
+        },
+        {
+          // Options API / defineComponent の emits オプション。
+          // key.name は Identifier キーにしか一致せず、{ "emits": [...] } や
+          // { ["emits"]: [...] } は Literal キーなので key.value 側でも拾う。
+          // Vue も vue/require-explicit-emits もクォートキーを emits 宣言として
+          // 扱うため、片方だけだと宣言もテンプレートの $emit も素通りする（#400 codex 指摘）
+          selector: "Property[key.name='emits'], Property[key.value='emits']",
+          message: NO_EMIT_MESSAGE,
+        },
+        {
+          // setup(props, ctx) の ctx.emit / Options API の this.$emit
+          selector: "MemberExpression[property.name=/^\\$?emit$/]",
+          message: NO_EMIT_MESSAGE,
+        },
+        {
+          // setup(props, { emit }) の分割代入
+          selector: "ObjectPattern > Property[key.name='emit']",
+          message: NO_EMIT_MESSAGE,
         },
       ],
-      // 未宣言の $emit を禁止する。defineEmits 自体を上で塞いでいるため、
-      // テンプレートから $emit を呼ぶ経路もこれで到達不能になる
+      // テンプレートの $emit は core の no-restricted-syntax が到達しないため、
+      // vue プラグイン側で塞ぐ。上で宣言経路を全て禁止しているので、
+      // テンプレートの $emit は常に「未宣言」となりここで落ちる
       "vue/require-explicit-emits": "error",
     },
   },
