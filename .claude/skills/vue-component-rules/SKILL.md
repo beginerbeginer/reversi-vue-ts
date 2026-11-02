@@ -75,14 +75,33 @@ function onClick() { emit("put", new Point(x, y)); }
 ## emit 禁止は lint で強制されている
 
 このルールはドキュメントだけでなく `eslint.config.mjs` で機械的に落ちる。
-`src/**/*.vue` に対して 2 経路を塞いでいる。
+`src/**/*.vue` に対して、次の静的に識別できる emit の宣言・参照を禁止している。
 
-| ルール | 塞ぐ経路 |
+| ルール（セレクタ） | 塞ぐ経路 |
 |--------|---------|
 | `no-restricted-syntax`（`defineEmits` の呼び出し） | `<script setup>` から emit を宣言する |
+| `no-restricted-syntax`（`defineModel` の呼び出し） | `update:modelValue` を暗黙に emit する |
+| `no-restricted-syntax`（Vue の `useModel` import・呼び出し・メンバ参照） | ランタイムのモデル更新。別名 import と名前空間・計算キー参照も対象 |
+| `no-restricted-syntax`（`emits` プロパティ。`{ "emits": ... }` / `{ ["emits"]: ... }` も含む） | Options API・`defineComponent`・`defineOptions` の `emits` オプション |
+| `no-restricted-syntax`（`.emit` / `.$emit`、`["emit"]` / `["$emit"]` のメンバ参照） | `setup(props, ctx)` の `ctx.emit`、Options API の `this.$emit`、現在のインスタンスからの参照 |
+| `no-restricted-syntax`（`emit` の分割代入。クォートキーも含む） | `setup(props, { emit })`、`setup(props, { "emit": send })` |
 | `vue/require-explicit-emits` | テンプレートから未宣言の `$emit` を呼ぶ |
 
+上記の宣言経路を禁止することで、未宣言のテンプレート `$emit` を
+`vue/require-explicit-emits` で検出する。逆に宣言経路が通ると、
+`emits` を宣言したことでこのルールが満たされ、テンプレートの `$emit` まで通る（#392 / #400）。
+
 `npm run lint` で error になるため、CI（Lint Check グループ）で落ちる。
+各経路が実際に error になることは `tests/unit/lint/no-emit.spec.ts` で検証している。
+通常データの `const { emits } = data` は宣言ではないため許可する。
+
+### 静的な名前制限の範囲
+
+この設定は Vue の変数の由来を解析しないため、無関係なイベントバスの `.emit` や
+`const { emit } = useTelemetry()` も制限する。#400 で決めた保守的な運用を維持し、
+必要になった場合は下記のファイル単位の例外手順を使う。
+実行時に組み立てるプロパティ名や外部ヘルパ内部の通信を完全に検出するものではないため、
+lint の成功だけで全ての通信経路を検証したとは判断しない。
 
 ### 例外が必要になったら
 
