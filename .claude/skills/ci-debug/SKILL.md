@@ -31,13 +31,13 @@ gh run view <run-id> --log-failed
 > `--repo` は付けない。カレントリポジトリで解決されるため不要で、fork や worktree で
 > 別リポジトリを指してしまう。
 
-### E2E はこの範囲に含まれない
+### E2E は別ワークフローで確認する
 
-`e2e.yml` は `workflow_dispatch` のみで、他のワークフローからも呼ばれていない。
-**E2E は CI で自動実行されない**ため、CI の失敗として現れることはない
-（`a11y.yml` が `tests/e2e/a11y.spec.ts` のみを、当該ファイル変更時に実行する）。
-E2E の自動ゲートは pre-push フックだけなので、E2E が疑わしいときは
-`npm run test:e2e` をローカルで実行して確認する。
+`.github/workflows/e2e.yml` は、アプリ・テスト・依存・Playwright/Vite 設定を変更した
+PR で自動実行される。`workflow_dispatch` による手動実行も可能。
+上記の CI テーブルとは別に `e2e` ジョブの結果を確認する。
+ローカルでも pre-push フックまたは `npm run test:e2e` で実行できる。
+専用ポート 5273 が使用中なら、既存サーバーを再利用せず起動時に失敗する（#385）。
 
 ---
 
