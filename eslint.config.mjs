@@ -87,22 +87,33 @@ export default defineConfigWithVueTs(
           message: NO_EMIT_MESSAGE,
         },
         {
+          // useModel も値の代入で emit する。import 側も検査して別名への変更による回避を防ぐ。
+          selector:
+            "ImportDeclaration[source.value='vue'] > ImportSpecifier[imported.name='useModel'], " +
+            "CallExpression[callee.name='useModel'], " +
+            "MemberExpression[property.name='useModel'], MemberExpression[property.value='useModel']",
+          message: NO_EMIT_MESSAGE,
+        },
+        {
           // Options API / defineComponent の emits オプション。
           // key.name は Identifier キーにしか一致せず、{ "emits": [...] } や
           // { ["emits"]: [...] } は Literal キーなので key.value 側でも拾う。
           // Vue も vue/require-explicit-emits もクォートキーを emits 宣言として
           // 扱うため、片方だけだと宣言もテンプレートの $emit も素通りする（#400 codex 指摘）
-          selector: "Property[key.name='emits'], Property[key.value='emits']",
+          selector:
+            "ObjectExpression > Property[key.name='emits'], ObjectExpression > Property[key.value='emits']",
           message: NO_EMIT_MESSAGE,
         },
         {
           // setup(props, ctx) の ctx.emit / Options API の this.$emit
-          selector: "MemberExpression[property.name=/^\\$?emit$/]",
+          selector:
+            "MemberExpression[property.name=/^\\$?emit$/], MemberExpression[property.value=/^\\$?emit$/]",
           message: NO_EMIT_MESSAGE,
         },
         {
           // setup(props, { emit }) の分割代入
-          selector: "ObjectPattern > Property[key.name='emit']",
+          selector:
+            "ObjectPattern > Property[key.name='emit'], ObjectPattern > Property[key.value='emit']",
           message: NO_EMIT_MESSAGE,
         },
       ],

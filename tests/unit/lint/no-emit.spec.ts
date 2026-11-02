@@ -50,6 +50,34 @@ const DECLARATION_ROUTES = [
     "setup(props, { emit }) の分割代入",
     `<script lang="ts">export default { setup(props, { emit }) { emit("put"); } };</script>`,
   ],
+  [
+    "計算キーによるインスタンスの emit 参照",
+    `<script setup lang="ts">import { getCurrentInstance } from "vue"; getCurrentInstance()?.["emit"]("put");</script>`,
+  ],
+  [
+    "計算キーによる this.$emit 参照",
+    `<script lang="ts">export default { mounted() { this["$emit"]("put"); } };</script>`,
+  ],
+  [
+    "クォートキーによる emit の分割代入",
+    `<script lang="ts">export default { setup(props, { "emit": send }) { send("put"); } };</script>`,
+  ],
+  [
+    "Vue の useModel",
+    `<script setup lang="ts">import { useModel } from "vue"; const model = useModel(defineProps<{ modelValue: string }>(), "modelValue"); model.value = "put";</script>`,
+  ],
+  [
+    "別名でインポートした Vue の useModel",
+    `<script setup lang="ts">import { useModel as modelRef } from "vue"; const model = modelRef(defineProps<{ modelValue: string }>(), "modelValue"); model.value = "put";</script>`,
+  ],
+  [
+    "名前空間から参照した Vue.useModel",
+    `<script setup lang="ts">import * as Vue from "vue"; const model = Vue.useModel(defineProps<{ modelValue: string }>(), "modelValue"); model.value = "put";</script>`,
+  ],
+  [
+    "計算キーで参照した Vue.useModel",
+    `<script setup lang="ts">import * as Vue from "vue"; const model = Vue["useModel"](defineProps<{ modelValue: string }>(), "modelValue"); model.value = "put";</script>`,
+  ],
 ] as const;
 
 describe("emit 禁止 lint", () => {
@@ -61,6 +89,11 @@ describe("emit 禁止 lint", () => {
     const code = `${EMIT_TEMPLATE}<script setup lang="ts"></script>`;
 
     expect(await lintErrors(code)).toContain("vue/require-explicit-emits");
+  });
+
+  it("emits という名前の通常のデータの分割代入は通る", async () => {
+    const code = `<script setup lang="ts">const { emits } = JSON.parse('{}'); console.log(emits);</script>`;
+    expect(await lintErrors(code)).toEqual([]);
   });
 
   it("Pinia アクションを直接呼ぶ正規の書き方は通る", async () => {
