@@ -4,7 +4,7 @@ exports[`VMain スナップショット > スタート画面の HTML が変わ�
 "<div class="v-container v-container--fluid v-locale--is-ltr">
   <h1 class="text-h4 text-center mb-6">リバーシ</h1>
   <div class="d-flex justify-center mb-4">
-    <div class="v-btn-group v-btn-group--horizontal v-theme--light v-btn-group--density-default v-btn-toggle v-btn-toggle--has-color" data-testid="mode-toggle"><button type="button" class="v-btn v-btn--active v-btn--flat v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated" style="height: auto;" data-testid="mode-normal" value="normal"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
+    <div class="v-btn-group v-btn-group--horizontal v-btn-group--size-default v-theme--light v-btn-group--density-default v-btn-toggle v-btn-toggle--has-color" data-testid="mode-toggle"><button type="button" class="v-btn v-btn--active v-btn--flat v-theme--light bg-primary v-btn--density-default v-btn--size-default v-btn--variant-elevated" style="height: auto;" data-testid="mode-normal" value="normal"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>
         <!----><span class="v-btn__content" data-no-activator="">ノーマル</span>
         <!---->
         <!---->
@@ -30,7 +30,12 @@ exports[`VMain スナップショット > スタート画面の HTML が変わ�
         </div>
       </div>
       <!---->
-      <!---->
+      <div class="v-input__details v-input__details--hidden" role="alert" aria-live="polite">
+        <transition-group-stub name="slide-y-transition" tag="div" appear="false" persisted="false" css="true" class="v-messages">
+          <!---->
+        </transition-group-stub>
+        <!---->
+      </div>
     </div>
   </div>
   <div class="d-flex justify-center"><button type="button" class="v-btn v-theme--light text-primary v-btn--density-default v-btn--size-default v-btn--variant-outlined" data-testid="start-button"><span class="v-btn__overlay"></span><span class="v-btn__underlay"></span>

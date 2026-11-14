@@ -21,6 +21,10 @@ test.describe("a11y: WCAG 自動チェック", () => {
       await cells.nth(index).click();
     }
     await expect(page.getByText("ゲーム終了")).toBeVisible();
+    // 可視になった直後は透過アニメーション中で、背景色が混ざってコントラストを誤判定する。
+    const dialogContent = page.getByRole("dialog").locator(".v-overlay__content");
+    await expect(dialogContent).not.toHaveClass(/dialog-transition-enter-/);
+    await expect(dialogContent).toHaveCSS("opacity", "1");
     // canvas-confetti が body 直下に <canvas> を挿入する。
     // サードパーティ要素のため landmark チェック（region ルール）の対象から除外する
     const results = await new AxeBuilder({ page }).exclude("canvas").analyze();
