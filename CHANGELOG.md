@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.16.1](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.16.0...v1.16.1) (2026-11-14)
+
+
+### Bug Fixes
+
+* **deps:** 互換依存を更新して脆弱性と E2E 実行環境を修正する ([ee8b183](https://github.com/beginerbeginer/reversi-vue-ts/commit/ee8b183a668cdaa1c46f7554a749cccbf0fbb584)), closes [#405](https://github.com/beginerbeginer/reversi-vue-ts/issues/405) [#385](https://github.com/beginerbeginer/reversi-vue-ts/issues/385)
+* **deps:** 脆弱性を解消し、依存更新と E2E の CI 検証を整える ([0317a75](https://github.com/beginerbeginer/reversi-vue-ts/commit/0317a75c14dc3ee0d36090d863669357a6d21d2a))
+* resolve 5 high severity npm audit vulnerabilities ([aaa6d4d](https://github.com/beginerbeginer/reversi-vue-ts/commit/aaa6d4d702446d96b1191fd8c96df4b19730cfa8))
+
 ## [1.16.0](https://github.com/beginerbeginer/reversi-vue-ts/compare/v1.15.0...v1.16.0) (2026-07-27)
 
 
